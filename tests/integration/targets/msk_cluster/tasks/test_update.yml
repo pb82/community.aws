@@ -2,18 +2,18 @@
 - name: update msk cluster (check mode)
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "present"
+    state: present
     version: "{{ msk_version }}"
     nodes: "{{ msk_broker_nodes }}"
     ebs_volume_size: 20
     open_monitoring:
-      jmx_exporter: True
+      jmx_exporter: true
     subnets: "{{ subnet_ids }}"
     wait: true
     tags: "{{ tags_update }}"
     configuration_arn: "{{ msk_config.arn }}"
     configuration_revision: "{{ msk_config.revision }}"
-  check_mode: yes
+  check_mode: true
   register: msk_cluster
 
 - name: assert that the msk cluster be changed
@@ -24,12 +24,12 @@
 - name: update msk cluster
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "present"
+    state: present
     version: "{{ msk_version }}"
     nodes: "{{ msk_broker_nodes }}"
     ebs_volume_size: 20
     open_monitoring:
-      jmx_exporter: True
+      jmx_exporter: true
     subnets: "{{ subnet_ids }}"
     wait: true
     tags: "{{ tags_update }}"
@@ -45,20 +45,20 @@
 - name: validate return values
   assert:
     that:
-      - "msk_cluster.cluster_info.broker_node_group_info.storage_info.ebs_storage_info.volume_size == 20"
-      - "msk_cluster.cluster_info.open_monitoring.prometheus.jmx_exporter.enabled_in_broker == true"
+      - msk_cluster.cluster_info.broker_node_group_info.storage_info.ebs_storage_info.volume_size == 20
+      - msk_cluster.cluster_info.open_monitoring.prometheus.jmx_exporter.enabled_in_broker == true
       - "'key-1' not in msk_cluster.cluster_info.tags"
-      - "msk_cluster.cluster_info.tags.key3 == 'value3'"
+      - msk_cluster.cluster_info.tags.key3 == 'value3'
 
 - name: update msk cluster (idempotency)
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "present"
+    state: present
     version: "{{ msk_version }}"
     nodes: "{{ msk_broker_nodes }}"
     ebs_volume_size: 20
     open_monitoring:
-      jmx_exporter: True
+      jmx_exporter: true
     subnets: "{{ subnet_ids }}"
     wait: true
     tags: "{{ tags_update }}"

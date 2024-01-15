@@ -36,11 +36,11 @@
         state: present
         <<: *aws_connection_info
         policy:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-          - Action: 'sts:AssumeRole'
-            Effect: Allow
-            Resource: arn:aws:iam::*:role/CfnStackSetExecRole
+            - Action: sts:AssumeRole
+              Effect: Allow
+              Resource: arn:aws:iam::*:role/CfnStackSetExecRole
         policy_description: Assume CfnStackSetExecRole
 
     - name: Create an execution role for us to use
@@ -48,28 +48,28 @@
         name: CfnStackSetExecRole
         <<: *aws_secondary_connection_info
         assume_role_policy_document:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-          - Action: 'sts:AssumeRole'
-            Effect: Allow
-            Principal:
-              AWS: '{{ whoami.account }}'
+            - Action: sts:AssumeRole
+              Effect: Allow
+              Principal:
+                AWS: "{{ whoami.account }}"
         managed_policy:
-        - arn:aws:iam::aws:policy/PowerUserAccess
+          - arn:aws:iam::aws:policy/PowerUserAccess
 
     - name: Create an administration role for us to use
       iam_role:
         name: CfnStackSetAdminRole
         <<: *aws_connection_info
         assume_role_policy_document:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-          - Action: 'sts:AssumeRole'
-            Effect: Allow
-            Principal:
-              Service: 'cloudformation.amazonaws.com'
+            - Action: sts:AssumeRole
+              Effect: Allow
+              Principal:
+                Service: cloudformation.amazonaws.com
         managed_policy:
-        - arn:aws:iam::{{ whoami.account }}:policy/AssumeCfnStackSetExecRole
+          - arn:aws:iam::{{ whoami.account }}:policy/AssumeCfnStackSetExecRole
           #- arn:aws:iam::aws:policy/PowerUserAccess
 
     - name: Should fail without account/regions
@@ -89,7 +89,7 @@
         that:
           - result is failed
           - >
-              "Can't create a stack set without choosing at least one account" in result.msg
+            "Can't create a stack set without choosing at least one account" in result.msg
     - name: Should fail without roles
       cloudformation_stack_set:
         <<: *aws_connection_info
@@ -100,9 +100,9 @@
           Type: Test
         wait: true
         regions:
-          - '{{ aws_region }}'
+          - "{{ aws_region }}"
         accounts:
-          - '{{ whoami.account }}'
+          - "{{ whoami.account }}"
         template_body: '{{ lookup("file", "test_bucket_stack.yml") }}'
       register: result
       ignore_errors: true
@@ -117,14 +117,14 @@
         state: absent
         <<: *aws_connection_info
         assume_role_policy_document:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-          - Action: 'sts:AssumeRole'
-            Effect: Allow
-            Principal:
-              AWS: arn:aws:iam::{{ whoami.account }}:root
+            - Action: sts:AssumeRole
+              Effect: Allow
+              Principal:
+                AWS: arn:aws:iam::{{ whoami.account }}:root
         managed_policy:
-        - arn:aws:iam::aws:policy/PowerUserAccess
+          - arn:aws:iam::aws:policy/PowerUserAccess
 
     - name: Create stack with roles
       cloudformation_stack_set:
@@ -136,9 +136,9 @@
           Type: Test
         wait: true
         regions:
-          - '{{ aws_region }}'
+          - "{{ aws_region }}"
         accounts:
-          - '{{ target_acct.account }}'
+          - "{{ target_acct.account }}"
         exec_role_name: CfnStackSetExecRole
         admin_role_arn: arn:aws:iam::{{ whoami.account }}:role/CfnStackSetAdminRole
         template_body: '{{ lookup("file", "test_bucket_stack.yml") }}'
@@ -154,9 +154,9 @@
           Type: Test
         wait: true
         regions:
-          - '{{ aws_region }}'
+          - "{{ aws_region }}"
         accounts:
-          - '{{ target_acct.account }}'
+          - "{{ target_acct.account }}"
         exec_role_name: CfnStackSetExecRole
         admin_role_arn: arn:aws:iam::{{ whoami.account }}:role/CfnStackSetAdminRole
         template_body: '{{ lookup("file", "test_modded_bucket_stack.yml") }}'
@@ -167,9 +167,9 @@
         name: TestSetOne
         wait: true
         regions:
-          - '{{ aws_region }}'
+          - "{{ aws_region }}"
         accounts:
-          - '{{ whoami.account }}'
+          - "{{ whoami.account }}"
         purge_stacks: true
         state: absent
     - name: Clean up stack two
@@ -183,8 +183,8 @@
           Type: Test
         wait: true
         regions:
-          - '{{ aws_region }}'
+          - "{{ aws_region }}"
         accounts:
-          - '{{ target_acct.account }}'
+          - "{{ target_acct.account }}"
         template_body: '{{ lookup("file", "test_bucket_stack.yml") }}'
         state: absent

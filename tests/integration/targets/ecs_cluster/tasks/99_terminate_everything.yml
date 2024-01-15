@@ -1,10 +1,11 @@
+---
 - name: Announce teardown start
   debug:
     msg: "***** TESTING COMPLETE. COMMENCE TEARDOWN *****"
 
 - name: remove setup ec2 instance
   ec2_instance:
-    instance_ids: '{{ setup_instance.instance_ids }}'
+    instance_ids: "{{ setup_instance.instance_ids }}"
     state: absent
     wait: true
   ignore_errors: true
@@ -246,7 +247,7 @@
 
 - name: remove setup keypair
   ec2_key:
-    name: '{{ resource_prefix }}_ecs_cluster'
+    name: "{{ resource_prefix }}_ecs_cluster"
     state: absent
   ignore_errors: true
 
@@ -262,12 +263,12 @@
 
 - name: remove security groups
   ec2_security_group:
-    name: '{{ item }}'
-    description: 'created by Ansible integration tests'
+    name: "{{ item }}"
+    description: created by Ansible integration tests
     state: absent
-    vpc_id: '{{ setup_vpc.vpc.id }}'
+    vpc_id: "{{ setup_vpc.vpc.id }}"
   with_items:
-    - '{{ resource_prefix }}_ecs_cluster-sg'
+    - "{{ resource_prefix }}_ecs_cluster-sg"
   ignore_errors: true
   register: this_deletion
   retries: 10
@@ -286,13 +287,13 @@
 - name: remove IGW
   ec2_vpc_igw:
     state: absent
-    vpc_id: '{{ setup_vpc.vpc.id }}'
+    vpc_id: "{{ setup_vpc.vpc.id }}"
   ignore_errors: true
 
 - name: remove setup subnet
   ec2_vpc_subnet:
-    az: '{{ aws_region }}{{ item.zone }}'
-    vpc_id: '{{ setup_vpc.vpc.id }}'
+    az: "{{ aws_region }}{{ item.zone }}"
+    vpc_id: "{{ setup_vpc.vpc.id }}"
     cidr: "{{ item.cidr}}"
     state: absent
   with_items:
@@ -306,19 +307,19 @@
   ec2_vpc_net:
     cidr_block: 10.0.0.0/16
     state: absent
-    name: '{{ resource_prefix }}_ecs_cluster'
+    name: "{{ resource_prefix }}_ecs_cluster"
   ignore_errors: true
 
 - name: Delete IAM service role
   iam_role:
-    name: '{{ ecs_service_role_name }}'
+    name: "{{ ecs_service_role_name }}"
     state: absent
-    delete_instance_profile: True
+    delete_instance_profile: true
   ignore_errors: true
 
 - name: Delete IAM task execution role
   iam_role:
-    name: '{{ ecs_task_role_name }}'
+    name: "{{ ecs_task_role_name }}"
     state: absent
-    delete_instance_profile: True
+    delete_instance_profile: true
   ignore_errors: true

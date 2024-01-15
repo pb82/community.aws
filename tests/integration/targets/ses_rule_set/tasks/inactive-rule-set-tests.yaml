@@ -22,7 +22,7 @@
         that:
           - result.changed == True
           - result.active == False
-          - "default_rule_set in result.rule_sets|map(attribute='name')"
+          - default_rule_set in result.rule_sets|map(attribute='name')
     - name: recreate rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
@@ -36,7 +36,7 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 # ============================================================
 - name: Remove No Such Rules Set
   block:
@@ -49,7 +49,7 @@
       assert:
         that:
           - result.changed == False
-          - "default_rule_set not in result.rule_sets|map(attribute='name')"
+          - default_rule_set not in result.rule_sets|map(attribute='name')
 # ============================================================
 - name: Remove Inactive Rule Set
   block:
@@ -65,13 +65,13 @@
       assert:
         that:
           - result.changed == True
-          - "default_rule_set not in result.rule_sets|map(attribute='name')"
+          - default_rule_set not in result.rule_sets|map(attribute='name')
   always:
     - name: cleanup rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 # ============================================================
 - name: test create in check mode
   block:
@@ -79,19 +79,19 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
       register: result
-      check_mode: True
+      check_mode: true
     - name: assert changed inactive and present
       assert:
         that:
           - result.changed == True
           - result.active == False
-          - "default_rule_set in result.rule_sets|map(attribute='name')"
+          - default_rule_set in result.rule_sets|map(attribute='name')
   always:
     - name: cleanup rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
       register: result
     - name: assert nothing to clean up since create was in check mode
       assert:
@@ -106,9 +106,9 @@
     - name: mark rule set active in check mode
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
       register: result
-      check_mode: True
+      check_mode: true
     - name: assert changed and active
       assert:
         that:
@@ -120,7 +120,7 @@
     - name: Ensure rule set is inactive
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: False
+        active: false
       register: result
     - name: assert unchanged since activation was in check mode
       assert:
@@ -131,7 +131,7 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 # ============================================================
 - name: Remove Inactive Rule Set in check mode
   block:
@@ -143,18 +143,18 @@
         name: "{{ default_rule_set }}"
         state: absent
       register: result
-      check_mode: True
+      check_mode: true
     - name: assert changed and removed
       assert:
         that:
           - result.changed == True
-          - "default_rule_set not in result.rule_sets|map(attribute='name')"
+          - default_rule_set not in result.rule_sets|map(attribute='name')
   always:
     - name: cleanup rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
       register: result
     - name: assert changed is True since previous removal was in check mode
       assert:

@@ -1,12 +1,11 @@
 ---
-
 - name: Create a private load balancer with 1 AZ enabled
   elb_classic_lb:
     name: "{{ elb_name_1 }}"
     state: present
-    scheme: 'internal'
-    subnets: ['{{ subnet_a }}']
-    listeners: '{{ elb_listeners }}'
+    scheme: internal
+    subnets: ["{{ subnet_a }}"]
+    listeners: "{{ elb_listeners }}"
     wait: true
     health_check:
       ping_protocol: TCP
@@ -21,9 +20,9 @@
   elb_classic_lb:
     name: "{{ elb_name_2 }}"
     state: present
-    scheme: 'internal'
-    subnets: ['{{ subnet_a }}', '{{ subnet_b }}']
-    listeners: '{{ elb_listeners }}'
+    scheme: internal
+    subnets: ["{{ subnet_a }}", "{{ subnet_b }}"]
+    listeners: "{{ elb_listeners }}"
     wait: true
     health_check:
       ping_protocol: TCP

@@ -1,1 +1,2 @@
-efs_name: "ansible-test-{{ tiny_prefix }}"
+---
+efs_name: ansible-test-{{ tiny_prefix }}

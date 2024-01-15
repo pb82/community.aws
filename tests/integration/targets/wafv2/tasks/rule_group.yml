@@ -1,3 +1,4 @@
+---
 ####################################
 # Create and test rule group
 ####################################
@@ -14,8 +15,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -27,12 +28,12 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
   register: out
-  check_mode: yes
+  check_mode: true
 
 - name: check_mode verify create
   assert:
@@ -52,8 +53,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -65,7 +66,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -100,8 +101,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -113,7 +114,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -137,8 +138,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -150,7 +151,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -174,8 +175,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -187,7 +188,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -211,8 +212,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -229,8 +230,8 @@
         action:
           block: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: ddos
         statement:
           or_statement:
@@ -250,7 +251,7 @@
                   text_transformations:
                     - type: NONE
                       priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -274,8 +275,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -292,8 +293,8 @@
         action:
           block: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: ddos
         statement:
           or_statement:
@@ -313,7 +314,7 @@
                   text_transformations:
                     - type: NONE
                       priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -337,8 +338,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -355,8 +356,8 @@
         action:
           block: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: ddos
         statement:
           or_statement:
@@ -376,7 +377,7 @@
                   text_transformations:
                     - type: NONE
                       priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -400,8 +401,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -418,8 +419,8 @@
         action:
           block: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: ddos
         statement:
           or_statement:
@@ -439,7 +440,7 @@
                   text_transformations:
                     - type: NONE
                       priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -463,8 +464,8 @@
         action:
           block: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: ddos
         statement:
           or_statement:
@@ -489,8 +490,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           byte_match_statement:
@@ -502,7 +503,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -520,15 +521,15 @@
     description: hallo eins zwei
     scope: REGIONAL
     capacity: 500
-    purge_rules: no
+    purge_rules: false
     rules:
       - name: allow-admin-svg
         priority: 3
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: allow-admin-svg
         statement:
           byte_match_statement:
@@ -539,7 +540,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -568,15 +569,15 @@
     description: hallo eins zwei
     scope: REGIONAL
     capacity: 500
-    purge_rules: no
+    purge_rules: false
     rules:
       - name: allow-admin-svg
         priority: 3
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: allow-admin-svg
         statement:
           byte_match_statement:
@@ -587,7 +588,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -605,15 +606,15 @@
     description: hallo eins zwei
     scope: REGIONAL
     capacity: 500
-    purge_rules: yes
+    purge_rules: true
     rules:
       - name: allow-admin-svg
         priority: 3
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: allow-admin-svg
         statement:
           byte_match_statement:
@@ -624,7 +625,7 @@
             text_transformations:
               - type: LOWERCASE
                 priority: 0
-    cloudwatch_metrics: yes
+    cloudwatch_metrics: true
     tags:
       A: B
       C: D
@@ -647,8 +648,8 @@
         action:
           allow: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: allow-admin-svg
         statement:
           byte_match_statement:

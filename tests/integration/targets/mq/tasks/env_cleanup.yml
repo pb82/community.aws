@@ -1,3 +1,4 @@
+---
 - name: remove the security group
   ec2_security_group:
     name: "{{ sg_name }}"
@@ -6,7 +7,7 @@
     state: absent
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove subnet A
@@ -16,7 +17,7 @@
     cidr: "{{ subnet_cidr }}"
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove the VPC
@@ -29,5 +30,5 @@
     tenancy: default
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10

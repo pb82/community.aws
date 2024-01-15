@@ -1,15 +1,14 @@
 ---
-- name: 'aws_config integration tests'
+- name: aws_config integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     # ============================================================
     # Prerequisites
     # ============================================================
@@ -23,21 +22,21 @@
 
     - name: ensure IAM role exists
       iam_role:
-        name: '{{ config_role_name }}'
+        name: "{{ config_role_name }}"
         assume_role_policy_document: "{{ lookup('file','config-trust-policy.json') }}"
         state: present
-        create_instance_profile: no
+        create_instance_profile: false
         managed_policy:
-        - arn:aws:iam::aws:policy/service-role/AWS_ConfigRole
+          - arn:aws:iam::aws:policy/service-role/AWS_ConfigRole
       register: config_iam_role
 
     - name: ensure SNS topic exists
       sns_topic:
-        name: '{{ config_sns_name }}'
+        name: "{{ config_sns_name }}"
         state: present
         subscriptions:
-          - endpoint: "rando_email_address@rando.com"
-            protocol: "email"
+          - endpoint: rando_email_address@rando.com
+            protocol: email
       register: config_sns_topic
 
     - name: ensure S3 bucket exists
@@ -53,7 +52,7 @@
     - name: ensure S3 access for IAM role
       iam_policy:
         iam_type: role
-        iam_name: '{{ config_role_name }}'
+        iam_name: "{{ config_role_name }}"
         policy_name: AwsConfigRecorderTestRoleS3Policy
         state: present
         policy_json: "{{ lookup( 'template', 'config-s3-policy.json.j2') }}"
@@ -71,8 +70,8 @@
     - name: assert failure when called with no source parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("missing required arguments:")'
+          - output.failed
+          - output.msg.startswith("missing required arguments:")
 
     - name: test resource_type delivery_channel with no s3_bucket parameter
       config_delivery_channel:
@@ -84,8 +83,8 @@
     - name: assert failure when called with no s3_bucket parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("missing required arguments:")'
+          - output.failed
+          - output.msg.startswith("missing required arguments:")
 
     - name: test resource_type configuration_recorder with no role_arn parameter
       config_recorder:
@@ -97,22 +96,22 @@
     - name: assert failure when called with no role_arn parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("state is present but all of the following are missing")'
+          - output.failed
+          - output.msg.startswith("state is present but all of the following are missing")
 
     - name: test resource_type configuration_recorder with no recording_group parameter
       config_recorder:
         name: random_name
         state: present
-        role_arn: 'arn:aws:iam::123456789012:role/AwsConfigRecorder'
+        role_arn: arn:aws:iam::123456789012:role/AwsConfigRecorder
       register: output
       ignore_errors: true
 
     - name: assert failure when called with no recording_group parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("state is present but all of the following are missing")'
+          - output.failed
+          - output.msg.startswith("state is present but all of the following are missing")
 
     - name: test resource_type aggregation_authorization with no authorized_account_id parameter
       config_aggregation_authorization:
@@ -123,21 +122,21 @@
     - name: assert failure when called with no authorized_account_id parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("missing required arguments:")'
+          - output.failed
+          - output.msg.startswith("missing required arguments:")
 
     - name: test resource_type aggregation_authorization with no authorized_aws_region parameter
       config_aggregation_authorization:
         state: present
-        authorized_account_id: '123456789012'
+        authorized_account_id: "123456789012"
       register: output
       ignore_errors: true
 
     - name: assert failure when called with no authorized_aws_region parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("missing required arguments:")'
+          - output.failed
+          - output.msg.startswith("missing required arguments:")
 
     - name: test resource_type configuration_aggregator with no account_sources parameter
       config_aggregator:
@@ -149,8 +148,8 @@
     - name: assert failure when called with no account_sources parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("missing required arguments: account_sources")'
+          - output.failed
+          - 'output.msg.startswith("missing required arguments: account_sources")'
 
     - name: test resource_type configuration_aggregator with no organization_source parameter
       config_aggregator:
@@ -163,20 +162,20 @@
     - name: assert failure when called with no organization_source parameter
       assert:
         that:
-           - output.failed
-           - 'output.msg.startswith("missing required arguments: organization_source")'
+          - output.failed
+          - 'output.msg.startswith("missing required arguments: organization_source")'
 
     # ============================================================
     # Creation testing
     # ============================================================
     - name: Create Configuration Recorder for AWS Config
       config_recorder:
-        name: '{{ resource_prefix }}-recorder'
+        name: "{{ resource_prefix }}-recorder"
         state: present
         role_arn: "{{ config_iam_role.arn }}"
         recording_group:
-            all_supported: true
-            include_global_types: true
+          all_supported: true
+          include_global_types: true
       register: output
 
     - assert:
@@ -185,12 +184,12 @@
 
     - name: Create Delivery Channel for AWS Config
       config_delivery_channel:
-        name: '{{ resource_prefix }}-channel'
+        name: "{{ resource_prefix }}-channel"
         state: present
         s3_bucket: "{{ config_s3_bucket }}"
-        s3_prefix: "foo/bar"
+        s3_prefix: foo/bar
         sns_topic_arn: "{{ config_sns_topic.sns_arn }}"
-        delivery_frequency: 'Twelve_Hours'
+        delivery_frequency: Twelve_Hours
       register: output
 
     - assert:
@@ -199,13 +198,13 @@
 
     - name: Create Delivery Channel for AWS Config with a KMS key
       config_delivery_channel:
-        name: '{{ resource_prefix }}-channel'
+        name: "{{ resource_prefix }}-channel"
         state: present
         s3_bucket: "{{ config_s3_bucket }}"
-        s3_prefix: "foo/bar"
+        s3_prefix: foo/bar
         kms_key_arn: "{{ kms_key.key_arn }}"
         sns_topic_arn: "{{ config_sns_topic.sns_arn }}"
-        delivery_frequency: 'Twelve_Hours'
+        delivery_frequency: Twelve_Hours
       register: output
 
     - assert:
@@ -214,15 +213,15 @@
 
     - name: Create Config Rule for AWS Config
       config_rule:
-        name: '{{ resource_prefix }}-rule'
+        name: "{{ resource_prefix }}-rule"
         state: present
-        description: 'This AWS Config rule checks for public write access on S3 buckets'
+        description: This AWS Config rule checks for public write access on S3 buckets
         scope:
-            compliance_types:
-                - 'AWS::S3::Bucket'
+          compliance_types:
+            - AWS::S3::Bucket
         source:
-            owner: AWS
-            identifier: 'S3_BUCKET_PUBLIC_WRITE_PROHIBITED'
+          owner: AWS
+          identifier: S3_BUCKET_PUBLIC_WRITE_PROHIBITED
       register: output
 
     - assert:
@@ -242,7 +241,7 @@
     - name: assert success
       assert:
         that:
-           - output is changed
+          - output is changed
 
     - name: Create aws_config_aggregator - idempotency
       config_aggregator:
@@ -257,21 +256,21 @@
     - name: assert not changed
       assert:
         that:
-           - output is not changed
+          - output is not changed
 
     # ============================================================
     # Update testing
     # ============================================================
     - name: Update Configuration Recorder
       config_recorder:
-        name: '{{ resource_prefix }}-recorder'
+        name: "{{ resource_prefix }}-recorder"
         state: present
         role_arn: "{{ config_iam_role.arn }}"
         recording_group:
-            all_supported: false
-            include_global_types: false
-            resource_types:
-              - 'AWS::S3::Bucket'
+          all_supported: false
+          include_global_types: false
+          resource_types:
+            - AWS::S3::Bucket
       register: output
 
     - assert:
@@ -280,11 +279,11 @@
 
     - name: Update Delivery Channel
       config_delivery_channel:
-        name: '{{ resource_prefix }}-channel'
+        name: "{{ resource_prefix }}-channel"
         state: present
         s3_bucket: "{{ config_s3_bucket }}"
         sns_topic_arn: "{{ config_sns_topic.sns_arn }}"
-        delivery_frequency: 'TwentyFour_Hours'
+        delivery_frequency: TwentyFour_Hours
       register: output
 
     - assert:
@@ -293,12 +292,12 @@
 
     - name: Update Delivery Channel with KMS key
       config_delivery_channel:
-        name: '{{ resource_prefix }}-channel'
+        name: "{{ resource_prefix }}-channel"
         state: present
         s3_bucket: "{{ config_s3_bucket }}"
         sns_topic_arn: "{{ config_sns_topic.sns_arn }}"
         kms_key_arn: "{{ kms_key.key_arn }}"
-        delivery_frequency: 'TwentyFour_Hours'
+        delivery_frequency: TwentyFour_Hours
       register: output
 
     - assert:
@@ -307,15 +306,15 @@
 
     - name: Update Config Rule
       config_rule:
-        name: '{{ resource_prefix }}-rule'
+        name: "{{ resource_prefix }}-rule"
         state: present
-        description: 'This AWS Config rule checks for public write access on S3 buckets'
+        description: This AWS Config rule checks for public write access on S3 buckets
         scope:
-            compliance_types:
-                - 'AWS::S3::Bucket'
+          compliance_types:
+            - AWS::S3::Bucket
         source:
-            owner: AWS
-            identifier: 'S3_BUCKET_PUBLIC_READ_PROHIBITED'
+          owner: AWS
+          identifier: S3_BUCKET_PUBLIC_READ_PROHIBITED
       register: output
 
     - assert:
@@ -324,15 +323,15 @@
 
     - name: Update Config Rule - idempotency
       config_rule:
-        name: '{{ resource_prefix }}-rule'
+        name: "{{ resource_prefix }}-rule"
         state: present
-        description: 'This AWS Config rule checks for public write access on S3 buckets'
+        description: This AWS Config rule checks for public write access on S3 buckets
         scope:
-            compliance_types:
-                - 'AWS::S3::Bucket'
+          compliance_types:
+            - AWS::S3::Bucket
         source:
-            owner: AWS
-            identifier: 'S3_BUCKET_PUBLIC_READ_PROHIBITED'
+          owner: AWS
+          identifier: S3_BUCKET_PUBLIC_READ_PROHIBITED
       register: output
 
     - assert:
@@ -347,14 +346,14 @@
         organization_source:
           all_aws_regions: false
           aws_regions:
-            - '{{ aws_region }}'
+            - "{{ aws_region }}"
           role_arn: "{{ config_iam_role.arn }}"
       register: output
 
     - name: assert success
       assert:
         that:
-           - output is changed
+          - output is changed
 
     - name: Update aws_config_aggregator - idempotency
       config_aggregator:
@@ -364,28 +363,28 @@
         organization_source:
           all_aws_regions: false
           aws_regions:
-            - '{{ aws_region }}'
+            - "{{ aws_region }}"
           role_arn: "{{ config_iam_role.arn }}"
       register: output
 
     - name: assert success
       assert:
         that:
-           - output is not changed
+          - output is not changed
 
     # ============================================================
     # Read testing
     # ============================================================
     - name: Don't update Configuration Recorder
       config_recorder:
-        name: '{{ resource_prefix }}-recorder'
+        name: "{{ resource_prefix }}-recorder"
         state: present
         role_arn: "{{ config_iam_role.arn }}"
         recording_group:
-            all_supported: false
-            include_global_types: false
-            resource_types:
-              - 'AWS::S3::Bucket'
+          all_supported: false
+          include_global_types: false
+          resource_types:
+            - AWS::S3::Bucket
       register: output
 
     - assert:
@@ -394,11 +393,11 @@
 
     - name: Don't update Delivery Channel
       config_delivery_channel:
-        name: '{{ resource_prefix }}-channel'
+        name: "{{ resource_prefix }}-channel"
         state: present
         s3_bucket: "{{ config_s3_bucket }}"
         sns_topic_arn: "{{ config_sns_topic.sns_arn }}"
-        delivery_frequency: 'TwentyFour_Hours'
+        delivery_frequency: TwentyFour_Hours
       register: output
 
     - assert:
@@ -407,15 +406,15 @@
 
     - name: Don't update Config Rule
       config_rule:
-        name: '{{ resource_prefix }}-rule'
+        name: "{{ resource_prefix }}-rule"
         state: present
-        description: 'This AWS Config rule checks for public write access on S3 buckets'
+        description: This AWS Config rule checks for public write access on S3 buckets
         scope:
-            compliance_types:
-                - 'AWS::S3::Bucket'
+          compliance_types:
+            - AWS::S3::Bucket
         source:
-            owner: AWS
-            identifier: 'S3_BUCKET_PUBLIC_READ_PROHIBITED'
+          owner: AWS
+          identifier: S3_BUCKET_PUBLIC_READ_PROHIBITED
       register: output
 
     - assert:
@@ -423,7 +422,6 @@
           - not output.changed
 
   always:
-
     - name: delete aws_config_aggregator
       config_aggregator:
         name: random_name
@@ -436,46 +434,46 @@
     # ============================================================
     - name: Destroy Configuration Recorder
       config_recorder:
-        name: '{{ resource_prefix }}-recorder'
+        name: "{{ resource_prefix }}-recorder"
         state: absent
       register: output
       ignore_errors: true
 
-#    - assert:
-#        that:
-#          - output.changed
+    #    - assert:
+    #        that:
+    #          - output.changed
 
     - name: Destroy Delivery Channel
       config_delivery_channel:
-        name: '{{ resource_prefix }}-channel'
+        name: "{{ resource_prefix }}-channel"
         state: absent
         s3_bucket: "{{ config_s3_bucket }}"
         sns_topic_arn: "{{ config_sns_topic.sns_arn }}"
-        delivery_frequency: 'TwentyFour_Hours'
+        delivery_frequency: TwentyFour_Hours
       register: output
       ignore_errors: true
 
-#    - assert:
-#        that:
-#          - output.changed
+    #    - assert:
+    #        that:
+    #          - output.changed
 
     - name: Destroy Config Rule
       config_rule:
-        name: '{{ resource_prefix }}-rule'
+        name: "{{ resource_prefix }}-rule"
         state: absent
-        description: 'This AWS Config rule checks for public write access on S3 buckets'
+        description: This AWS Config rule checks for public write access on S3 buckets
         scope:
-            compliance_types:
-                - 'AWS::S3::Bucket'
+          compliance_types:
+            - AWS::S3::Bucket
         source:
-            owner: AWS
-            identifier: 'S3_BUCKET_PUBLIC_READ_PROHIBITED'
+          owner: AWS
+          identifier: S3_BUCKET_PUBLIC_READ_PROHIBITED
       register: output
       ignore_errors: true
 
-#    - assert:
-#        that:
-#          - output.changed
+    #    - assert:
+    #        that:
+    #          - output.changed
 
     # ============================================================
     # Clean up prerequisites
@@ -483,7 +481,7 @@
     - name: remove S3 access from IAM role
       iam_policy:
         iam_type: role
-        iam_name: '{{ config_role_name }}'
+        iam_name: "{{ config_role_name }}"
         policy_name: AwsConfigRecorderTestRoleS3Policy
         state: absent
         policy_json: "{{ lookup( 'template', 'config-s3-policy.json.j2') }}"
@@ -491,13 +489,13 @@
 
     - name: remove IAM role
       iam_role:
-        name: '{{ config_role_name }}'
+        name: "{{ config_role_name }}"
         state: absent
       ignore_errors: true
 
     - name: remove SNS topic
       sns_topic:
-        name: '{{ config_sns_name }}'
+        name: "{{ config_sns_name }}"
         state: absent
       ignore_errors: true
 

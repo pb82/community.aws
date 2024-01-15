@@ -2,7 +2,7 @@
 - name: create a msk cluster with authentication flipped from default (check mode)
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "present"
+    state: present
     version: "{{ msk_version }}"
     nodes: "{{ msk_broker_nodes }}"
     ebs_volume_size: 10
@@ -15,7 +15,7 @@
     tags: "{{ tags_create }}"
     configuration_arn: "{{ msk_config.arn }}"
     configuration_revision: "{{ msk_config.revision }}"
-  check_mode: yes
+  check_mode: true
   register: msk_cluster
 
 - name: assert that the msk cluster be created
@@ -26,7 +26,7 @@
 - name: create a msk cluster with authentication flipped from default
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "present"
+    state: present
     version: "{{ msk_version }}"
     nodes: "{{ msk_broker_nodes }}"
     ebs_volume_size: 10
@@ -52,22 +52,22 @@
       - "'cluster_info' in msk_cluster"
       - "'bootstrap_broker_string' in msk_cluster"
       - "'key1' in msk_cluster.cluster_info.tags"
-      - "msk_cluster.cluster_info.tags.key1 == 'value1'"
-      - "msk_cluster.cluster_info.cluster_name == msk_cluster_name"
-      - "msk_cluster.cluster_info.number_of_broker_nodes == msk_broker_nodes"
-      - "msk_cluster.cluster_info.broker_node_group_info.instance_type == 'kafka.t3.small'"
-      - "msk_cluster.cluster_info.broker_node_group_info.storage_info.ebs_storage_info.volume_size == 10"
-      - "msk_cluster.cluster_info.client_authentication.sasl.iam.enabled == true"
-      - "msk_cluster.cluster_info.client_authentication.sasl.scram.enabled == true"
+      - msk_cluster.cluster_info.tags.key1 == 'value1'
+      - msk_cluster.cluster_info.cluster_name == msk_cluster_name
+      - msk_cluster.cluster_info.number_of_broker_nodes == msk_broker_nodes
+      - msk_cluster.cluster_info.broker_node_group_info.instance_type == 'kafka.t3.small'
+      - msk_cluster.cluster_info.broker_node_group_info.storage_info.ebs_storage_info.volume_size == 10
+      - msk_cluster.cluster_info.client_authentication.sasl.iam.enabled == true
+      - msk_cluster.cluster_info.client_authentication.sasl.scram.enabled == true
       # Not always returned by API
       # - "msk_cluster.cluster_info.client_authentication.unauthenticated.enabled == false"
-      - "msk_cluster.cluster_info.open_monitoring.prometheus.jmx_exporter.enabled_in_broker == false"
-      - "msk_cluster.cluster_info.cluster_arn.startswith('arn:aws:kafka:' ~ aws_region ~ ':')"
+      - msk_cluster.cluster_info.open_monitoring.prometheus.jmx_exporter.enabled_in_broker == false
+      - msk_cluster.cluster_info.cluster_arn.startswith('arn:aws:kafka:' ~ aws_region ~ ':')
 
 - name: create a msk cluster with authentication flipped from default (idempotency)
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "present"
+    state: present
     version: "{{ msk_version }}"
     nodes: "{{ msk_broker_nodes }}"
     ebs_volume_size: 10
@@ -91,7 +91,7 @@
 - name: delete msk cluster
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "absent"
+    state: absent
     wait: true
   register: msk_cluster
 

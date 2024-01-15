@@ -1,7 +1,8 @@
+---
 - hosts: localhost
   roles:
     - role: ../setup_connection_aws_ssm
       vars:
         target_os: centos
-        encrypted_bucket: True
+        encrypted_bucket: true
         test_suffix: encrypteds3

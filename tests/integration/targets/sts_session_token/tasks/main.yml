@@ -2,10 +2,10 @@
 # tasks file for sts_assume_role
 - module_defaults:
     group/aws:
-        region: "{{ aws_region }}"
-        access_key: "{{ aws_access_key }}"
-        secret_key: "{{ aws_secret_key }}"
-        session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
   collections:
     - amazon.aws
   block:
@@ -20,7 +20,7 @@
     - name: Get a session token
       sts_session_token:
       register: token_details
-      no_log: True
+      no_log: true
 
     - assert:
         that:
@@ -34,7 +34,7 @@
       sts_session_token:
         duration_seconds: 1000
       register: token_details
-      no_log: True
+      no_log: true
 
     - debug:
         var: ansible_date_time
@@ -64,5 +64,5 @@
           - token_aws_caller_info.account == original_aws_caller_info.account
           - token_aws_caller_info.arn == original_aws_caller_info.arn
 
-    # ============================================================
+  # ============================================================
   always: []

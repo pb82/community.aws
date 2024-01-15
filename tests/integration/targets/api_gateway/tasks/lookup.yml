@@ -85,14 +85,14 @@
 
     - name: Delete remaining API gateway
       community.aws.api_gateway:
-        api_id: '{{ item }}'
+        api_id: "{{ item }}"
         state: absent
       ignore_errors: true
       with_items: "{{ gateways.rest_apis | selectattr('name', 'equalto', api_name) | map(attribute='id') | list }}"
 
 - name: Test API gateway deletion
   block:
-    - name: "Create new API gateway name={{ api_name }}"
+    - name: Create new API gateway name={{ api_name }}
       community.aws.api_gateway:
         name: "{{ api_name }}"
         swagger_text: "{{ lookup('template', 'minimal-swagger-api.yml.j2') }}"
@@ -124,8 +124,8 @@
       assert:
         that:
           - __delete_conflict is failed
-          - '__delete_conflict.msg == "Tags provided do not identify a unique API gateway"'
-    
+          - __delete_conflict.msg == "Tags provided do not identify a unique API gateway"
+
     # Test: Delete with name only (no api_id)
     - name: Create same API gateway once again
       community.aws.api_gateway:
@@ -138,7 +138,7 @@
       assert:
         that:
           - __delete_missing_params is failed
-          - '__delete_missing_params.msg == "API gateway id must be supplied to delete API gateway or provided tag with lookup=tag to identify API gateway id."'
+          - __delete_missing_params.msg == "API gateway id must be supplied to delete API gateway or provided tag with lookup=tag to identify API gateway id."
 
     # Test: Delete (check_mode)
     - name: Delete API gateway - check mode
@@ -205,7 +205,7 @@
 
     - name: Delete remaining API gateway
       community.aws.api_gateway:
-        api_id: '{{ item }}'
+        api_id: "{{ item }}"
         state: absent
       ignore_errors: true
       with_items: "{{ gateways.rest_apis | selectattr('name', 'in', api_names) | map(attribute='id') | list }}"

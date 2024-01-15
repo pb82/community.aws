@@ -15,7 +15,7 @@
         cidr_block: 20.0.0.0/16
         tags:
           Name: "{{ resource_prefix }}-vpc"
-          Description: "Created by ansible-test"
+          Description: Created by ansible-test
       register: vpc
 
     - name: set up testing internet gateway
@@ -50,7 +50,7 @@
         tags:
           created: "{{ resource_prefix }}-route"
         routes:
-          - dest: 0.0.0.0/0
+          - dest: "0.0.0.0/0"
             gateway_id: "{{ igw.gateway_id }}"
         subnets:
           - "{{ subnet_1.subnet.id }}"
@@ -66,11 +66,11 @@
           - proto: tcp
             from_port: 80
             to_port: 80
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
       register: sg
 
     - name: set up testing target group (type=instance)
@@ -83,7 +83,7 @@
         state: present
         target_type: instance
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
 
     - name: set up testing target group (type=instance) with UDP protocol
       elb_target_group:
@@ -94,8 +94,8 @@
         state: present
         target_type: instance
         tags:
-          Protocol: "UDP"
-          Description: "Created by {{ resource_prefix }}"
+          Protocol: UDP
+          Description: Created by {{ resource_prefix }}
 
     - name: set up testing target group for ALB (type=instance)
       elb_target_group:
@@ -107,7 +107,7 @@
         state: present
         target_type: instance
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
       register: result
 
     - name: set up testing target group for ALB (type=instance)
@@ -132,9 +132,9 @@
         state: present
         target_type: instance
         deregistration_delay_timeout: 60
-        deregistration_connection_termination: yes
+        deregistration_connection_termination: true
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
       register: result
 
     - name: set up testing target group for NLB (type=instance)
@@ -228,7 +228,7 @@
         modify_targets: true
         preserve_client_ip_enabled: false
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
       register: result
 
     - name: modify up testing target group for NLB (preserve_client_ip_enabled=false)
@@ -250,7 +250,7 @@
         modify_targets: true
         proxy_protocol_v2_enabled: true
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
       register: result
 
     - name: modify up testing target group for NLB (proxy_protocol_v2_enabled=true)
@@ -273,7 +273,7 @@
         preserve_client_ip_enabled: false
         proxy_protocol_v2_enabled: true
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
       register: result
 
     - name: (idempotence) modify up testing target group for NLB (preserve_client_ip_enabled=false and proxy_protocol_v2_enabled=true)
@@ -297,7 +297,7 @@
         state: present
         target_type: instance
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
       register: result
 
     - name: update target group atrributes
@@ -318,7 +318,7 @@
         state: present
         target_type: instance
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
       register: result
 
     - name: update target group atrributes - idempotence
@@ -525,7 +525,7 @@
         instance_ids:
           - "{{ instance_id }}"
         state: absent
-        wait: True
+        wait: true
       register: removed
       retries: 10
       until: removed is not failed

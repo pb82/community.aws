@@ -2,9 +2,9 @@
 - name: delete msk cluster (check mode)
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "absent"
+    state: absent
     wait: true
-  check_mode: yes
+  check_mode: true
   register: msk_cluster
 
 - name: assert that the msk cluster be changed
@@ -15,7 +15,7 @@
 - name: delete msk cluster
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "absent"
+    state: absent
     wait: true
   register: msk_cluster
 
@@ -27,7 +27,7 @@
 - name: delete msk cluster (idempotency)
   msk_cluster:
     name: "{{ msk_cluster_name }}"
-    state: "absent"
+    state: absent
     wait: true
   register: msk_cluster
 

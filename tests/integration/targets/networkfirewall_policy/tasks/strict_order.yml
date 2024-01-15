@@ -16,16 +16,16 @@
 # - Updating actions for stateless flows ('actions.yaml')
 
 - vars:
-    strict_policy_name: '{{ policy_name_prefix }}-StrictOrder'
-    managed_group_arn: 'arn:aws:network-firewall:{{ aws_region }}:aws-managed:stateful-rulegroup/BotNetCommandAndControlDomainsStrictOrder'
+    strict_policy_name: "{{ policy_name_prefix }}-StrictOrder"
+    managed_group_arn: arn:aws:network-firewall:{{ aws_region }}:aws-managed:stateful-rulegroup/BotNetCommandAndControlDomainsStrictOrder
   block:
     ###################################################################
     # Creation
-    - name: '(CHECK) S - Create a simple firewall policy with `strict` rule order'
-      check_mode: True
+    - name: (CHECK) S - Create a simple firewall policy with `strict` rule order
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
       register: strict_policy
 
@@ -50,13 +50,13 @@
           - '"firewall_policy_id" not in policy_metadata'
           - '"firewall_policy_status" not in policy_metadata'
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
 
-    - name: 'S - Create a simple firewall policy with `strict` rule order'
+    - name: S - Create a simple firewall policy with `strict` rule order
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
       register: strict_policy
 
@@ -87,21 +87,21 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
 
     - name: Save RuleGroup ID/ARN for later
       set_fact:
-        strict_policy_id: '{{ policy_metadata.firewall_policy_id }}'
-        strict_policy_arn: '{{ policy_metadata.firewall_policy_arn }}'
+        strict_policy_id: "{{ policy_metadata.firewall_policy_id }}"
+        strict_policy_arn: "{{ policy_metadata.firewall_policy_arn }}"
       vars:
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
 
-    - name: '(CHECK) S - Create a simple firewall policy with `strict` rule order (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Create a simple firewall policy with `strict` rule order (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
       register: strict_policy
 
@@ -132,13 +132,13 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
 
-    - name: 'S - Create a simple firewall policy with `strict` rule order (idempotency)'
+    - name: S - Create a simple firewall policy with `strict` rule order (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
       register: strict_policy
 
@@ -169,16 +169,16 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
 
     ###
 
-    - name: '(CHECK) S - Create a simple firewall policy with `strict` rule order - test reference by ARN (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Create a simple firewall policy with `strict` rule order - test reference by ARN (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        arn: '{{ strict_policy_arn }}'
-        stateful_rule_order: 'strict'
+        arn: "{{ strict_policy_arn }}"
+        stateful_rule_order: strict
         state: present
       register: strict_policy
 
@@ -209,13 +209,13 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
 
-    - name: 'S - Create a simple firewall policy with `strict` rule order (idempotency)'
+    - name: S - Create a simple firewall policy with `strict` rule order (idempotency)
       networkfirewall_policy:
-        arn: '{{ strict_policy_arn }}'
-        stateful_rule_order: 'strict'
+        arn: "{{ strict_policy_arn }}"
+        stateful_rule_order: strict
         state: present
       register: strict_policy
 
@@ -246,32 +246,32 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
 
     ###################################################################
     # Update Stateful Rule order
 
-    - name: '(CHECK) S - Update stateful rule order - DENIED'
-      check_mode: True
+    - name: (CHECK) S - Update stateful rule order - DENIED
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_order: default
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
           - strict_policy is failed
 
-    - name: 'S - Update stateful rule order - DENIED'
+    - name: S - Update stateful rule order - DENIED
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_order: default
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -280,13 +280,13 @@
     ###################################################################
     # Stateful Rule Group management
 
-    - name: '(CHECK) S - Add stateful rule group'
-      check_mode: True
+    - name: (CHECK) S - Add stateful rule group
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
+          - "{{ strict_group_names[0] }}"
       register: strict_policy
 
     - assert:
@@ -321,16 +321,16 @@
           - policy_data.stateful_rule_group_references | length == 1
           - strict_group_arns[0] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Add stateful rule group'
+    - name: S - Add stateful rule group
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
+          - "{{ strict_group_names[0] }}"
       register: strict_policy
 
     - assert:
@@ -362,18 +362,18 @@
           - policy_data.stateful_rule_group_references | length == 1
           - strict_group_arns[0] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Add stateful rule group (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Add stateful rule group (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
+          - "{{ strict_group_names[0] }}"
       register: strict_policy
 
     - assert:
@@ -405,17 +405,17 @@
           - policy_data.stateful_rule_group_references | length == 1
           - strict_group_arns[0] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Add stateful rule group (idempotency)'
+    - name: S - Add stateful rule group (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
+          - "{{ strict_group_names[0] }}"
       register: strict_policy
 
     - assert:
@@ -447,20 +447,20 @@
           - policy_data.stateful_rule_group_references | length == 1
           - strict_group_arns[0] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###
 
-    - name: '(CHECK) S - Add managed stateful rule group'
-      check_mode: True
+    - name: (CHECK) S - Add managed stateful rule group
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
-        - '{{ managed_group_arn }}'
+          - "{{ strict_group_names[0] }}"
+          - "{{ managed_group_arn }}"
       register: strict_policy
 
     - assert:
@@ -496,17 +496,17 @@
           - strict_group_arns[0] in stateful_rule_arns
           - managed_group_arn in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Add managed stateful rule group'
+    - name: S - Add managed stateful rule group
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
-        - '{{ managed_group_arn }}'
+          - "{{ strict_group_names[0] }}"
+          - "{{ managed_group_arn }}"
       register: strict_policy
 
     - assert:
@@ -539,19 +539,19 @@
           - strict_group_arns[0] in stateful_rule_arns
           - managed_group_arn in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Add managed stateful rule group (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Add managed stateful rule group (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
-        - '{{ managed_group_arn }}'
+          - "{{ strict_group_names[0] }}"
+          - "{{ managed_group_arn }}"
       register: strict_policy
 
     - assert:
@@ -584,18 +584,18 @@
           - strict_group_arns[0] in stateful_rule_arns
           - managed_group_arn in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Add managed stateful rule group (idempotency)'
+    - name: S - Add managed stateful rule group (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[0] }}'
-        - '{{ managed_group_arn }}'
+          - "{{ strict_group_names[0] }}"
+          - "{{ managed_group_arn }}"
       register: strict_policy
 
     - assert:
@@ -628,20 +628,20 @@
           - strict_group_arns[0] in stateful_rule_arns
           - managed_group_arn in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###
 
-    - name: '(CHECK) S - Replace stateful rule groups'
-      check_mode: True
+    - name: (CHECK) S - Replace stateful rule groups
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[1] }}'
-        - '{{ strict_group_arns[2] }}'
+          - "{{ strict_group_names[1] }}"
+          - "{{ strict_group_arns[2] }}"
       register: strict_policy
 
     - assert:
@@ -677,17 +677,17 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Replace stateful rule groups'
+    - name: S - Replace stateful rule groups
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[1] }}'
-        - '{{ strict_group_arns[2] }}'
+          - "{{ strict_group_names[1] }}"
+          - "{{ strict_group_arns[2] }}"
       register: strict_policy
 
     - assert:
@@ -720,19 +720,19 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Replace stateful rule groups (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Replace stateful rule groups (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[1] }}'
-        - '{{ strict_group_arns[2] }}'
+          - "{{ strict_group_names[1] }}"
+          - "{{ strict_group_arns[2] }}"
       register: strict_policy
 
     - assert:
@@ -765,18 +765,18 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Replace stateful rule groups (idempotency)'
+    - name: S - Replace stateful rule groups (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_names[1] }}'
-        - '{{ strict_group_arns[2] }}'
+          - "{{ strict_group_names[1] }}"
+          - "{{ strict_group_arns[2] }}"
       register: strict_policy
 
     - assert:
@@ -809,21 +809,21 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###
 
-    - name: '(CHECK) S - Replace stateful rule groups - ARN vs Name (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Replace stateful rule groups - ARN vs Name (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_arns[1] }}'
-        - '{{ strict_group_names[2] }}'
+          - "{{ strict_group_arns[1] }}"
+          - "{{ strict_group_names[2] }}"
       register: strict_policy
 
     - assert:
@@ -856,18 +856,18 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Replace stateful rule groups - ARN vs Name (idempotency)'
+    - name: S - Replace stateful rule groups - ARN vs Name (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_arns[1] }}'
-        - '{{ strict_group_names[2] }}'
+          - "{{ strict_group_arns[1] }}"
+          - "{{ strict_group_names[2] }}"
       register: strict_policy
 
     - assert:
@@ -900,21 +900,21 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###
 
-    - name: '(CHECK) S - Replace stateful rule groups - change order'
-      check_mode: True
+    - name: (CHECK) S - Replace stateful rule groups - change order
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_arns[2] }}'
-        - '{{ strict_group_arns[1] }}'
+          - "{{ strict_group_arns[2] }}"
+          - "{{ strict_group_arns[1] }}"
       register: strict_policy
 
     - assert:
@@ -947,18 +947,18 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Replace stateful rule groups - change order'
+    - name: S - Replace stateful rule groups - change order
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_arns[2] }}'
-        - '{{ strict_group_arns[1] }}'
+          - "{{ strict_group_arns[2] }}"
+          - "{{ strict_group_arns[1] }}"
       register: strict_policy
 
     - assert:
@@ -991,19 +991,19 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Replace stateful rule groups - change order (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Replace stateful rule groups - change order (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_arns[2] }}'
-        - '{{ strict_group_arns[1] }}'
+          - "{{ strict_group_arns[2] }}"
+          - "{{ strict_group_arns[1] }}"
       register: strict_policy
 
     - assert:
@@ -1036,18 +1036,18 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Replace stateful rule groups - change order (idempotency)'
+    - name: S - Replace stateful rule groups - change order (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
-        stateful_rule_order: 'strict'
+        name: "{{ strict_policy_name }}"
+        stateful_rule_order: strict
         state: present
         stateful_rule_groups:
-        - '{{ strict_group_arns[2] }}'
-        - '{{ strict_group_arns[1] }}'
+          - "{{ strict_group_arns[2] }}"
+          - "{{ strict_group_arns[1] }}"
       register: strict_policy
 
     - assert:
@@ -1080,20 +1080,20 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###################################################################
     # Update Stateless flow default actions (basic)
 
-    - name: '(CHECK) S - Update Stateless flow default action'
-      check_mode: True
+    - name: (CHECK) S - Update Stateless flow default action
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_default_actions:
-          - 'aws:drop'
+          - aws:drop
       register: strict_policy
 
     - assert:
@@ -1122,16 +1122,16 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Update Stateless flow default action'
+    - name: S - Update Stateless flow default action
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_default_actions:
-          - 'aws:drop'
+          - aws:drop
       register: strict_policy
 
     - assert:
@@ -1166,17 +1166,17 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Update Stateless flow default action (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Update Stateless flow default action (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_default_actions:
-          - 'aws:drop'
+          - aws:drop
       register: strict_policy
 
     - assert:
@@ -1209,16 +1209,16 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Update Stateless flow default action (idempotency)'
+    - name: S - Update Stateless flow default action (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_default_actions:
-          - 'aws:drop'
+          - aws:drop
       register: strict_policy
 
     - assert:
@@ -1251,19 +1251,19 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###
 
-    - name: '(CHECK) S - Update Stateless fragmented flow default action'
-      check_mode: True
+    - name: (CHECK) S - Update Stateless fragmented flow default action
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_fragment_default_actions:
-          - 'aws:pass'
+          - aws:pass
       register: strict_policy
 
     - assert:
@@ -1297,16 +1297,16 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Update Stateless fragmented flow default action'
+    - name: S - Update Stateless fragmented flow default action
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_fragment_default_actions:
-          - 'aws:pass'
+          - aws:pass
       register: strict_policy
 
     - assert:
@@ -1337,17 +1337,17 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Update Stateless fragmented flow default action (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Update Stateless fragmented flow default action (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_fragment_default_actions:
-          - 'aws:pass'
+          - aws:pass
       register: strict_policy
 
     - assert:
@@ -1380,16 +1380,16 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Update Stateless fragmented flow default action (idempotency)'
+    - name: S - Update Stateless fragmented flow default action (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateless_fragment_default_actions:
-          - 'aws:pass'
+          - aws:pass
       register: strict_policy
 
     - assert:
@@ -1422,22 +1422,22 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###################################################################
     # Update Stateful flow default actions
 
-    - name: '(CHECK) S - Set default action for stateful flows'
-      check_mode: True
+    - name: (CHECK) S - Set default action for stateful flows
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_strict'
+          - aws:drop_strict
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1471,18 +1471,18 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Set default action for stateful flows'
+    - name: S - Set default action for stateful flows
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_strict'
+          - aws:drop_strict
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1516,19 +1516,19 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Set default action for stateful flows (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Set default action for stateful flows (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_strict'
+          - aws:drop_strict
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1562,18 +1562,18 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Set default action for stateful flows (idempotency)'
+    - name: S - Set default action for stateful flows (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_strict'
+          - aws:drop_strict
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1607,23 +1607,23 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###
 
-    - name: '(CHECK) S - Set multiple default actions for stateful flows'
-      check_mode: True
+    - name: (CHECK) S - Set multiple default actions for stateful flows
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_established'
-          - 'aws:alert_strict'
-          - 'aws:alert_established'
+          - aws:drop_established
+          - aws:alert_strict
+          - aws:alert_established
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1657,20 +1657,20 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Set multiple default actions for stateful flows'
+    - name: S - Set multiple default actions for stateful flows
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_established'
-          - 'aws:alert_strict'
-          - 'aws:alert_established'
+          - aws:drop_established
+          - aws:alert_strict
+          - aws:alert_established
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1704,21 +1704,21 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: '(CHECK) S - Set multiple default actions for stateful flows (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Set multiple default actions for stateful flows (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_established'
-          - 'aws:alert_strict'
-          - 'aws:alert_established'
+          - aws:drop_established
+          - aws:alert_strict
+          - aws:alert_established
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1752,20 +1752,20 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
-    - name: 'S - Set multiple default actions for stateful flows (idempotency)'
+    - name: S - Set multiple default actions for stateful flows (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_established'
-          - 'aws:alert_strict'
-          - 'aws:alert_established'
+          - aws:drop_established
+          - aws:alert_strict
+          - aws:alert_established
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1799,38 +1799,38 @@
           - strict_group_arns[1] in stateful_rule_arns
           - strict_group_arns[2] in stateful_rule_arns
       vars:
-        policy_data: '{{ strict_policy.policy.policy }}'
-        policy_metadata: '{{ strict_policy.policy.policy_metadata }}'
+        policy_data: "{{ strict_policy.policy.policy }}"
+        policy_metadata: "{{ strict_policy.policy.policy_metadata }}"
         stateful_rule_arns: '{{ policy_data.stateful_rule_group_references | map(attribute="resource_arn") | list }}'
 
     ###
 
-    - name: '(CHECK) S - Set invalid default actions for stateful flows'
-      check_mode: True
+    - name: (CHECK) S - Set invalid default actions for stateful flows
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_established'
-          - 'aws:junk_action'
-          - 'aws:alert_established'
+          - aws:drop_established
+          - aws:junk_action
+          - aws:alert_established
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
           - strict_policy is failed
 
-    - name: 'S - Set invalid default actions for stateful flows'
+    - name: S - Set invalid default actions for stateful flows
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: present
         stateful_default_actions:
-          - 'aws:drop_established'
-          - 'aws:junk_action'
-          - 'aws:alert_established'
+          - aws:drop_established
+          - aws:junk_action
+          - aws:alert_established
       register: strict_policy
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1839,46 +1839,46 @@
     ###################################################################
     # Delete policy
 
-    - name: '(CHECK) S - Delete policy with strict order'
-      check_mode: True
+    - name: (CHECK) S - Delete policy with strict order
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: absent
-        wait: False
+        wait: false
       register: strict_policy
 
     - assert:
         that:
           - strict_policy is changed
 
-    - name: 'S - Delete policy with strict order'
+    - name: S - Delete policy with strict order
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: absent
-        wait: False
+        wait: false
       register: strict_policy
 
     - assert:
         that:
           - strict_policy is changed
 
-    - name: '(CHECK) S - Delete policy with strict order (idempotency)'
-      check_mode: True
+    - name: (CHECK) S - Delete policy with strict order (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: absent
-        wait: False
+        wait: false
       register: strict_policy
 
     - assert:
         that:
           - strict_policy is not changed
 
-    - name: 'S - Delete policy with strict order (idempotency)'
+    - name: S - Delete policy with strict order (idempotency)
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: absent
-        wait: False
+        wait: false
       register: strict_policy
 
     - assert:
@@ -1886,9 +1886,9 @@
           - strict_policy is not changed
 
   always:
-    - name: 'S - Cleanup firewall policy'
+    - name: S - Cleanup firewall policy
       networkfirewall_policy:
-        name: '{{ strict_policy_name }}'
+        name: "{{ strict_policy_name }}"
         state: absent
-        wait: False
-      ignore_errors: True
+        wait: false
+      ignore_errors: true

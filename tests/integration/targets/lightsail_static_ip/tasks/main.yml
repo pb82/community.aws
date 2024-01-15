@@ -1,14 +1,12 @@
 ---
-
 - module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
 
   block:
-
     # ==== Tests ===================================================
 
     - name: Create a new static IP
@@ -37,8 +35,8 @@
           - '"region_name" in result.static_ip.location'
 
     - set_fact:
-        lightsail_ip_arn: '{{ result.static_ip.arn }}'
-        lightsail_ip_address: '{{ result.static_ip.ip_address }}'
+        lightsail_ip_arn: "{{ result.static_ip.arn }}"
+        lightsail_ip_address: "{{ result.static_ip.ip_address }}"
 
     - name: Make sure create is idempotent
       lightsail_static_ip:
@@ -88,9 +86,8 @@
   # ==== Cleanup ====================================================
 
   always:
-
     - name: Cleanup - delete static IP
       lightsail_static_ip:
         name: "{{ static_ip_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

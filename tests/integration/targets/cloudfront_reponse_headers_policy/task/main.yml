@@ -1,14 +1,12 @@
 ---
-
 - name: Integration testing for the cloudfront_response_headers_policy module
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     - name: Create a simple header policy
       cloudfront_response_headers_policy:
         name: "{{ resource_prefix }}-my-header-policy"
@@ -49,8 +47,8 @@
         cors_config:
           access_control_allow_origins:
             items:
-              - 'https://foo.com/bar'
-              - 'https://bar.com/foo'
+              - https://foo.com/bar
+              - https://bar.com/foo
           access_control_allow_methods:
             items:
               - OPTIONS
@@ -63,7 +61,7 @@
             override: true
         custom_headers_config:
           items:
-            - { header: 'X-Test-Header', value: 'Foo', override: true }
+            - { header: X-Test-Header, value: Foo, override: true }
         state: present
       register: update_result
 
@@ -88,7 +86,6 @@
           - update_result.response_headers_policy is undefined
 
   always:
-
     - name: Ensure policy is deleted
       cloudfront_response_headers_policy:
         name: "{{ resource_prefix }}-my-header-policy"

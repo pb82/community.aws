@@ -1,32 +1,31 @@
 ---
 ## Task file for setup/teardown AWS resources for aws_ssm integration testing
-- name: 'aws_ssm connection plugin integration test resource creation'
+- name: aws_ssm connection plugin integration test resource creation
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     - name: get ARN of calling user
       aws_caller_info:
       register: aws_caller_info
 
     - name: setup connection argments fact
-      include_tasks: 'connection_args.yml'
+      include_tasks: connection_args.yml
 
     - name: Ensure IAM instance role exists
       iam_role:
-        name: "ansible-test-{{tiny_prefix}}-aws-ssm-role"
+        name: ansible-test-{{tiny_prefix}}-aws-ssm-role
         assume_role_policy_document: "{{ lookup('file','ec2-trust-policy.json') }}"
         state: present
-        create_instance_profile: yes
+        create_instance_profile: true
         managed_policy:
-        - AmazonSSMManagedInstanceCore
-        wait: True
+          - AmazonSSMManagedInstanceCore
+        wait: true
       register: role_output
 
     - name: Lookup AMI configuration
@@ -37,7 +36,7 @@
       ec2_ami_info:
         owners: '{{ ami_configuration.owner | default("amazon") }}'
         filters:
-          name: '{{ ami_configuration.name }}'
+          name: "{{ ami_configuration.name }}"
       register: ec2_amis
       when:
         - ami_configuration.name | default(False)
@@ -53,7 +52,7 @@
       vars:
         latest_ami: '{{ ec2_amis.images | default([]) | sort(attribute="creation_date") | last }}'
       set_fact:
-        latest_ami_id: '{{ ssm_amis | default(latest_ami.image_id) }}'
+        latest_ami_id: "{{ ssm_amis | default(latest_ami.image_id) }}"
 
     # (Local installation of the SSM **client** which is then used by the plugin)
     - name: Install Session Manager Client for Debian/Ubuntu
@@ -80,7 +79,7 @@
     - name: Create EC2 instance
       ec2_instance:
         instance_type: "{{ instance_type }}"
-        ebs_optimized: True
+        ebs_optimized: true
         image_id: "{{ latest_ami_id }}"
         wait: "yes"
         instance_role: "{{ role_output.iam_role.role_name }}"
@@ -88,11 +87,11 @@
         user_data: "{{ ami_configuration.user_data }}"
         state: running
         tags:
-          TestPrefix: '{{ resource_prefix }}'
+          TestPrefix: "{{ resource_prefix }}"
       register: instance_output
 
     - name: setup SSM document
-      include_tasks: 'ssm_document.yml'
+      include_tasks: ssm_document.yml
       when:
         - use_ssm_document | default(False)
 
@@ -103,7 +102,7 @@
       register: s3_output
 
     - name: setup encryption
-      include_tasks: 'encryption.yml'
+      include_tasks: encryption.yml
       when:
         - encrypted_bucket | default(False)
 
@@ -116,19 +115,19 @@
       template:
         dest: "{{ playbook_dir }}/aws-env-vars.sh"
         src: aws-env-vars.j2
-      no_log: yes
+      no_log: true
 
     - name: Create out boto3 config file'
       template:
         dest: "{{ playbook_dir }}/boto3_config"
-        src: "boto_config.j2"
+        src: boto_config.j2
 
   always:
     - name: Create EC2 Linux vars_to_delete.yml
       template:
         dest: "{{ playbook_dir }}/instance_vars_to_delete.yml"
         src: ec2_instance_vars_to_delete.yml.j2
-      ignore_errors: yes
+      ignore_errors: true
       when:
         - instance_output is successful
 
@@ -138,7 +137,7 @@
         src: iam_role_vars_to_delete.yml.j2
       when:
         - role_output is successful
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Create S3.yml
       template:
@@ -146,10 +145,10 @@
         src: s3_vars_to_delete.yml.j2
       when:
         - s3_output is successful
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Create SSM vars_to_delete.yml
       template:
         dest: "{{ playbook_dir }}/ssm_vars_to_delete.yml"
         src: ssm_vars_to_delete.yml.j2
-      ignore_errors: yes
+      ignore_errors: true

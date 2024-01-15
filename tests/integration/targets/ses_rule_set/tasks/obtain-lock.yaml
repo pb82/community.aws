@@ -1,3 +1,4 @@
+---
 # ============================================================
 # This file attempts to obtain a global lock (for a given
 # region / account combination.
@@ -58,20 +59,20 @@
   set_fact:
     lock_attempt_log_group_name: "{{ lock_log_group_prefix }}/{{ lock_process_id|default(resource_prefix) }}"
 
-  # Note the overwrite below to ensure that the creation time
-  # is upated. This is important as we calculate expiry relative
-  # the attempt creation.
-  #
-  # Because of this it's imporatnt that we delete the attempt
-  # if we don't get the lock. Otherwise we can get a deadlock
-  # where the stale atttempt from one process wins, but then
-  # because that process updates the creation date it doesn't
-  # consider its self to havewone.
+# Note the overwrite below to ensure that the creation time
+# is upated. This is important as we calculate expiry relative
+# the attempt creation.
+#
+# Because of this it's imporatnt that we delete the attempt
+# if we don't get the lock. Otherwise we can get a deadlock
+# where the stale atttempt from one process wins, but then
+# because that process updates the creation date it doesn't
+# consider its self to havewone.
 - name: Create Lock Attempt Log Group
   cloudwatchlogs_log_group:
     log_group_name: "{{ lock_attempt_log_group_name }}"
     state: present
-    overwrite: True
+    overwrite: true
   register: lock_attempt_log_group_result
 
 - name: Get Lock Attempt Lock Groups
@@ -96,18 +97,18 @@
   set_fact:
     won_lock: "{{ winning_lock_attempt.log_group_name == lock_attempt_log_group_name }}"
 
-  # Remove the lock attempt if we didn't get the lock. This prevents
-  # our stale lock attempt blocking another process from getting the lock.
-  # See more detailed comment above Create Lock Attempt Log Group
+# Remove the lock attempt if we didn't get the lock. This prevents
+# our stale lock attempt blocking another process from getting the lock.
+# See more detailed comment above Create Lock Attempt Log Group
 - name: Remove Failed Lock Attempt Log Group
   cloudwatchlogs_log_group:
     log_group_name: "{{ lock_attempt_log_group_name }}"
     state: absent
-  when: "not won_lock|bool"
+  when: not won_lock|bool
 
 - name: Delete Expired Lock Attempts
   cloudwatchlogs_log_group:
     log_group_name: "{{ item.log_group_name }}"
     state: absent
-  when: "won_lock|bool"
+  when: won_lock|bool
   loop: "{{ expired_lock_attempts }}"

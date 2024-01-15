@@ -7,38 +7,38 @@
 # - Setting RuleOrder
 #
 - vars:
-    strict_ro_group_name: '{{ group_name_prefix }}-StrictROGroup'
-    default_ro_group_name: '{{ group_name_prefix }}-DefaultROGroup'
-    stateful_group_name: '{{ group_name_prefix }}-StatefulGroup'
-    rule_one: 'pass tcp any any -> any any (sid:1000001;)'
+    strict_ro_group_name: "{{ group_name_prefix }}-StrictROGroup"
+    default_ro_group_name: "{{ group_name_prefix }}-DefaultROGroup"
+    stateful_group_name: "{{ group_name_prefix }}-StatefulGroup"
+    rule_one: pass tcp any any -> any any (sid:1000001;)
     ip_variable_one:
-        EXAMPLE_IP: '192.0.2.5'
+      EXAMPLE_IP: 192.0.2.5
     ip_variable_one_list:
-        EXAMPLE_IP: ['192.0.2.5']
+      EXAMPLE_IP: [192.0.2.5]
     ip_variable_two:
-        ANOTHER_EXAMPLE: ['198.51.100.13', '198.51.100.235', '203.0.113.0/24']
+      ANOTHER_EXAMPLE: [198.51.100.13, 198.51.100.235, 203.0.113.0/24]
     ip_variable_both:
-        EXAMPLE_IP: ['192.0.2.5']
-        ANOTHER_EXAMPLE: ['198.51.100.13', '198.51.100.235', '203.0.113.0/24']
+      EXAMPLE_IP: [192.0.2.5]
+      ANOTHER_EXAMPLE: [198.51.100.13, 198.51.100.235, 203.0.113.0/24]
     port_variable_one:
-        EXAMPLE_PORT: '22'
+      EXAMPLE_PORT: "22"
     port_variable_one_list:
-        EXAMPLE_PORT: ['22']
+      EXAMPLE_PORT: ["22"]
     port_variable_two:
-        ANOTHER_PORT: ['443', '8443']
+      ANOTHER_PORT: ["443", "8443"]
     port_variable_both:
-        EXAMPLE_PORT: ['22']
-        ANOTHER_PORT: ['443', '8443']
+      EXAMPLE_PORT: ["22"]
+      ANOTHER_PORT: ["443", "8443"]
   block:
     ###################################################################
     # Creation
 
-    - name: 'Create a Stateful Rule Group'
+    - name: Create a Stateful Rule Group
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         capacity: 100
-        rule_strings: '{{ rule_one }}'
+        rule_strings: "{{ rule_one }}"
       register: stateful_group
 
     - assert:
@@ -61,17 +61,17 @@
 
     - name: Save RuleGroup ID/ARN for later
       set_fact:
-        stateful_rule_group_id: '{{ stateful_group.rule_group.rule_group_metadata.rule_group_id }}'
-        stateful_rule_group_arn: '{{ stateful_group.rule_group.rule_group_metadata.rule_group_arn }}'
+        stateful_rule_group_id: "{{ stateful_group.rule_group.rule_group_metadata.rule_group_id }}"
+        stateful_rule_group_arn: "{{ stateful_group.rule_group.rule_group_metadata.rule_group_arn }}"
 
     ###################################################################
     # Update IP Variables
 
-    - name: '(CHECK) Add IP Variable'
+    - name: (CHECK) Add IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one }}"
       register: stateful_group
       check_mode: true
 
@@ -93,11 +93,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_one_list
 
-    - name: 'Add IP Variable'
+    - name: Add IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one }}"
       register: stateful_group
 
     - assert:
@@ -120,11 +120,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_one_list
 
-    - name: '(CHECK) Add IP Variable (idempotency)'
+    - name: (CHECK) Add IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one }}"
       register: stateful_group
       check_mode: true
 
@@ -146,11 +146,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_one_list
 
-    - name: 'Add IP Variable (idempotency)'
+    - name: Add IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one }}"
       register: stateful_group
 
     - assert:
@@ -173,11 +173,11 @@
 
     #####
 
-    - name: '(CHECK) Ensure IP Variable string/list equivalence (idempotency)'
+    - name: (CHECK) Ensure IP Variable string/list equivalence (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one_list }}"
       register: stateful_group
       check_mode: true
 
@@ -199,11 +199,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_one_list
 
-    - name: 'Ensure IP Variable string/list equivalence (idempotency)'
+    - name: Ensure IP Variable string/list equivalence (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one_list }}"
       register: stateful_group
 
     - assert:
@@ -226,11 +226,11 @@
 
     #####
 
-    - name: '(CHECK) Replace IP Variable'
+    - name: (CHECK) Replace IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_two }}"
         purge_ip_variables: true
       register: stateful_group
       check_mode: true
@@ -253,11 +253,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_two
 
-    - name: 'Replace IP Variable'
+    - name: Replace IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_two }}"
         purge_ip_variables: true
       register: stateful_group
 
@@ -281,11 +281,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_two
 
-    - name: '(CHECK) Replace IP Variable (idempotency)'
+    - name: (CHECK) Replace IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_two }}"
         purge_ip_variables: true
       register: stateful_group
       check_mode: true
@@ -308,11 +308,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_two
 
-    - name: 'Replace IP Variable (idempotency)'
+    - name: Replace IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_two }}"
         purge_ip_variables: true
       register: stateful_group
 
@@ -336,11 +336,11 @@
 
     #####
 
-    - name: '(CHECK) Add extra IP Variable'
+    - name: (CHECK) Add extra IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one_list }}"
         purge_ip_variables: false
       register: stateful_group
       check_mode: true
@@ -363,11 +363,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
 
-    - name: 'Add extra IP Variable'
+    - name: Add extra IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one_list }}"
         purge_ip_variables: false
       register: stateful_group
 
@@ -391,11 +391,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
 
-    - name: '(CHECK) Add extra IP Variable (idempotency)'
+    - name: (CHECK) Add extra IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one_list }}"
         purge_ip_variables: false
       register: stateful_group
       check_mode: true
@@ -418,11 +418,11 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
 
-    - name: 'Add extra IP Variable (idempotency)'
+    - name: Add extra IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        ip_variables: '{{ ip_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        ip_variables: "{{ ip_variable_one_list }}"
         purge_ip_variables: false
       register: stateful_group
 
@@ -447,11 +447,11 @@
     ###################################################################
     # Update Port Variables
 
-    - name: '(CHECK) Add IP Variable'
+    - name: (CHECK) Add IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one }}"
       register: stateful_group
       check_mode: true
 
@@ -475,11 +475,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_one_list
 
-    - name: 'Add IP Variable'
+    - name: Add IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one }}"
       register: stateful_group
 
     - assert:
@@ -504,11 +504,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_one_list
 
-    - name: '(CHECK) Add IP Variable (idempotency)'
+    - name: (CHECK) Add IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one }}"
       register: stateful_group
       check_mode: true
 
@@ -532,11 +532,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_one_list
 
-    - name: 'Add IP Variable (idempotency)'
+    - name: Add IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one }}"
       register: stateful_group
 
     - assert:
@@ -561,11 +561,11 @@
 
     #####
 
-    - name: '(CHECK) Ensure IP Variable string/list equivalence (idempotency)'
+    - name: (CHECK) Ensure IP Variable string/list equivalence (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one_list }}"
       register: stateful_group
       check_mode: true
 
@@ -589,11 +589,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_one_list
 
-    - name: 'Ensure IP Variable string/list equivalence (idempotency)'
+    - name: Ensure IP Variable string/list equivalence (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one_list }}"
       register: stateful_group
 
     - assert:
@@ -618,11 +618,11 @@
 
     #####
 
-    - name: '(CHECK) Replace IP Variable'
+    - name: (CHECK) Replace IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_two }}"
         purge_port_variables: true
       register: stateful_group
       check_mode: true
@@ -647,11 +647,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_two
 
-    - name: 'Replace IP Variable'
+    - name: Replace IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_two }}"
         purge_port_variables: true
       register: stateful_group
 
@@ -677,11 +677,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_two
 
-    - name: '(CHECK) Replace IP Variable (idempotency)'
+    - name: (CHECK) Replace IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_two }}"
         purge_port_variables: true
       register: stateful_group
       check_mode: true
@@ -706,11 +706,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_two
 
-    - name: 'Replace IP Variable (idempotency)'
+    - name: Replace IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_two }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_two }}"
         purge_port_variables: true
       register: stateful_group
 
@@ -736,11 +736,11 @@
 
     #####
 
-    - name: '(CHECK) Add extra IP Variable'
+    - name: (CHECK) Add extra IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one_list }}"
         purge_port_variables: false
       register: stateful_group
       check_mode: true
@@ -765,11 +765,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_both
 
-    - name: 'Add extra IP Variable'
+    - name: Add extra IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one_list }}"
         purge_port_variables: false
       register: stateful_group
 
@@ -795,11 +795,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_both
 
-    - name: '(CHECK) Add extra IP Variable (idempotency)'
+    - name: (CHECK) Add extra IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one_list }}"
         purge_port_variables: false
       register: stateful_group
       check_mode: true
@@ -824,11 +824,11 @@
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
           - stateful_group.rule_group.rule_group.rule_variables.port_sets == port_variable_both
 
-    - name: 'Add extra IP Variable (idempotency)'
+    - name: Add extra IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        port_variables: '{{ port_variable_one_list }}'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        port_variables: "{{ port_variable_one_list }}"
         purge_port_variables: false
       register: stateful_group
 
@@ -854,10 +854,10 @@
 
     #####
 
-    - name: '(CHECK) Remove Port Variable'
+    - name: (CHECK) Remove Port Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         port_variables: {}
       register: stateful_group
       check_mode: true
@@ -881,10 +881,10 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
 
-    - name: 'Remove Port Variable'
+    - name: Remove Port Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         port_variables: {}
       register: stateful_group
 
@@ -909,10 +909,10 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
 
-    - name: '(CHECK) Remove Port Variable (idempotency)'
+    - name: (CHECK) Remove Port Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         port_variables: {}
       register: stateful_group
       check_mode: true
@@ -936,10 +936,10 @@
           - '"ip_sets" in stateful_group.rule_group.rule_group.rule_variables'
           - stateful_group.rule_group.rule_group.rule_variables.ip_sets == ip_variable_both
 
-    - name: 'Remove Port Variable (idempotency)'
+    - name: Remove Port Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         port_variables: {}
       register: stateful_group
 
@@ -964,10 +964,10 @@
 
     #####
 
-    - name: '(CHECK) Remove IP Variable'
+    - name: (CHECK) Remove IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         ip_variables: {}
       register: stateful_group
       check_mode: true
@@ -990,10 +990,10 @@
           - '"port_sets" not in stateful_group.rule_group.rule_group.rule_variables'
           - '"ip_sets" not in stateful_group.rule_group.rule_group.rule_variables'
 
-    - name: 'Remove IP Variable'
+    - name: Remove IP Variable
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         ip_variables: {}
       register: stateful_group
 
@@ -1017,10 +1017,10 @@
           - '"port_sets" not in stateful_group.rule_group.rule_group.rule_variables'
           - '"ip_sets" not in stateful_group.rule_group.rule_group.rule_variables'
 
-    - name: '(CHECK) Remove IP Variable (idempotency)'
+    - name: (CHECK) Remove IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         ip_variables: {}
       register: stateful_group
       check_mode: true
@@ -1043,10 +1043,10 @@
           - '"port_sets" not in stateful_group.rule_group.rule_group.rule_variables'
           - '"ip_sets" not in stateful_group.rule_group.rule_group.rule_variables'
 
-    - name: 'Remove IP Variable (idempotency)'
+    - name: Remove IP Variable (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         ip_variables: {}
       register: stateful_group
 
@@ -1071,25 +1071,25 @@
     ###################################################################
     # Rule Order
 
-    - name: '(CHECK) Attempt to update the Default Rule Order'
+    - name: (CHECK) Attempt to update the Default Rule Order
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        rule_order: 'strict'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        rule_order: strict
       register: stateful_group
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
           - stateful_group is failed
 
-    - name: 'Attempt to update the Default Rule Order'
+    - name: Attempt to update the Default Rule Order
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        rule_order: 'strict'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        rule_order: strict
       register: stateful_group
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1097,13 +1097,13 @@
 
     #####
 
-    - name: '(CHECK) Attempt to update the Default Rule Order (idempotency)'
+    - name: (CHECK) Attempt to update the Default Rule Order (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        rule_order: 'default'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        rule_order: default
       register: stateful_group
-      ignore_errors: True
+      ignore_errors: true
 
     # Because the default rule order doesn't necessitate the setting of
     # RuleOptions, for 'default' the existence of statefule_rule_options (and specifically rule_order)
@@ -1113,13 +1113,13 @@
         that:
           - stateful_group is not changed
 
-    - name: 'Attempt to update the Default Rule Order (idempotency)'
+    - name: Attempt to update the Default Rule Order (idempotency)
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
-        rule_order: 'default'
+        name: "{{ stateful_group_name }}"
+        type: stateful
+        rule_order: default
       register: stateful_group
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1128,13 +1128,13 @@
     ###################################################################
     # Creation with 'strict' rule ordering
 
-    - name: '(CHECK) Create a Rule Group with strict order'
+    - name: (CHECK) Create a Rule Group with strict order
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
         capacity: 100
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
         rule_order: strict
       register: strict_group
       check_mode: true
@@ -1155,13 +1155,13 @@
           - '"rule_order" in strict_group.rule_group.rule_group.stateful_rule_options'
           - strict_group.rule_group.rule_group.stateful_rule_options.rule_order == 'STRICT_ORDER'
 
-    - name: 'Create a Rule Group with strict order'
+    - name: Create a Rule Group with strict order
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
         capacity: 100
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
         rule_order: strict
       register: strict_group
 
@@ -1187,16 +1187,16 @@
 
     - name: Save RuleGroup ID/ARN for later
       set_fact:
-        strict_rule_group_id: '{{ strict_group.rule_group.rule_group_metadata.rule_group_id }}'
-        strict_rule_group_arn: '{{ strict_group.rule_group.rule_group_metadata.rule_group_arn }}'
+        strict_rule_group_id: "{{ strict_group.rule_group.rule_group_metadata.rule_group_id }}"
+        strict_rule_group_arn: "{{ strict_group.rule_group.rule_group_metadata.rule_group_arn }}"
 
-    - name: '(CHECK) Create a Rule Group with strict order (idempotency)'
+    - name: (CHECK) Create a Rule Group with strict order (idempotency)
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
         capacity: 100
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
         rule_order: strict
       register: strict_group
       check_mode: true
@@ -1219,13 +1219,13 @@
           - '"rule_order" in strict_group.rule_group.rule_group.stateful_rule_options'
           - strict_group.rule_group.rule_group.stateful_rule_options.rule_order == 'STRICT_ORDER'
 
-    - name: 'Create a Rule Group with strict order (idempotency)'
+    - name: Create a Rule Group with strict order (idempotency)
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
         capacity: 100
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
         rule_order: strict
       register: strict_group
 
@@ -1250,25 +1250,25 @@
     ###################################################################
     # Rule Order
 
-    - name: '(CHECK) Attempt to update the Default Rule Order from strict'
+    - name: (CHECK) Attempt to update the Default Rule Order from strict
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
-        rule_order: 'default'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
+        rule_order: default
       register: strict_group
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
           - strict_group is failed
 
-    - name: 'Attempt to update the Default Rule Order from strict'
+    - name: Attempt to update the Default Rule Order from strict
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
-        rule_order: 'default'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
+        rule_order: default
       register: strict_group
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
@@ -1276,52 +1276,51 @@
 
     #####
 
-    - name: '(CHECK) Attempt to update the Default Rule Order from strict (idempotency)'
+    - name: (CHECK) Attempt to update the Default Rule Order from strict (idempotency)
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
-        rule_order: 'strict'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
+        rule_order: strict
       register: strict_group
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
           - strict_group is not changed
 
-    - name: 'Attempt to update the Default Rule Order from strict (idempotency)'
+    - name: Attempt to update the Default Rule Order from strict (idempotency)
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
-        rule_order: 'strict'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
+        rule_order: strict
       register: strict_group
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:
           - strict_group is not changed
-
 
     ###################################################################
     # Deletion
 
-    - name: 'Delete Stateful rule group'
+    - name: Delete Stateful rule group
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: stateful_group
 
     - assert:
         that:
           - stateful_group is changed
 
-    - name: 'Delete Strict rule group'
+    - name: Delete Strict rule group
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: strict_group
 
     - assert:
@@ -1329,18 +1328,18 @@
           - strict_group is changed
 
   always:
-    - name: '(always) Delete Stateful rule group'
+    - name: (always) Delete Stateful rule group
       networkfirewall_rule_group:
-        name: '{{ stateful_group_name }}'
-        type: 'stateful'
+        name: "{{ stateful_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       ignore_errors: true
 
-    - name: '(always) Delete Strict rule group'
+    - name: (always) Delete Strict rule group
       networkfirewall_rule_group:
-        name: '{{ strict_ro_group_name }}'
-        type: 'stateful'
+        name: "{{ strict_ro_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       ignore_errors: true

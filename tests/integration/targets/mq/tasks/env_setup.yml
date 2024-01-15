@@ -1,3 +1,4 @@
+---
 - name: Create VPC for use in testing
   ec2_vpc_net:
     name: "{{ vpc_name }}"

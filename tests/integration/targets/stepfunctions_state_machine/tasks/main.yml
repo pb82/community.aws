@@ -1,5 +1,4 @@
 ---
-
 - name: Integration test for AWS Step Function state machine module
   module_defaults:
     group/aws:
@@ -11,7 +10,6 @@
     - amazon.aws
 
   block:
-
     # ==== Setup ==================================================
 
     - name: Create IAM service role needed for Step Functions
@@ -41,7 +39,7 @@
           project: helloWorld
         state: present
       register: creation_check
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
@@ -76,7 +74,7 @@
           project: helloWorld
         state: present
       register: result
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
@@ -107,7 +105,7 @@
           differentTag: different_tag
         state: present
       register: update_check
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
@@ -135,12 +133,12 @@
         execution_input: "{}"
         state_machine_arn: "{{ creation_output.state_machine_arn }}"
       register: start_execution_output
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
           - start_execution_output.changed == True
-          - "start_execution_output.output == 'State machine execution would be started.'"
+          - start_execution_output.output == 'State machine execution would be started.'
 
     - name: Start execution of state machine
       stepfunctions_state_machine_execution:
@@ -161,12 +159,12 @@
         execution_input: "{}"
         state_machine_arn: "{{ creation_output.state_machine_arn }}"
       register: start_execution_output_idem_check
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
           - not start_execution_output_idem_check.changed
-          - "start_execution_output_idem_check.output == 'State machine execution already exists.'"
+          - start_execution_output_idem_check.output == 'State machine execution already exists.'
 
     - name: Start execution of state machine (check for idempotency)
       stepfunctions_state_machine_execution:
@@ -183,22 +181,22 @@
       stepfunctions_state_machine_execution:
         action: stop
         execution_arn: "{{ start_execution_output.execution_arn }}"
-        cause: "cause of the failure"
-        error: "error code of the failure"
+        cause: cause of the failure
+        error: error code of the failure
       register: stop_execution_output
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
           - stop_execution_output.changed
-          - "stop_execution_output.output == 'State machine execution would be stopped.'"
+          - stop_execution_output.output == 'State machine execution would be stopped.'
 
     - name: Stop execution of state machine
       stepfunctions_state_machine_execution:
         action: stop
         execution_arn: "{{ start_execution_output.execution_arn }}"
-        cause: "cause of the failure"
-        error: "error code of the failure"
+        cause: cause of the failure
+        error: error code of the failure
       register: stop_execution_output
 
     - assert:
@@ -210,8 +208,8 @@
       stepfunctions_state_machine_execution:
         action: stop
         execution_arn: "{{ start_execution_output.execution_arn }}"
-        cause: "cause of the failure"
-        error: "error code of the failure"
+        cause: cause of the failure
+        error: error code of the failure
       register: stop_execution_output
 
     - assert:
@@ -222,24 +220,24 @@
       stepfunctions_state_machine_execution:
         action: stop
         execution_arn: "{{ start_execution_output.execution_arn }}"
-        cause: "cause of the failure"
-        error: "error code of the failure"
+        cause: cause of the failure
+        error: error code of the failure
       register: stop_execution_output
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
           - not stop_execution_output.changed
-          - "stop_execution_output.output == 'State machine execution is not running.'"
+          - stop_execution_output.output == 'State machine execution is not running.'
 
     - name: Try stopping a non-running execution
       stepfunctions_state_machine_execution:
         action: stop
         execution_arn: "{{ start_execution_output.execution_arn }}"
-        cause: "cause of the failure"
-        error: "error code of the failure"
+        cause: cause of the failure
+        error: error code of the failure
       register: stop_execution_output
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
@@ -260,7 +258,7 @@
         name: "{{ state_machine_name }}"
         state: absent
       register: deletion_check
-      check_mode: yes
+      check_mode: true
 
     - assert:
         that:
@@ -280,7 +278,7 @@
 
     - name: Non-existent state machine is absent
       stepfunctions_state_machine:
-        name: "non_existing_state_machine"
+        name: non_existing_state_machine
         state: absent
       register: result
 
@@ -291,7 +289,6 @@
   # ==== Cleanup ====================================================
 
   always:
-
     - name: Cleanup - delete state machine
       stepfunctions_state_machine:
         name: "{{ state_machine_name }}"

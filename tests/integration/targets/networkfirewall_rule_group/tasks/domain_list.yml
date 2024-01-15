@@ -9,20 +9,20 @@
 # -- Action
 # -- Source IPs
 - vars:
-    domains_group_name: '{{ group_name_prefix }}-DomainListGroup'
+    domains_group_name: "{{ group_name_prefix }}-DomainListGroup"
   block:
     ###################################################################
     # Creation
 
     # Bare minimum rule, wouldn't actually check anything since neither HTTP not
     # HTTPS traffic is being inspected
-    - name: '(CHECK) Create a Domain List Rule Group'
+    - name: (CHECK) Create a Domain List Rule Group
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         capacity: 50
         domain_list:
-          domain_names: 'example.com'
+          domain_names: example.com
           action: allow
       register: domain_group
       check_mode: true
@@ -48,13 +48,13 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com']
 
-    - name: 'Create a Domain List Rule Group'
+    - name: Create a Domain List Rule Group
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         capacity: 50
         domain_list:
-          domain_names: 'example.com'
+          domain_names: example.com
           action: allow
       register: domain_group
 
@@ -85,16 +85,16 @@
 
     - name: Save RuleGroup ID/ARN for later
       set_fact:
-        minimal_rule_group_id: '{{ domain_group.rule_group.rule_group_metadata.rule_group_id }}'
-        minimal_rule_group_arn: '{{ domain_group.rule_group.rule_group_metadata.rule_group_arn }}'
+        minimal_rule_group_id: "{{ domain_group.rule_group.rule_group_metadata.rule_group_id }}"
+        minimal_rule_group_arn: "{{ domain_group.rule_group.rule_group_metadata.rule_group_arn }}"
 
-    - name: '(CHECK) Create a Domain List Rule Group (idempotency)'
+    - name: (CHECK) Create a Domain List Rule Group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         capacity: 50
         domain_list:
-          domain_names: 'example.com'
+          domain_names: example.com
           action: allow
       register: domain_group
       check_mode: true
@@ -122,13 +122,13 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com']
 
-    - name: 'Create a Domain List Rule Group (idempotency)'
+    - name: Create a Domain List Rule Group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         capacity: 50
         domain_list:
-          domain_names: 'example.com'
+          domain_names: example.com
           action: allow
       register: domain_group
 
@@ -157,14 +157,14 @@
 
     #####
 
-    - name: '(CHECK) Create a Domain List Rule Group - List instead of string (idempotency)'
+    - name: (CHECK) Create a Domain List Rule Group - List instead of string (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         capacity: 50
         domain_list:
           domain_names:
-            - 'example.com'
+            - example.com
           action: allow
       register: domain_group
       check_mode: true
@@ -192,14 +192,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com']
 
-    - name: 'Create a Domain List Rule Group List - instead of string (idempotency)'
+    - name: Create a Domain List Rule Group List - instead of string (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         capacity: 50
         domain_list:
           domain_names:
-            - 'example.com'
+            - example.com
           action: allow
       register: domain_group
 
@@ -225,19 +225,18 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.generated_rules_type == 'ALLOWLIST'
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com']
-
 
     ###################################################################
     # Update
 
-    - name: '(CHECK) Update a Domain List Rule Group with new domains'
+    - name: (CHECK) Update a Domain List Rule Group with new domains
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: allow
       register: domain_group
       check_mode: true
@@ -265,14 +264,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with new domains'
+    - name: Update a Domain List Rule Group with new domains
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: allow
       register: domain_group
 
@@ -301,14 +300,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: '(CHECK) Update a Domain List Rule Group with new domains (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with new domains (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: allow
       register: domain_group
       check_mode: true
@@ -336,14 +335,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with new domains (idempotency)'
+    - name: Update a Domain List Rule Group with new domains (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: allow
       register: domain_group
 
@@ -372,14 +371,14 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with new action'
+    - name: (CHECK) Update a Domain List Rule Group with new action
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
       check_mode: true
@@ -407,14 +406,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with new action'
+    - name: Update a Domain List Rule Group with new action
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
 
@@ -443,14 +442,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: '(CHECK) Update a Domain List Rule Group with new action (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with new action (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
       check_mode: true
@@ -478,14 +477,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with new action (idempotency)'
+    - name: Update a Domain List Rule Group with new action (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
 
@@ -514,14 +513,14 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with HTTP only'
+    - name: (CHECK) Update a Domain List Rule Group with HTTP only
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
       register: domain_group
@@ -550,14 +549,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['HTTP_HOST']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with HTTP only'
+    - name: Update a Domain List Rule Group with HTTP only
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
       register: domain_group
@@ -587,14 +586,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['HTTP_HOST']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: '(CHECK) Update a Domain List Rule Group with HTTP only (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with HTTP only (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
       register: domain_group
@@ -623,14 +622,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['HTTP_HOST']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with HTTP only (idempotency)'
+    - name: Update a Domain List Rule Group with HTTP only (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
       register: domain_group
@@ -660,14 +659,14 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with HTTPS only'
+    - name: (CHECK) Update a Domain List Rule Group with HTTPS only
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_https: true
       register: domain_group
@@ -696,14 +695,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['TLS_SNI']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with HTTPS only'
+    - name: Update a Domain List Rule Group with HTTPS only
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_https: true
       register: domain_group
@@ -733,14 +732,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['TLS_SNI']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: '(CHECK) Update a Domain List Rule Group with HTTPS only (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with HTTPS only (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_https: true
       register: domain_group
@@ -769,14 +768,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['TLS_SNI']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with HTTPS only (idempotency)'
+    - name: Update a Domain List Rule Group with HTTPS only (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_https: true
       register: domain_group
@@ -806,14 +805,14 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with HTTP and HTTPS'
+    - name: (CHECK) Update a Domain List Rule Group with HTTP and HTTPS
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -843,14 +842,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['HTTP_HOST', 'TLS_SNI']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with HTTP and HTTPS'
+    - name: Update a Domain List Rule Group with HTTP and HTTPS
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -881,14 +880,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['HTTP_HOST', 'TLS_SNI']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: '(CHECK) Update a Domain List Rule Group with HTTP and HTTPS (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with HTTP and HTTPS (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -918,14 +917,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == ['HTTP_HOST', 'TLS_SNI']
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with HTTP and HTTPS (idempotency)'
+    - name: Update a Domain List Rule Group with HTTP and HTTPS (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -956,18 +955,18 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with Source IP list'
+    - name: (CHECK) Update a Domain List Rule Group with Source IP list
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
-          source_ips: '203.0.113.0/24'
+          source_ips: 203.0.113.0/24
       register: domain_group
       check_mode: true
 
@@ -998,18 +997,18 @@
           - '"HOME_NET" in domain_group.rule_group.rule_group.rule_variables.ip_sets'
           - domain_group.rule_group.rule_group.rule_variables.ip_sets['HOME_NET'] == ['203.0.113.0/24']
 
-    - name: 'Update a Domain List Rule Group with Source IP list'
+    - name: Update a Domain List Rule Group with Source IP list
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
-          source_ips: '203.0.113.0/24'
+          source_ips: 203.0.113.0/24
       register: domain_group
 
     - assert:
@@ -1041,18 +1040,18 @@
           - '"HOME_NET" in domain_group.rule_group.rule_group.rule_variables.ip_sets'
           - domain_group.rule_group.rule_group.rule_variables.ip_sets['HOME_NET'] == ['203.0.113.0/24']
 
-    - name: '(CHECK) Update a Domain List Rule Group with Source IP list (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with Source IP list (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
-          source_ips: '203.0.113.0/24'
+          source_ips: 203.0.113.0/24
       register: domain_group
       check_mode: true
 
@@ -1083,18 +1082,18 @@
           - '"HOME_NET" in domain_group.rule_group.rule_group.rule_variables.ip_sets'
           - domain_group.rule_group.rule_group.rule_variables.ip_sets['HOME_NET'] == ['203.0.113.0/24']
 
-    - name: 'Update a Domain List Rule Group with Source IP list (idempotency)'
+    - name: Update a Domain List Rule Group with Source IP list (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
-          source_ips: '203.0.113.0/24'
+          source_ips: 203.0.113.0/24
       register: domain_group
 
     - assert:
@@ -1126,20 +1125,20 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with updated Source IP list'
+    - name: (CHECK) Update a Domain List Rule Group with updated Source IP list
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
           source_ips:
-            - '203.0.113.0/24'
-            - '198.51.100.248'
+            - 203.0.113.0/24
+            - 198.51.100.248
       register: domain_group
       check_mode: true
 
@@ -1170,20 +1169,20 @@
           - '"HOME_NET" in domain_group.rule_group.rule_group.rule_variables.ip_sets'
           - domain_group.rule_group.rule_group.rule_variables.ip_sets['HOME_NET'] == ['203.0.113.0/24', '198.51.100.248']
 
-    - name: 'Update a Domain List Rule Group with updated Source IP list'
+    - name: Update a Domain List Rule Group with updated Source IP list
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
           source_ips:
-            - '203.0.113.0/24'
-            - '198.51.100.248'
+            - 203.0.113.0/24
+            - 198.51.100.248
       register: domain_group
 
     - assert:
@@ -1215,20 +1214,20 @@
           - '"HOME_NET" in domain_group.rule_group.rule_group.rule_variables.ip_sets'
           - domain_group.rule_group.rule_group.rule_variables.ip_sets['HOME_NET'] == ['203.0.113.0/24', '198.51.100.248']
 
-    - name: '(CHECK) Update a Domain List Rule Group with updated Source IP list (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with updated Source IP list (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
           source_ips:
-            - '203.0.113.0/24'
-            - '198.51.100.248'
+            - 203.0.113.0/24
+            - 198.51.100.248
       register: domain_group
       check_mode: true
 
@@ -1259,20 +1258,20 @@
           - '"HOME_NET" in domain_group.rule_group.rule_group.rule_variables.ip_sets'
           - domain_group.rule_group.rule_group.rule_variables.ip_sets['HOME_NET'] == ['203.0.113.0/24', '198.51.100.248']
 
-    - name: 'Update a Domain List Rule Group with updated Source IP list (idempotency)'
+    - name: Update a Domain List Rule Group with updated Source IP list (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
           source_ips:
-            - '203.0.113.0/24'
-            - '198.51.100.248'
+            - 203.0.113.0/24
+            - 198.51.100.248
       register: domain_group
 
     - assert:
@@ -1304,14 +1303,14 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with removed Source IP list'
+    - name: (CHECK) Update a Domain List Rule Group with removed Source IP list
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -1343,14 +1342,14 @@
           - '"rule_variables" in domain_group.rule_group.rule_group'
           - domain_group.rule_group.rule_group.rule_variables == {}
 
-    - name: 'Update a Domain List Rule Group with removed Source IP list'
+    - name: Update a Domain List Rule Group with removed Source IP list
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -1383,14 +1382,14 @@
           - '"rule_variables" in domain_group.rule_group.rule_group'
           - domain_group.rule_group.rule_group.rule_variables == {}
 
-    - name: '(CHECK) Update a Domain List Rule Group with removed Source IP list (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with removed Source IP list (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -1422,14 +1421,14 @@
           - '"rule_variables" in domain_group.rule_group.rule_group'
           - domain_group.rule_group.rule_group.rule_variables == {}
 
-    - name: 'Update a Domain List Rule Group with removed Source IP list (idempotency)'
+    - name: Update a Domain List Rule Group with removed Source IP list (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
           filter_http: true
           filter_https: true
@@ -1462,14 +1461,14 @@
 
     #####
 
-    - name: '(CHECK) Update a Domain List Rule Group with no protocols'
+    - name: (CHECK) Update a Domain List Rule Group with no protocols
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
       check_mode: true
@@ -1497,14 +1496,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with no protocols'
+    - name: Update a Domain List Rule Group with no protocols
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
 
@@ -1533,14 +1532,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: '(CHECK) Update a Domain List Rule Group with no protocols (idempotency)'
+    - name: (CHECK) Update a Domain List Rule Group with no protocols (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
       check_mode: true
@@ -1568,14 +1567,14 @@
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.target_types == []
           - domain_group.rule_group.rule_group.rules_source.rules_source_list.targets == ['example.com', '.example.net']
 
-    - name: 'Update a Domain List Rule Group with no protocols (idempotency)'
+    - name: Update a Domain List Rule Group with no protocols (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         domain_list:
           domain_names:
-          - 'example.com'
-          - '.example.net'
+            - example.com
+            - .example.net
           action: deny
       register: domain_group
 
@@ -1605,10 +1604,10 @@
     ###################################################################
     # Deletion
 
-    - name: '(CHECK) Delete Domain List rule group'
+    - name: (CHECK) Delete Domain List rule group
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         state: absent
       register: domain_group
       check_mode: true
@@ -1617,10 +1616,10 @@
         that:
           - domain_group is changed
 
-    - name: 'Delete Domain List rule group'
+    - name: Delete Domain List rule group
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         state: absent
       register: domain_group
 
@@ -1630,12 +1629,12 @@
 
     # The Rule Group may still exist in a "DELETING" state, we should still
     # return not changed
-    - name: 'Delete Domain List rule group (idempotency)'
+    - name: Delete Domain List rule group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: domain_group
       check_mode: true
 
@@ -1643,12 +1642,12 @@
         that:
           - domain_group is not changed
 
-    - name: '(CHECK) Delete Domain List rule group (idempotency)'
+    - name: (CHECK) Delete Domain List rule group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: domain_group
 
     - assert:
@@ -1656,10 +1655,10 @@
           - domain_group is not changed
 
   always:
-    - name: '(always) Delete Domain List rule group'
+    - name: (always) Delete Domain List rule group
       networkfirewall_rule_group:
-        name: '{{ domains_group_name }}'
-        type: 'stateful'
+        name: "{{ domains_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       ignore_errors: true

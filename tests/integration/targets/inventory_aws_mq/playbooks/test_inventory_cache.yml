@@ -1,13 +1,13 @@
 ---
 - hosts: 127.0.0.1
   connection: local
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: assert cache was used to populate inventory
       assert:
         that:
           - "'aws_mq' in groups"
-          - "groups.aws_mq | length == 1"
+          - groups.aws_mq | length == 1
 
     - meta: refresh_inventory
 
@@ -15,4 +15,4 @@
       assert:
         that:
           - "'aws_mq' in groups"
-          - "not groups.aws_mq"
+          - not groups.aws_mq

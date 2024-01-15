@@ -11,36 +11,36 @@
 # rule itself
 #
 - vars:
-    minimal_group_name: '{{ group_name_prefix }}-MinimalGroup'
-    missing_group_name: '{{ group_name_prefix }}-MissingGroup'
+    minimal_group_name: "{{ group_name_prefix }}-MinimalGroup"
+    missing_group_name: "{{ group_name_prefix }}-MissingGroup"
     first_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
     second_tags:
-      'New Key with Spaces': Value with spaces
+      New Key with Spaces: Value with spaces
       NewCamelCaseKey: CamelCaseValue
       newPascalCaseKey: pascalCaseValue
       new_snake_case_key: snake_case_value
     third_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
-      'New Key with Spaces': Updated Value with spaces
+      New Key with Spaces: Updated Value with spaces
     final_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
-      'New Key with Spaces': Updated Value with spaces
+      New Key with Spaces: Updated Value with spaces
       NewCamelCaseKey: CamelCaseValue
       newPascalCaseKey: pascalCaseValue
       new_snake_case_key: snake_case_value
   block:
     # Test basic functionality of the modules
-    - name: 'Fetch all account rule groups'
+    - name: Fetch all account rule groups
       networkfirewall_rule_group_info: {}
       register: account_rules_info
 
@@ -50,10 +50,10 @@
           - '"rule_groups" in account_rules_info'
           # We've not created anything yet, so there's no guarantee anything will be here
 
-    - name: 'Fetch non existent rule groups'
+    - name: Fetch non existent rule groups
       networkfirewall_rule_group_info:
-        name: '{{ minimal_group_name }}-Missing'
-        rule_type: 'stateful'
+        name: "{{ minimal_group_name }}-Missing"
+        rule_type: stateful
       register: account_rules_info
 
     - assert:
@@ -65,15 +65,15 @@
     # Creation
 
     # The simplest form of rule group
-    - name: '(CHECK) Create a Rule Group with minimal settings'
+    - name: (CHECK) Create a Rule Group with minimal settings
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         # Needed for creation
         capacity: 100
         # Needed for creation - We'll test manipulating them later
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
       register: minimal_group
       check_mode: true
 
@@ -91,15 +91,15 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_name == minimal_group_name
 
     # The simplest form of rule group
-    - name: 'Create a Rule Group with minimal settings'
+    - name: Create a Rule Group with minimal settings
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         # Needed for creation
         capacity: 100
         # Needed for creation - We'll test manipulating them later
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
       register: minimal_group
 
     - assert:
@@ -121,13 +121,13 @@
 
     - name: Save RuleGroup ID/ARN for later
       set_fact:
-        minimal_rule_group_id: '{{ minimal_group.rule_group.rule_group_metadata.rule_group_id }}'
-        minimal_rule_group_arn: '{{ minimal_group.rule_group.rule_group_metadata.rule_group_arn }}'
+        minimal_rule_group_id: "{{ minimal_group.rule_group.rule_group_metadata.rule_group_id }}"
+        minimal_rule_group_arn: "{{ minimal_group.rule_group.rule_group_metadata.rule_group_arn }}"
 
-    - name: '(CHECK) Create a Rule Group with minimal settings (idempotency)'
+    - name: (CHECK) Create a Rule Group with minimal settings (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         capacity: 100
       register: minimal_group
       check_mode: true
@@ -147,10 +147,10 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_arn == minimal_rule_group_arn
           - minimal_group.rule_group.rule_group_metadata.rule_group_id == minimal_rule_group_id
 
-    - name: 'Create a Rule Group with minimal settings (idempotency)'
+    - name: Create a Rule Group with minimal settings (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         capacity: 100
       register: minimal_group
 
@@ -173,10 +173,10 @@
     # Capacity
 
     # Capacity can't be changed after creation
-    - name: '(CHECK) Attempt to change capacity'
+    - name: (CHECK) Attempt to change capacity
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         capacity: 200
       register: minimal_group
       ignore_errors: true
@@ -186,10 +186,10 @@
         that:
           - minimal_group is failed
 
-    - name: 'Attempt to change capacity'
+    - name: Attempt to change capacity
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         capacity: 200
       register: minimal_group
       ignore_errors: true
@@ -201,11 +201,11 @@
     ###################################################################
     # Description
 
-    - name: '(CHECK) Add a description'
+    - name: (CHECK) Add a description
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Example Description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Example Description
       register: minimal_group
       check_mode: true
 
@@ -225,11 +225,11 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_id == minimal_rule_group_id
           - minimal_group.rule_group.rule_group_metadata.description == 'Example Description'
 
-    - name: 'Add a description'
+    - name: Add a description
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Example Description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Example Description
       register: minimal_group
 
     - assert:
@@ -248,11 +248,11 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_id == minimal_rule_group_id
           - minimal_group.rule_group.rule_group_metadata.description == 'Example Description'
 
-    - name: '(CHECK) Add a description (idempotency)'
+    - name: (CHECK) Add a description (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Example Description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Example Description
       register: minimal_group
       check_mode: true
 
@@ -272,11 +272,11 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_id == minimal_rule_group_id
           - minimal_group.rule_group.rule_group_metadata.description == 'Example Description'
 
-    - name: 'Add a description (idempotency)'
+    - name: Add a description (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Example Description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Example Description
       register: minimal_group
 
     - assert:
@@ -297,11 +297,11 @@
 
     #####
 
-    - name: '(CHECK) Update a description'
+    - name: (CHECK) Update a description
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Updated description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Updated description
       register: minimal_group
       check_mode: true
 
@@ -321,11 +321,11 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_id == minimal_rule_group_id
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
 
-    - name: 'Update a description'
+    - name: Update a description
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Updated description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Updated description
       register: minimal_group
 
     - assert:
@@ -344,11 +344,11 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_id == minimal_rule_group_id
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
 
-    - name: '(CHECK) Update a description (idempotency)'
+    - name: (CHECK) Update a description (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Updated description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Updated description
       register: minimal_group
       check_mode: true
 
@@ -368,11 +368,11 @@
           - minimal_group.rule_group.rule_group_metadata.rule_group_id == minimal_rule_group_id
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
 
-    - name: 'Update a description (idempotency)'
+    - name: Update a description (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        description: 'Updated description'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        description: Updated description
       register: minimal_group
 
     - assert:
@@ -394,11 +394,11 @@
     ###################################################################
     # Tags
 
-    - name: '(CHECK) Tag Rule Group'
+    - name: (CHECK) Tag Rule Group
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ first_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ first_tags }}"
       register: minimal_group
       check_mode: true
 
@@ -420,11 +420,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == first_tags
 
-    - name: 'Tag Rule Group'
+    - name: Tag Rule Group
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ first_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ first_tags }}"
       register: minimal_group
 
     - assert:
@@ -444,11 +444,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == first_tags
 
-    - name: '(CHECK) Tag Rule Group (idempotency)'
+    - name: (CHECK) Tag Rule Group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ first_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ first_tags }}"
       register: minimal_group
       check_mode: true
 
@@ -469,11 +469,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == first_tags
 
-    - name: 'Tag Rule Group (idempotency)'
+    - name: Tag Rule Group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ first_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ first_tags }}"
       register: minimal_group
 
     - assert:
@@ -495,11 +495,11 @@
 
     #####
 
-    - name: '(CHECK) Update tags with purge'
+    - name: (CHECK) Update tags with purge
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ second_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ second_tags }}"
       register: minimal_group
       check_mode: true
 
@@ -521,11 +521,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == second_tags
 
-    - name: 'Update tags with purge'
+    - name: Update tags with purge
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ second_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ second_tags }}"
       register: minimal_group
 
     - assert:
@@ -545,11 +545,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == second_tags
 
-    - name: '(CHECK) Update tags with purge (idempotency)'
+    - name: (CHECK) Update tags with purge (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ second_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ second_tags }}"
       register: minimal_group
       check_mode: true
 
@@ -570,11 +570,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == second_tags
 
-    - name: 'Update tags with purge (idempotency)'
+    - name: Update tags with purge (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ second_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ second_tags }}"
       register: minimal_group
 
     - assert:
@@ -596,11 +596,11 @@
 
     #####
 
-    - name: '(CHECK) Update tags with no purge'
+    - name: (CHECK) Update tags with no purge
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ third_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ third_tags }}"
         purge_tags: false
       register: minimal_group
       check_mode: true
@@ -623,11 +623,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == final_tags
 
-    - name: 'Update tags with no purge'
+    - name: Update tags with no purge
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ third_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ third_tags }}"
         purge_tags: false
       register: minimal_group
 
@@ -648,11 +648,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == final_tags
 
-    - name: '(CHECK) Update tags with no purge (idempotency)'
+    - name: (CHECK) Update tags with no purge (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ third_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ third_tags }}"
         purge_tags: false
       register: minimal_group
       check_mode: true
@@ -674,11 +674,11 @@
           - minimal_group.rule_group.rule_group_metadata.description == 'Updated description'
           - minimal_group.rule_group.rule_group_metadata.tags == final_tags
 
-    - name: 'Update tags with no purge (idempotency)'
+    - name: Update tags with no purge (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
-        tags: '{{ third_tags }}'
+        name: "{{ minimal_group_name }}"
+        type: stateful
+        tags: "{{ third_tags }}"
         purge_tags: false
       register: minimal_group
 
@@ -702,12 +702,12 @@
     ###################################################################
     # Deletion
 
-    - name: '(CHECK) Delete minimal rule group'
+    - name: (CHECK) Delete minimal rule group
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: minimal_group
       check_mode: true
 
@@ -715,12 +715,12 @@
         that:
           - minimal_group is changed
 
-    - name: 'Delete minimal rule group'
+    - name: Delete minimal rule group
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: minimal_group
 
     - assert:
@@ -729,12 +729,12 @@
 
     # The Rule Group may still exist in a "DELETING" state, we should still
     # return not changed
-    - name: 'Delete minimal rule group (idempotency)'
+    - name: Delete minimal rule group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: minimal_group
       check_mode: true
 
@@ -742,12 +742,12 @@
         that:
           - minimal_group is not changed
 
-    - name: '(CHECK) Delete minimal rule group (idempotency)'
+    - name: (CHECK) Delete minimal rule group (idempotency)
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       register: minimal_group
 
     - assert:
@@ -755,10 +755,10 @@
           - minimal_group is not changed
 
     #####
-    - name: '(CHECK) Delete missing rule group'
+    - name: (CHECK) Delete missing rule group
       networkfirewall_rule_group:
-        name: '{{ missing_group_name }}'
-        type: 'stateful'
+        name: "{{ missing_group_name }}"
+        type: stateful
         state: absent
       register: missing_group
       check_mode: true
@@ -767,10 +767,10 @@
         that:
           - missing_group is not changed
 
-    - name: 'Delete missing rule group'
+    - name: Delete missing rule group
       networkfirewall_rule_group:
-        name: '{{ missing_group_name }}'
-        type: 'stateful'
+        name: "{{ missing_group_name }}"
+        type: stateful
         state: absent
 
     - assert:
@@ -778,10 +778,10 @@
           - missing_group is not changed
 
   always:
-    - name: '(always) Delete minimal rule group'
+    - name: (always) Delete minimal rule group
       networkfirewall_rule_group:
-        name: '{{ minimal_group_name }}'
-        type: 'stateful'
+        name: "{{ minimal_group_name }}"
+        type: stateful
         state: absent
-        wait: False
+        wait: false
       ignore_errors: true

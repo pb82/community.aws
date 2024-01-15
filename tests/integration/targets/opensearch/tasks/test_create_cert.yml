@@ -1,3 +1,4 @@
+---
 - name: Create temporary directory
   ansible.builtin.tempfile:
     state: directory
@@ -5,25 +6,25 @@
   register: tempdir_1
 - name: Generate private key
   community.crypto.openssl_privatekey:
-    path: '{{ tempdir_1.path }}/rsa-private-key.pem'
+    path: "{{ tempdir_1.path }}/rsa-private-key.pem"
     type: RSA
     size: 2048
 - name: Generate an OpenSSL Certificate Signing Request for own certs
   community.crypto.openssl_csr:
-    path: '{{ tempdir_1.path }}/rsa-csr.pem'
-    privatekey_path: '{{ tempdir_1.path }}/rsa-private-key.pem'
-    common_name: 'opensearch.ansible-integ-test.com'
+    path: "{{ tempdir_1.path }}/rsa-csr.pem"
+    privatekey_path: "{{ tempdir_1.path }}/rsa-private-key.pem"
+    common_name: opensearch.ansible-integ-test.com
 - name: Generate a Self Signed certificate
   community.crypto.x509_certificate:
     provider: selfsigned
-    path: '{{ tempdir_1.path }}/rsa-certificate.pem'
-    csr_path: '{{ tempdir_1.path }}/rsa-csr.pem'
-    privatekey_path: '{{ tempdir_1.path }}/rsa-private-key.pem'
+    path: "{{ tempdir_1.path }}/rsa-certificate.pem"
+    csr_path: "{{ tempdir_1.path }}/rsa-csr.pem"
+    privatekey_path: "{{ tempdir_1.path }}/rsa-private-key.pem"
     selfsigned_digest: sha256
 - name: import certificate to ACM
   acm_certificate:
-    name_tag: 'opensearch.ansible-integ-test.com'
-    domain_name: 'opensearch.ansible-integ-test.com'
+    name_tag: opensearch.ansible-integ-test.com
+    domain_name: opensearch.ansible-integ-test.com
     certificate: "{{ lookup('file', tempdir_1.path + '/rsa-certificate.pem') }}"
     private_key: "{{ lookup('file', tempdir_1.path + '/rsa-private-key.pem') }}"
     state: present
@@ -34,9 +35,9 @@
   register: upload_cert
 - assert:
     that:
-    - upload_cert.certificate.arn is defined
-    - upload_cert.certificate.domain_name == 'opensearch.ansible-integ-test.com'
-    - upload_cert.changed
+      - upload_cert.certificate.arn is defined
+      - upload_cert.certificate.domain_name == 'opensearch.ansible-integ-test.com'
+      - upload_cert.changed
 
 - set_fact:
     opensearch_certificate_arn: "{{ upload_cert.certificate.arn }}"

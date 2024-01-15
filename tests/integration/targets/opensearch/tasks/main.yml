@@ -10,7 +10,7 @@
       region: "{{ aws_region }}"
     route53:
       # Route53 is explicitly a global service
-      region: null
+      region:
   collections:
     - amazon.aws
 

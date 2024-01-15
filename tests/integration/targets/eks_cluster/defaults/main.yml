@@ -1,3 +1,4 @@
+---
 eks_cluster_name: "{{ resource_prefix }}"
 eks_cluster_short_name: "{{ lookup('password', '/dev/null chars=ascii_lowercase length=5') }}"
 eks_subnets:
@@ -10,20 +11,20 @@ eks_subnets:
 
 eks_security_groups:
   - name: "{{ eks_cluster_name }}-control-plane-sg"
-    description: "EKS Control Plane Security Group"
+    description: EKS Control Plane Security Group
     rules:
       - group_name: "{{ eks_cluster_name }}-workers-sg"
-        group_desc: "EKS Worker Security Group"
+        group_desc: EKS Worker Security Group
         ports: 443
         proto: tcp
     rules_egress:
       - group_name: "{{ eks_cluster_name }}-workers-sg"
-        group_desc: "EKS Worker Security Group"
+        group_desc: EKS Worker Security Group
         from_port: 1025
         to_port: 65535
         proto: tcp
   - name: "{{ eks_cluster_name }}-workers-sg"
-    description: "EKS Worker Security Group"
+    description: EKS Worker Security Group
     rules:
       - group_name: "{{ eks_cluster_name }}-workers-sg"
         proto: tcp

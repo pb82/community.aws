@@ -1,15 +1,14 @@
 ---
-- name: 'aws_inspector_target integration tests'
+- name: aws_inspector_target integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     - name: Create AWS Inspector Target Group
       inspector_target:
         name: "{{ aws_inspector_scan_name }}"

@@ -1,3 +1,4 @@
+---
 - name: Create VPC for use in testing
   ec2_vpc_net:
     name: "{{ resource_prefix }}-vpc"
@@ -41,7 +42,7 @@
     tags:
       created: "{{ resource_prefix }}-route"
     routes:
-      - dest: 0.0.0.0/0
+      - dest: "0.0.0.0/0"
         gateway_id: "{{ igw.gateway_id }}"
     subnets:
       - "{{ testing_subnet_a.subnet.id }}"
@@ -56,9 +57,9 @@
       - proto: tcp
         from_port: 22
         to_port: 22
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: "0.0.0.0/0"
       - proto: tcp
         from_port: 80
         to_port: 80
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: "0.0.0.0/0"
   register: sg

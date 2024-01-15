@@ -8,4 +8,4 @@ lambda_name: "{{ tiny_prefix }}-lambda"
 topic_name: "{{ tiny_prefix }}-topic"
 queue_name: "{{ tiny_prefix }}-queue"
 event_name: "{{ tiny_prefix }}-on_file_add_or_remove"
-lambda_role_name: "ansible-test-{{ tiny_prefix }}-s3-notifications"
+lambda_role_name: ansible-test-{{ tiny_prefix }}-s3-notifications

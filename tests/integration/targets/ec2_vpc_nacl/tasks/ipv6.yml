@@ -1,5 +1,5 @@
+---
 - block:
-
     # ============================================================
 
     - name: create ingress and egress rules using subnet names
@@ -9,14 +9,14 @@
         subnets:
           - "{{ subnet_name }}-ipv6"
         tags:
-          Created_by: "Ansible test {{ resource_prefix }}"
+          Created_by: Ansible test {{ resource_prefix }}
         ingress:
-          - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 22, 22]
-          - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
-          - [300, 'icmp', 'allow', '0.0.0.0/0', 0, 8]
+          - [100, tcp, allow, "0.0.0.0/0", !!null "", !!null "", 22, 22]
+          - [200, tcp, allow, "0.0.0.0/0", !!null "", !!null "", 80, 80]
+          - [300, icmp, allow, "0.0.0.0/0", 0, 8]
         egress:
-          - [100, 'all', 'allow', '0.0.0.0/0', null, null, null, null]
-        state: 'present'
+          - [100, all, allow, "0.0.0.0/0", !!null "", !!null "", !!null "", !!null ""]
+        state: present
       register: nacl
     - assert:
         that:
@@ -32,23 +32,23 @@
         subnets:
           - "{{ subnet_name }}-ipv6"
         tags:
-          Created_by: "Ansible test {{ resource_prefix }}"
+          Created_by: Ansible test {{ resource_prefix }}
         ingress:
-          - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 22, 22]
-          - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
-          - [205, 'tcp', 'allow', '::/0', null, null, 80, 80]
-          - [300, 'icmp', 'allow', '0.0.0.0/0', 0, 8]
-          - [305, 'ipv6-icmp', 'allow', '::/0', 0, 8]
+          - [100, tcp, allow, "0.0.0.0/0", !!null "", !!null "", 22, 22]
+          - [200, tcp, allow, "0.0.0.0/0", !!null "", !!null "", 80, 80]
+          - [205, tcp, allow, "::/0", !!null "", !!null "", 80, 80]
+          - [300, icmp, allow, "0.0.0.0/0", 0, 8]
+          - [305, ipv6-icmp, allow, "::/0", 0, 8]
         egress:
-          - [100, 'all', 'allow', '0.0.0.0/0', null, null, null, null]
-          - [105, 'all', 'allow', '::/0', null, null, null, null]
-        state: 'present'
+          - [100, all, allow, "0.0.0.0/0", !!null "", !!null "", !!null "", !!null ""]
+          - [105, all, allow, "::/0", !!null "", !!null "", !!null "", !!null ""]
+        state: present
       register: nacl
 
     - assert:
-       that:
-         - nacl.changed
-         - nacl.nacl_id == nacl_id
+        that:
+          - nacl.changed
+          - nacl.nacl_id == nacl_id
 
     - name: get network ACL facts (test that it works with ipv6 entries)
       ec2_vpc_nacl_info:
@@ -70,18 +70,18 @@
         subnets:
           - "{{ subnet_name }}-ipv6"
         tags:
-          Created_by: "Ansible test {{ resource_prefix }}"
+          Created_by: Ansible test {{ resource_prefix }}
         ingress: []
         egress:
-          - [100, 'all', 'allow', '0.0.0.0/0', null, null, null, null]
-          - [105, 'all', 'allow', '::/0', null, null, null, null]
-        state: 'present'
+          - [100, all, allow, "0.0.0.0/0", !!null "", !!null "", !!null "", !!null ""]
+          - [105, all, allow, "::/0", !!null "", !!null "", !!null "", !!null ""]
+        state: present
       register: nacl
 
     - assert:
-       that:
-         - nacl.changed
-         - nacl.nacl_id == nacl_id
+        that:
+          - nacl.changed
+          - nacl.nacl_id == nacl_id
 
     - name: purge egress entries
       ec2_vpc_nacl:
@@ -90,10 +90,10 @@
         subnets:
           - "{{ subnet_name }}-ipv6"
         tags:
-          Created_by: "Ansible test {{ resource_prefix }}"
+          Created_by: Ansible test {{ resource_prefix }}
         ingress: []
         egress: []
-        state: 'present'
+        state: present
       register: nacl
 
     - assert:
@@ -114,11 +114,10 @@
           - nacl_facts.nacls[0].egress | length == 0
 
   always:
-
     - name: remove network ACL
       ec2_vpc_nacl:
         vpc_id: "{{ vpc_ipv6_id }}"
         name: "{{ nacl_name }}"
         state: absent
       register: removed_acl
-      ignore_errors: yes
+      ignore_errors: true

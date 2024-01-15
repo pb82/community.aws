@@ -1,10 +1,11 @@
+---
 - name: set up AWS connection info
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   collections:
     - amazon.aws
 
@@ -12,7 +13,7 @@
     - name: Create an SNS topic
       sns_topic:
         name: "{{ sns_topic_name }}"
-        display_name: "Test topic"
+        display_name: Test topic
       register: sns_topic
 
     - name: Publish to the topic by name
@@ -45,8 +46,8 @@
     - name: Create an FIFO SNS topic
       sns_topic:
         name: "{{ sns_fifo_topic_name }}"
-        display_name: "Test fifo topic"
-        topic_type: "fifo"
+        display_name: Test fifo topic
+        topic_type: fifo
       register: sns_fifo_topic
 
     - name: Publish to the fifo topic
@@ -68,10 +69,10 @@
       sns_topic:
         name: "{{ sns_topic_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Remove fifo topic
       sns_topic:
         name: "{{ sns_fifo_topic_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

@@ -1,7 +1,7 @@
 ---
 - name: Test API gateway tagging
   vars:
-    api_name: "api-{{ resource_prefix }}-tagging"
+    api_name: api-{{ resource_prefix }}-tagging
     apigateway_tags:
       resource_prefix: "{{ resource_prefix }}"
       collection: community.aws

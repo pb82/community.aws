@@ -1,12 +1,11 @@
 ---
-
 - name: Integration testing for the elasticache module
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   collections:
     - amazon.aws
   block:
@@ -171,7 +170,6 @@
           - elasticache_info.elasticache_clusters[0].security_groups[0].status == "active"
 
   always:
-
     # == Cleanup ==
 
     - name: Make sure test Redis is deleted again from Elasticache

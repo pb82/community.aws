@@ -1,1 +1,2 @@
+---
 stack_name: "{{ resource_prefix }}"

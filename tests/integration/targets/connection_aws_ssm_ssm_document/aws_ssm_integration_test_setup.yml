@@ -1,7 +1,8 @@
+---
 - hosts: localhost
   roles:
     - role: ../setup_connection_aws_ssm
       vars:
         target_os: centos
-        use_ssm_document: True
+        use_ssm_document: true
         test_suffix: document

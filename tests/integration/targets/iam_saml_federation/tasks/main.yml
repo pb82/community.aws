@@ -1,9 +1,10 @@
+---
 - module_defaults:
     group/aws:
-        region: "{{ aws_region }}"
-        access_key: "{{ aws_access_key }}"
-        secret_key: "{{ aws_secret_key }}"
-        session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
   collections:
     - amazon.aws
   block:
@@ -14,11 +15,11 @@
 
     - name: Create the identity provider (check-mode)
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example1.xml") }}'
       register: create_result
-      check_mode: yes
+      check_mode: true
     - name: assert changed
       assert:
         that:
@@ -26,7 +27,7 @@
 
     - name: Create the identity provider
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example1.xml") }}'
       register: create_result
@@ -44,11 +45,11 @@
 
     - name: Test that nothing changes when we retry (check_mode)
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example1.xml") }}'
       register: create_result
-      check_mode: yes
+      check_mode: true
     - name: assert the idp doesn't change when we retry
       assert:
         that:
@@ -56,7 +57,7 @@
 
     - name: Test that nothing changes when we retry
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example1.xml") }}'
       register: create_result
@@ -76,11 +77,11 @@
 
     - name: Change the identity provider (check_mode)
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example2.xml") }}'
       register: change_result
-      check_mode: yes
+      check_mode: true
     - name: assert idp created
       assert:
         that:
@@ -88,7 +89,7 @@
 
     - name: Change the identity provider
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example2.xml") }}'
       register: change_result
@@ -106,11 +107,11 @@
 
     - name: Test that nothing changes when we retry (check_mode)
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example2.xml") }}'
       register: change_result
-      check_mode: yes
+      check_mode: true
     - name: assert the idp doesn't change when we retry
       assert:
         that:
@@ -118,7 +119,7 @@
 
     - name: Test that nothing changes when we retry
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: present
         saml_metadata_document: '{{ lookup("file", "example2.xml") }}'
       register: change_result
@@ -138,10 +139,10 @@
 
     - name: Delete the identity provider (check_mode)
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: absent
       register: destroy_result
-      check_mode: yes
+      check_mode: true
     - name: assert changed
       assert:
         that:
@@ -149,7 +150,7 @@
 
     - name: Delete the identity provider
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: absent
       register: destroy_result
     - name: assert deleted
@@ -159,10 +160,10 @@
 
     - name: Attempt to re-delete the identity provider (check_mode)
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: absent
       register: destroy_result
-      check_mode: yes
+      check_mode: true
     - name: assert deleted
       assert:
         that:
@@ -170,7 +171,7 @@
 
     - name: Attempt to re-delete the identity provider
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: absent
       register: destroy_result
     - name: assert deleted
@@ -183,6 +184,6 @@
     #   CLEAN-UP
     - name: finish off by deleting the identity provider
       iam_saml_federation:
-        name: '{{ provider_name }}'
+        name: "{{ provider_name }}"
         state: absent
       register: destroy_result

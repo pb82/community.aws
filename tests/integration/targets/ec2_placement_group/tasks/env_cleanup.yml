@@ -1,3 +1,4 @@
+---
 - name: remove any instances in the test VPC
   ec2_instance:
     filters:
@@ -5,7 +6,7 @@
     state: absent
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: Get ENIs
@@ -20,7 +21,7 @@
     state: absent
   until: removed is not failed
   with_items: "{{ enis.network_interfaces }}"
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove the security group
@@ -31,7 +32,7 @@
     state: absent
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove routing rules
@@ -41,14 +42,14 @@
     tags:
       created: "{{ resource_prefix }}-route"
     routes:
-      - dest: 0.0.0.0/0
+      - dest: "0.0.0.0/0"
         gateway_id: "{{ igw.gateway_id }}"
     subnets:
       - "{{ testing_subnet_a.subnet.id }}"
       - "{{ testing_subnet_b.subnet.id }}"
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove internet gateway
@@ -57,7 +58,7 @@
     state: absent
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove subnet A
@@ -67,7 +68,7 @@
     cidr: 10.22.32.0/24
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove subnet B
@@ -77,7 +78,7 @@
     cidr: 10.22.33.0/24
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10
 
 - name: remove the VPC
@@ -90,5 +91,5 @@
     tenancy: default
   register: removed
   until: removed is not failed
-  ignore_errors: yes
+  ignore_errors: true
   retries: 10

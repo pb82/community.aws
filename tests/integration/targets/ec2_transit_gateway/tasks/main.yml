@@ -1,15 +1,14 @@
 ---
-- name: 'ec2_transit_gateway integration tests'
+- name: ec2_transit_gateway integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     - name: generate unique value for testing
       set_fact:
         tgw_description: "{{ resource_prefix }}-tgw"
@@ -38,8 +37,8 @@
 
     - name: test update transit gateway with new tag and purge_tags false
       ec2_transit_gateway:
-        transit_gateway_id: '{{ create_result.transit_gateway.transit_gateway_id }}'
-        purge_tags: False
+        transit_gateway_id: "{{ create_result.transit_gateway.transit_gateway_id }}"
+        purge_tags: false
         tags:
           status: ok to delete
       register: result
@@ -52,8 +51,8 @@
 
     - name: test update transit gateway with purge_tags true
       ec2_transit_gateway:
-        transit_gateway_id: '{{ create_result.transit_gateway.transit_gateway_id }}'
-        purge_tags: True
+        transit_gateway_id: "{{ create_result.transit_gateway.transit_gateway_id }}"
+        purge_tags: true
         tags:
           status: ok to delete
       register: result
@@ -67,7 +66,7 @@
     - name: test idempotence
       ec2_transit_gateway:
         description: "{{ tgw_description }}"
-        purge_tags: True
+        purge_tags: true
         tags:
           status: ok to delete
       register: result
@@ -76,15 +75,15 @@
         that:
           - result.changed == False
 
-  # ==== Combine ec2_transit_gateway_info ======================
+    # ==== Combine ec2_transit_gateway_info ======================
     - name: test success with no parameters
       ec2_transit_gateway_info:
       register: result
     - name: assert success with no parameters
       assert:
         that:
-          - 'result.changed == false'
-          - 'result.transit_gateways != []'
+          - result.changed == false
+          - result.transit_gateways != []
 
     - name: test success with single filter
       ec2_transit_gateway_info:
@@ -94,8 +93,8 @@
     - name: assert success with transit_gateway_id filter
       assert:
         that:
-          - 'result.changed == false'
-          - 'result.transit_gateways != []'
+          - result.changed == false
+          - result.transit_gateways != []
 
     - name: test empty result set for non-existent tgw id via filter
       ec2_transit_gateway_info:
@@ -105,8 +104,8 @@
     - name: assert success with transit_gateway_id filter
       assert:
         that:
-          - 'result.changed == false'
-          - 'result.transit_gateways == []'
+          - result.changed == false
+          - result.transit_gateways == []
 
     - name: test NotFound exception caught and returned empty result set
       ec2_transit_gateway_info:
@@ -115,8 +114,8 @@
     - name: assert success with transit_gateway_id filter
       assert:
         that:
-          - 'result.changed == false'
-          - 'result.transit_gateways == []'
+          - result.changed == false
+          - result.transit_gateways == []
 
     - name: test success with multiple filters
       ec2_transit_gateway_info:
@@ -127,12 +126,12 @@
     - name: assert success with transit_gateway_id filter
       assert:
         that:
-          - 'result.changed == false'
-          - 'result.transit_gateways != []'
+          - result.changed == false
+          - result.transit_gateways != []
   always:
     ###### TEARDOWN STARTS HERE ######
-    - name: delete transit gateway 
+    - name: delete transit gateway
       ec2_transit_gateway:
         description: "{{ tgw_description }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

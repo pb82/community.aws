@@ -15,7 +15,7 @@
     - name: mark rule set active
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
       register: result
     - name: assert changed to active
       assert:
@@ -25,7 +25,7 @@
     - name: remark rule set active
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
       register: result
     - name: assert changed is False
       assert:
@@ -36,7 +36,7 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: create rule set active
@@ -44,18 +44,18 @@
     - name: create rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
       register: result
     - name: assert changed to existing and active
       assert:
         that:
           - result.changed == True
           - result.active == True
-          - "default_rule_set in result.rule_sets|map(attribute='name')"
+          - default_rule_set in result.rule_sets|map(attribute='name')
     - name: remark rule set active
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
       register: result
     - name: assert changed is False
       assert:
@@ -66,7 +66,7 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: mark rule set inactive
@@ -74,11 +74,11 @@
     - name: create active rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: mark rule set inactive
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: False
+        active: false
       register: result
     - name: assert changed to inactive
       assert:
@@ -88,7 +88,7 @@
     - name: remark rule set inactive
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: False
+        active: false
       register: result
     - name: assert changed is False
       assert:
@@ -99,7 +99,7 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: Absent active flag does not change active status
@@ -107,7 +107,7 @@
     - name: create active rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: recreate rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
@@ -122,7 +122,7 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: Cannot Remove Active Rule Set
@@ -130,23 +130,23 @@
     - name: create active rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: remove rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
       register: result
-      failed_when: "result.error.code != 'CannotDelete'"
+      failed_when: result.error.code != 'CannotDelete'
     - name: assert error code is CannotDelete
       assert:
         that:
-          - "result.error.code == 'CannotDelete'"
+          - result.error.code == 'CannotDelete'
   always:
     - name: cleanup rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: Remove Active Rule Set with Force
@@ -154,24 +154,24 @@
     - name: create active rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: force remove rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
       register: result
     - name: assert changed and absent
       assert:
         that:
           - result.changed == True
-          - "default_rule_set not in result.rule_sets|map(attribute='name')"
+          - default_rule_set not in result.rule_sets|map(attribute='name')
   always:
     - name: cleanup rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: Force Remove of Inactive Rule Set does Not Affect Active Rule Set
@@ -179,26 +179,26 @@
     - name: create active rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: create inactive rule set
       ses_rule_set:
         name: "{{ second_rule_set }}"
-        active: False
+        active: false
     - name: force remove inactiave rule set
       ses_rule_set:
         name: "{{ second_rule_set }}"
         state: absent
-        force: True
+        force: true
       register: result
     - name: assert changed and absent
       assert:
         that:
           - result.changed == True
-          - "second_rule_set not in result.rule_sets|map(attribute='name')"
+          - second_rule_set not in result.rule_sets|map(attribute='name')
     - name: remark active rule set active
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
       register: result
     - name: assert no change
       assert:
@@ -209,7 +209,7 @@
       ses_rule_set:
         name: "{{ item }}"
         state: absent
-        force: True
+        force: true
       loop:
         - "{{ default_rule_set }}"
         - "{{ second_rule_set }}"
@@ -220,13 +220,13 @@
     - name: create rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: mark rule set inactive in check mode
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: False
+        active: false
       register: result
-      check_mode: True
+      check_mode: true
     - name: assert changed to inactive
       assert:
         that:
@@ -235,7 +235,7 @@
     - name: remark rule set inactive
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: False
+        active: false
       register: result
     - name: assert changed is True since previous inactive was in check mode
       assert:
@@ -246,7 +246,7 @@
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: Cannot Remove Active Rule Set in check mode
@@ -254,24 +254,24 @@
     - name: create active rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: remove rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
       register: result
-      failed_when: "result.error.code != 'CannotDelete'"
-      check_mode: True
+      failed_when: result.error.code != 'CannotDelete'
+      check_mode: true
     - name: assert error code is CannotDelete
       assert:
         that:
-          - "result.error.code == 'CannotDelete'"
+          - result.error.code == 'CannotDelete'
   always:
     - name: cleanup rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
 
 # ============================================================
 - name: Remove Active Rule Set with Force in check mode
@@ -279,25 +279,25 @@
     - name: create active rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
-        active: True
+        active: true
     - name: force remove rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
       register: result
-      check_mode: True
+      check_mode: true
     - name: assert changed and absent
       assert:
         that:
           - result.changed == True
-          - "default_rule_set not in result.rule_sets|map(attribute='name')"
+          - default_rule_set not in result.rule_sets|map(attribute='name')
   always:
     - name: cleanup rule set
       ses_rule_set:
         name: "{{ default_rule_set }}"
         state: absent
-        force: True
+        force: true
       register: result
     - name: assert changed is True since previous removal was in check mode
       assert:

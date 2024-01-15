@@ -1,3 +1,4 @@
+---
 - debug:
     msg: "Deleting resources in VPC name: {{ vpc_name }}, id: {{ vpc_id }}"
 
@@ -13,20 +14,20 @@
 
 - name: Delete Route53 record
   route53:
-    record: "opensearch.ansible-integ-test.com"
+    record: opensearch.ansible-integ-test.com
     hosted_zone_id: "{{ route53_zone_ids[0] }}"
     private_zone: true
     type: CNAME
     state: absent
-    vpc_id: '{{ vpc_id }}'
+    vpc_id: "{{ vpc_id }}"
   when: route53_zone_ids | length > 0
 
 - name: Delete private Route53 zone for the VPC
   route53_zone:
-    zone: "ansible-integ-test.com"
+    zone: ansible-integ-test.com
     hosted_zone_id: "{{ route53_zone_ids[0] }}"
     state: absent
-    vpc_id: '{{ vpc_id }}'
+    vpc_id: "{{ vpc_id }}"
   when: route53_zone_ids | length > 0
 
 - name: Get security groups that have been created for test purpose in the VPC
@@ -70,7 +71,7 @@
       vpc-id: "{{ vpc_id }}"
       # Exclude the main route table, which should not be deleted explicitly.
       # It will be deleted automatically when the VPC is deleted
-      "tag:AnsibleTest": "AnsibleTestVpc"
+      tag:AnsibleTest: AnsibleTestVpc
   register: routing_table_info
 
 - name: Delete routing tables

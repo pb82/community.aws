@@ -20,18 +20,18 @@
     - name: create vpc
       ec2_vpc_net:
         state: present
-        cidr_block: '{{ vpc_cidr }}'
-        name: '{{ vpc_name }}'
+        cidr_block: "{{ vpc_cidr }}"
+        name: "{{ vpc_name }}"
       register: vpc
 
     - name: create subnets
       ec2_vpc_subnet:
         state: present
-        cidr: '{{ item }}'
-        az: '{{ az_info.availability_zones[index].zone_name }}'
-        vpc_id: '{{ vpc.vpc.id }}'
+        cidr: "{{ item }}"
+        az: "{{ az_info.availability_zones[index].zone_name }}"
+        vpc_id: "{{ vpc.vpc.id }}"
         tags:
-          Name: '{{ vpc_subnet_name_prefix }}-subnet-{{ index }}'
+          Name: "{{ vpc_subnet_name_prefix }}-subnet-{{ index }}"
       loop: "{{ vpc_subnets }}"
       loop_control:
         index_var: index
@@ -40,11 +40,11 @@
     - set_fact:
         subnet_ids: '{{ subnets | community.general.json_query("results[].subnet.id") | list }}'
 
-     # ============================================================
+    # ============================================================
     - name: create msk configuration
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "present"
+        state: present
         kafka_versions:
           - "{{ msk_version }}"
       register: msk_config
@@ -59,27 +59,26 @@
       include_tasks: test_delete.yml
 
   always:
-
     - name: delete msk cluster
       msk_cluster:
         name: "{{ msk_cluster_name }}"
         state: absent
         wait: true
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove msk configuration
       msk_config:
         name: "{{ msk_config_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove subnets
       ec2_vpc_subnet:
         state: absent
-        cidr: '{{ item }}'
-        vpc_id: '{{ vpc.vpc.id }}'
+        cidr: "{{ item }}"
+        vpc_id: "{{ vpc.vpc.id }}"
       loop: "{{ vpc_subnets }}"
-      ignore_errors: yes
+      ignore_errors: true
       register: removed_subnets
       until: removed_subnets is succeeded
       retries: 5
@@ -88,9 +87,9 @@
     - name: remove the vpc
       ec2_vpc_net:
         state: absent
-        cidr_block: '{{ vpc_cidr }}'
-        name: '{{ vpc_name }}'
-      ignore_errors: yes
+        cidr_block: "{{ vpc_cidr }}"
+        name: "{{ vpc_name }}"
+      ignore_errors: true
       register: removed_vpc
       until: removed_vpc is success
       retries: 5

@@ -1,5 +1,5 @@
+---
 - block:
-
     # create instances
     - autoscaling_group:
         state: absent
@@ -36,8 +36,8 @@
         vpc_zone_identifier: "{{ nlb_subnets }}"
         launch_config_name: "{{ resource_prefix }}-web-lcfg"
         termination_policies:
-        - OldestLaunchConfiguration
-        - Default
+          - OldestLaunchConfiguration
+          - Default
         health_check_period: 600
         health_check_type: EC2
         replace_all_instances: true
@@ -46,17 +46,16 @@
         desired_capacity: 1
         wait_for_instances: true
         target_group_arns:
-        - "{{ tg.target_group_arn }}"
+          - "{{ tg.target_group_arn }}"
 
   always:
-
     - autoscaling_group:
         state: absent
         name: "{{ resource_prefix }}-webservers"
         wait_timeout: 900
-      ignore_errors: yes
+      ignore_errors: true
 
     - autoscaling_launch_config:
         name: "{{ resource_prefix }}-web-lcfg"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

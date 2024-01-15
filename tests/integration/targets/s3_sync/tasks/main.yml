@@ -5,10 +5,10 @@
     - community.general
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
     # ============================================================
     - name: Create simple s3_bucket
@@ -30,7 +30,7 @@
       file:
         path: "{{ output_dir }}/s3_sync"
         state: directory
-        mode: '0755'
+        mode: "0755"
 
     - name: Prepare files to sync
       copy:
@@ -38,9 +38,9 @@
         dest: "{{ output_dir }}/s3_sync/{{ item }}"
         mode: preserve
       with_items:
-      - test1.txt
-      - test2.yml
-      - test3.json
+        - test1.txt
+        - test2.yml
+        - test3.json
 
     - name: Prepare file with size bigger than chunk size
       shell: |
@@ -74,7 +74,7 @@
       s3_sync:
         bucket: "{{ test_bucket_2 }}"
         file_root: "{{ output_dir }}/s3_sync"
-        storage_class: "GLACIER"
+        storage_class: GLACIER
       register: output
 
     - assert:
@@ -138,7 +138,7 @@
         key_prefix: config_files/web
         file_change_strategy: force
         permission: public-read
-        cache_control: "public, max-age=31536000"
+        cache_control: public, max-age=31536000
         include: "*"
         exclude: "*.txt,.*"
       register: output
@@ -154,7 +154,6 @@
           - '"filelist_actionable" in output'
 
   always:
-
     - name: Empty all buckets before deleting
       block:
         - name: list test_bucket objects
@@ -213,7 +212,7 @@
         name: "{{item}}"
         state: absent
         force: true
-      ignore_errors: yes
+      ignore_errors: true
       with_items:
         - "{{ test_bucket }}"
         - "{{ test_bucket_2 }}"

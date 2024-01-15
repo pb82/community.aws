@@ -1,3 +1,4 @@
+---
 ############################################
 # create ALB and necessary dependencies
 # to test wafv2_resources
@@ -5,45 +6,45 @@
 - name: create VPC
   ec2_vpc_net:
     cidr_block: "{{ cidr.main }}"
-    name: '{{ resource_prefix }}_vpc'
+    name: "{{ resource_prefix }}_vpc"
     state: present
   register: vpc
 
 - name: create internet gateway
   ec2_vpc_igw:
-    vpc_id: '{{ vpc.vpc.id }}'
+    vpc_id: "{{ vpc.vpc.id }}"
     state: present
     tags:
-      Name: '{{ resource_prefix }}'
+      Name: "{{ resource_prefix }}"
   register: igw
 
 - name: create public subnet
   ec2_vpc_subnet:
-    cidr: '{{ item.cidr }}'
-    az: '{{ aws_region}}{{ item.az }}'
-    vpc_id: '{{ vpc.vpc.id }}'
+    cidr: "{{ item.cidr }}"
+    az: "{{ aws_region}}{{ item.az }}"
+    vpc_id: "{{ vpc.vpc.id }}"
     state: present
     tags:
-      Public: '{{ item.public|string }}'
-      Name: '{{ item.public|ternary(''public'', ''private'') }}-{{ item.az }}'
+      Public: "{{ item.public|string }}"
+      Name: "{{ item.public|ternary('public', 'private') }}-{{ item.az }}"
   with_items:
-  - cidr: "{{ cidr.a }}"
-    az: a
-    public: 'True'
-  - cidr: "{{ cidr.b }}"
-    az: b
-    public: 'True'
-  - cidr: "{{ cidr.c }}"
-    az: a
-    public: 'False'
-  - cidr: "{{ cidr.d }}"
-    az: b
-    public: 'False'
+    - cidr: "{{ cidr.a }}"
+      az: a
+      public: "True"
+    - cidr: "{{ cidr.b }}"
+      az: b
+      public: "True"
+    - cidr: "{{ cidr.c }}"
+      az: a
+      public: "False"
+    - cidr: "{{ cidr.d }}"
+      az: b
+      public: "False"
   register: subnets
 
 - ec2_vpc_subnet_info:
     filters:
-      vpc-id: '{{ vpc.vpc.id }}'
+      vpc-id: "{{ vpc.vpc.id }}"
   register: vpc_subnets
 
 - name: create list of subnet ids
@@ -53,34 +54,34 @@
 
 - name: create a route table
   ec2_vpc_route_table:
-    vpc_id: '{{ vpc.vpc.id }}'
+    vpc_id: "{{ vpc.vpc.id }}"
     tags:
       Name: igw-route
-      Created: '{{ resource_prefix }}'
-    subnets: '{{ alb_subnets + private_subnets }}'
+      Created: "{{ resource_prefix }}"
+    subnets: "{{ alb_subnets + private_subnets }}"
     routes:
-    - dest: 0.0.0.0/0
-      gateway_id: '{{ igw.gateway_id }}'
+      - dest: "0.0.0.0/0"
+        gateway_id: "{{ igw.gateway_id }}"
   register: route_table
 
 - ec2_security_group:
-    name: '{{ resource_prefix }}'
+    name: "{{ resource_prefix }}"
     description: security group for Ansible ALB integration tests
     state: present
-    vpc_id: '{{ vpc.vpc.id }}'
+    vpc_id: "{{ vpc.vpc.id }}"
     rules:
-    - proto: tcp
-      from_port: 1
-      to_port: 65535
-      cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 1
+        to_port: 65535
+        cidr_ip: "0.0.0.0/0"
   register: sec_group
 
 - name: create a target group for testing
   elb_target_group:
-    name: '{{ tg_name }}'
+    name: "{{ tg_name }}"
     protocol: http
     port: 80
-    vpc_id: '{{ vpc.vpc.id }}'
+    vpc_id: "{{ vpc.vpc.id }}"
     state: present
   register: tg
 
@@ -90,7 +91,7 @@
     subnets: "{{ alb_subnets }}"
     security_groups: "{{ sec_group.group_id }}"
     state: present
-    wait: yes
+    wait: true
     listeners:
       - Protocol: HTTP
         Port: 80

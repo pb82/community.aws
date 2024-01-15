@@ -21,7 +21,6 @@
     - include_tasks: manage_asgs.yml
 
   always:
-
     # ============================================================
 
     - include_tasks: cleanup_elbs.yml

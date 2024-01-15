@@ -1,3 +1,4 @@
+---
 cloudfront_hostname: "{{ resource_prefix }}01"
 
 # Use a domain that has a wildcard DNS
@@ -37,7 +38,7 @@ cloudfront_test_cache_behaviors:
         forward: whitelist
         whitelisted_names:
           - my_header
-      query_string: yes
+      query_string: true
       query_string_cache_keys:
         - whatever
     allowed_methods:

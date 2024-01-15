@@ -1,1 +1,2 @@
-bucket_name: '{{ tiny_prefix }}-s3-lifecycle'
+---
+bucket_name: "{{ tiny_prefix }}-s3-lifecycle"

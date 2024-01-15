@@ -2,27 +2,27 @@
 - name: Setup Rule Groups for later use
   block:
     # The simplest form of rule group
-    - name: 'Create Rule Groups with minimal settings (Default order)'
+    - name: Create Rule Groups with minimal settings (Default order)
       networkfirewall_rule_group:
-        name: '{{ default_group_name }}-{{ item }}'
-        type: 'stateful'
-        capacity: '{{ rule_group_capacity }}'
+        name: "{{ default_group_name }}-{{ item }}"
+        type: stateful
+        capacity: "{{ rule_group_capacity }}"
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
       register: default_groups
-      loop: '{{ range(1,4,1) | list }}'
+      loop: "{{ range(1,4,1) | list }}"
 
     # The simplest form of rule group
-    - name: 'Create Rule Groups with minimal settings (Strict order)'
+    - name: Create Rule Groups with minimal settings (Strict order)
       networkfirewall_rule_group:
-        name: '{{ strict_group_name }}-{{ item }}'
-        type: 'stateful'
-        capacity: '{{ rule_group_capacity }}'
+        name: "{{ strict_group_name }}-{{ item }}"
+        type: stateful
+        capacity: "{{ rule_group_capacity }}"
         rule_strings:
-          - 'pass tcp any any -> any any (sid:1000001;)'
+          - pass tcp any any -> any any (sid:1000001;)
         rule_order: strict
       register: strict_groups
-      loop: '{{ range(1,4,1) | list }}'
+      loop: "{{ range(1,4,1) | list }}"
 
     - debug:
         var: default_groups

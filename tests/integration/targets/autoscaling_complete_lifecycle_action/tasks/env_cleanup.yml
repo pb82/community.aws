@@ -1,3 +1,4 @@
+---
 - name: kill asg
   autoscaling_group:
     name: "{{ asg_name }}"
@@ -32,9 +33,9 @@
     state: absent
     vpc_id: "{{ testing_vpc.vpc.id }}"
     tags:
-      Name: '{{ rtb_name }}'
+      Name: "{{ rtb_name }}"
     routes:
-      - dest: 0.0.0.0/0
+      - dest: "0.0.0.0/0"
         gateway_id: "{{ igw.gateway_id }}"
     subnets:
       - "{{ testing_subnet.subnet.id }}"
