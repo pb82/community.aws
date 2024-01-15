@@ -30,23 +30,23 @@
     image_id: "{{ ec2_ami_id }}"
     security_groups: "{{ sg_a }}"
     instance_type: t3.micro
-    assign_public_ip: no
+    assign_public_ip: false
   register: ec2_lc_a
 
 - name: Create an ASG
   autoscaling_group:
     name: "{{ asg_name }}"
     load_balancers:
-    - "{{ elb_name_1 }}"
-    - "{{ elb_name_2 }}"
+      - "{{ elb_name_1 }}"
+      - "{{ elb_name_2 }}"
     launch_config_name: "{{ lc_name }}"
     availability_zones:
-    - "{{ availability_zone_a }}"
+      - "{{ availability_zone_a }}"
     min_size: 0
     max_size: 1
     desired_capacity: 1
     wait_timeout: 600
     health_check_period: 60
     vpc_zone_identifier:
-    - "{{ subnet_a }}"
+      - "{{ subnet_a }}"
   register: ec2_asg_a

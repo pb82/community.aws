@@ -1,3 +1,4 @@
+---
 # ============================================================
 # Do While loops cannot be used on task includes.
 # See: https://github.com/ansible/ansible/issues/17098
@@ -15,7 +16,7 @@
 
 - include_tasks: obtain-lock.yaml
   # Skip obtaining a lock if we've already succeeded in getting it
-  when: "not won_lock|default(False)|bool"
+  when: not won_lock|default(False)|bool
 
 - name: Lock Retry Delay
   wait_for:
@@ -23,4 +24,4 @@
     timeout: "{{ obtain_lock_delay_seconds + 15|random }}"
   # Only delay if we're retrying, so skip the delay if we're
   # on the last attempt or have got the lock
-  when: "obtain_lock_attempt < (max_obtain_lock_attempts - 1) and not won_lock|bool"
+  when: obtain_lock_attempt < (max_obtain_lock_attempts - 1) and not won_lock|bool

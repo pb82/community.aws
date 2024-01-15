@@ -1,3 +1,4 @@
+---
 - name: create broker with minimal parameters
   mq_broker:
     broker_name: "{{ broker_name }}"
@@ -41,10 +42,10 @@
     fail_msg: broker re-creation failed
     that:
     # change state is from previous operation:
-    - not ( result.changed | bool)
-    - result_c2.broker['broker_id'] == broker_id
-    - result_c2.broker['broker_name'] == broker_name
-    - ( result_c2.broker['storage_type'] | upper ) == 'EFS'
+      - not ( result.changed | bool)
+      - result_c2.broker['broker_id'] == broker_id
+      - result_c2.broker['broker_name'] == broker_name
+      - ( result_c2.broker['storage_type'] | upper ) == 'EFS'
   when: not ansible_check_mode
 - name: update broker
   mq_broker:
@@ -56,13 +57,13 @@
   assert:
     fail_msg: broker update failed
     that:
-    - ( result.changed | bool)
-    - result.broker['broker_id'] == broker_id
+      - ( result.changed | bool)
+      - result.broker['broker_id'] == broker_id
   when: not ansible_check_mode
 - name: reboot broker to make pending changes active
   mq_broker:
     broker_name: "{{ broker_name }}"
-    state: "restarted"
+    state: restarted
   register: result
 - name: get broker details by id
   mq_broker_info:
@@ -76,14 +77,14 @@
       - result_r1.broker['broker_state'] == 'REBOOT_IN_PROGRESS'
   when: not ansible_check_mode
 - debug:
-    msg: "Wait until reboot of broker {{ broker_name }} ({{ broker_id }}) is finished. This may take several minutes"
+    msg: Wait until reboot of broker {{ broker_name }} ({{ broker_id }}) is finished. This may take several minutes
 - name: wait for reboot
   mq_broker_info:
-    broker_id:      "{{ broker_id }}"
+    broker_id: "{{ broker_id }}"
   register: result
   until: result.broker['broker_state'] == 'RUNNING'
   retries: 15
-  delay:   60
+  delay: 60
   when: not ansible_check_mode
 - name: get details after update
   mq_broker_info:
@@ -93,11 +94,11 @@
   assert:
     fail_msg: broker update failed
     that:
-    - result_u1.broker['broker_id'] == broker_id
-    - result_u1.broker['broker_name'] == broker_name
-    - not ( result_u1.broker['auto_minor_version_upgrade'] | bool )
-    # the next one checks that changes to create-only parameters are silently ignore
-    - result_u1.broker['storage_type'] == result_c1.broker['storage_type']
+      - result_u1.broker['broker_id'] == broker_id
+      - result_u1.broker['broker_name'] == broker_name
+      - not ( result_u1.broker['auto_minor_version_upgrade'] | bool )
+      # the next one checks that changes to create-only parameters are silently ignore
+      - result_u1.broker['storage_type'] == result_c1.broker['storage_type']
   when: not ansible_check_mode
 - name: repeat update broker
   mq_broker:
@@ -113,8 +114,8 @@
   assert:
     fail_msg: broker update failed
     that:
-    - not ( result.changed | bool)
-    - result_u2.broker['broker_id'] == result_u1.broker['broker_id']
-    - result_u2.broker['storage_type'] == result_u1.broker['storage_type']
-    - result_u2.broker['engine_version'] == result_u1.broker['engine_version']
+      - not ( result.changed | bool)
+      - result_u2.broker['broker_id'] == result_u1.broker['broker_id']
+      - result_u2.broker['storage_type'] == result_u1.broker['storage_type']
+      - result_u2.broker['engine_version'] == result_u1.broker['engine_version']
   when: not ansible_check_mode

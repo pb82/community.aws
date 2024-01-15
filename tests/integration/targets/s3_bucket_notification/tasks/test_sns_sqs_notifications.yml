@@ -12,20 +12,20 @@
       sns_topic:
         name: "{{ topic_name }}"
         state: present
-        display_name: "Test SNS topic"
+        display_name: Test SNS topic
         policy:
           Id: test-policy-sns
           Version: 2012-10-17
           Statement:
             - Sid: allowNotifications
               Effect: Allow
-              Resource: "arn:aws:sns:*:*:{{ topic_name }}"
+              Resource: arn:aws:sns:*:*:{{ topic_name }}
               Principal:
                 Service: s3.amazonaws.com
               Action: sns:Publish
               Condition:
                 ArnLike:
-                  aws:SourceArn: "arn:aws:s3:*:*:{{ bucket_name }}"
+                  aws:SourceArn: arn:aws:s3:*:*:{{ bucket_name }}
         delivery_policy:
           http:
             defaultHealthyRetryPolicy:
@@ -35,8 +35,8 @@
               numMaxDelayRetries: 5
               numMinDelayRetries: 2
               numNoDelayRetries: 2
-              backoffFunction: "linear"
-            disableSubscriptionOverrides: True
+              backoffFunction: linear
+            disableSubscriptionOverrides: true
             defaultThrottlePolicy:
               maxReceivesPerSecond: 10
       register: topic_creation
@@ -64,10 +64,10 @@
                 Service: s3.amazonaws.com
               Action:
                 - SQS:SendMessage
-              Resource: "arn:aws:sqs:*:*:{{ queue_name }}"
+              Resource: arn:aws:sqs:*:*:{{ queue_name }}
               Condition:
                 ArnLike:
-                  aws:SourceArn: "arn:aws:s3:*:*:{{ bucket_name }}"
+                  aws:SourceArn: arn:aws:s3:*:*:{{ bucket_name }}
       register: queue_creation
 
     - name: assert SQS queue creation success
@@ -240,7 +240,7 @@
         prefix: photos/
         suffix: .gif
       register: result
-      check_mode: yes
+      check_mode: true
 
     - name: test changing from sns to sqs target - check_mode
       assert:
@@ -290,7 +290,7 @@
         event_name: "{{ event_name }}"
         bucket_name: "{{ bucket_name }}"
       register: result
-      check_mode: yes
+      check_mode: true
 
     - name: remove notification - check_mode
       assert:

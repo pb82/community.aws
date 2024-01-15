@@ -1,2 +1,2 @@
 ---
-web_acl_name: '{{ tiny_prefix }}-web-acl'
+web_acl_name: "{{ tiny_prefix }}-web-acl"

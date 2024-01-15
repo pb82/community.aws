@@ -1,9 +1,9 @@
+---
 #######################
 ## Create web acl
 #######################
 
 - block:
-
     - name: check_mode create web acl
       wafv2_web_acl:
         name: "{{ web_acl_name }}"
@@ -11,8 +11,8 @@
         description: hallo eins
         scope: REGIONAL
         default_action: Allow
-        sampled_requests: no
-        cloudwatch_metrics: yes
+        sampled_requests: false
+        cloudwatch_metrics: true
         metric_name: blub
         rules:
           - name: zwei
@@ -20,8 +20,8 @@
             action:
               block: {}
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: ddos
             statement:
               xss_match_statement:
@@ -35,8 +35,8 @@
             override_action:
               none: {}
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: fsd
             statement:
               managed_rule_group_statement:
@@ -50,7 +50,7 @@
           A: B
           C: D
       register: out
-      check_mode: yes
+      check_mode: true
 
     - name: check_mode verify create
       assert:
@@ -64,8 +64,8 @@
         description: foo
         scope: REGIONAL
         default_action: Allow
-        sampled_requests: no
-        cloudwatch_metrics: no
+        sampled_requests: false
+        cloudwatch_metrics: false
         rules:
           - name: rate-limit-per-IP
             priority: 1
@@ -79,8 +79,8 @@
                 limit: 1000
                 aggregate_key_type: IP
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: no
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: false
               metric_name: unused
         custom_response_bodies:
           too_many_requests:
@@ -102,8 +102,8 @@
         scope: REGIONAL
         description: foo
         default_action: Allow
-        sampled_requests: no
-        cloudwatch_metrics: no
+        sampled_requests: false
+        cloudwatch_metrics: false
         rules:
           - name: rate-limit-per-IP
             priority: 1
@@ -114,8 +114,8 @@
                 limit: 1000
                 aggregate_key_type: IP
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: no
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: false
               metric_name: unused
         custom_response_bodies: {}
 
@@ -140,8 +140,8 @@
         description: hallo eins
         scope: REGIONAL
         default_action: Allow
-        sampled_requests: no
-        cloudwatch_metrics: yes
+        sampled_requests: false
+        cloudwatch_metrics: true
         metric_name: blub
         rules:
           - name: zwei
@@ -149,8 +149,8 @@
             action:
               block: {}
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: ddos
             statement:
               xss_match_statement:
@@ -164,8 +164,8 @@
             override_action:
               none: {}
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: fsd
             statement:
               managed_rule_group_statement:
@@ -183,8 +183,8 @@
                 limit: 5000
                 aggregate_key_type: IP
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: waf-acl-rule-rate-limit-per-IP
         custom_response_bodies:
           too_many_requests:
@@ -211,8 +211,8 @@
         description: hallo eins
         scope: REGIONAL
         default_action: Allow
-        sampled_requests: no
-        cloudwatch_metrics: yes
+        sampled_requests: false
+        cloudwatch_metrics: true
         metric_name: blub
         rules:
           - name: zwei
@@ -220,8 +220,8 @@
             action:
               block: {}
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: ddos
             statement:
               xss_match_statement:
@@ -235,8 +235,8 @@
             override_action:
               none: {}
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: fsd
             statement:
               managed_rule_group_statement:
@@ -254,8 +254,8 @@
                 limit: 5000
                 aggregate_key_type: IP
             visibility_config:
-              sampled_requests_enabled: yes
-              cloud_watch_metrics_enabled: yes
+              sampled_requests_enabled: true
+              cloud_watch_metrics_enabled: true
               metric_name: waf-acl-rule-rate-limit-per-IP
         custom_response_bodies:
           too_many_requests:

@@ -1,15 +1,14 @@
 ---
-- name: 'aws_ses_rule_set integration tests'
+- name: aws_ses_rule_set integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     - include_tasks: inactive-rule-set-tests.yaml
 
     # ============================================================
@@ -34,11 +33,11 @@
           loop_control:
             loop_var: obtain_lock_attempt
 
-          # Because of the above workaround we have to explicitly check
-          # that the lock was obtained
+        # Because of the above workaround we have to explicitly check
+        # that the lock was obtained
         - name: Check Obtained Lock
           assert:
-            msg: "Could not obtain lock after {{ max_obtain_lock_attempts }} attempts."
+            msg: Could not obtain lock after {{ max_obtain_lock_attempts }} attempts.
             that: won_lock|bool
 
         - include_tasks: active-rule-set-tests.yaml

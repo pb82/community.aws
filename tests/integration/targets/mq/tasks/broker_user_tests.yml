@@ -1,9 +1,10 @@
+---
 - name: set test data
   set_fact:
     usernames:
-      - "test_user1"
-      - "test_user2"
-      - "test_user3"
+      - test_user1
+      - test_user2
+      - test_user3
 
 - name: test1 - create user with default settings
   mq_user:
@@ -25,7 +26,7 @@
     broker_id: "{{ broker_id }}"
     username: "{{ usernames[1] }}"
     console_access: true
-    groups: [ "g1", "g2" ]
+    groups: [g1, g2]
   register: result
 - name: test2 - verify
   assert:
@@ -55,7 +56,7 @@
   mq_user:
     broker_id: "{{ broker_id }}"
     username: "{{ usernames[2] }}"
-    password: "new_password_ignored"
+    password: new_password_ignored
   register: result
 - name: test4 - verify
   assert:
@@ -67,7 +68,7 @@
   mq_user:
     broker_id: "{{ broker_id }}"
     username: "{{ usernames[2] }}"
-    password: "new_Password_Accepted0815%"
+    password: new_Password_Accepted0815%
     allow_pw_update: true
   register: result
 - name: test5 - verify
@@ -106,7 +107,7 @@
   mq_user:
     broker_id: "{{ broker_id }}"
     username: "{{ usernames[1] }}"
-    groups: [ "g2", "g1" ]
+    groups: [g2, g1]
   register: result
 - name: test8 - verify
   assert:
@@ -118,7 +119,7 @@
   mq_user:
     broker_id: "{{ broker_id }}"
     username: "{{ usernames[1] }}"
-    groups: [ "g2", "g1", "g3" ]
+    groups: [g2, g1, g3]
   register: result
 - name: test9 - verify
   assert:
@@ -131,7 +132,7 @@
   mq_user:
     broker_id: "{{ broker_id }}"
     username: "{{ usernames[1] }}"
-    groups: [ "g2", "g3" ]
+    groups: [g2, g3]
   register: result
 - name: test10 - verify
   assert:

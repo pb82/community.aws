@@ -1,3 +1,4 @@
+---
 - name: create task definition
   ecs_taskdefinition:
     containers: "{{ ecs_task_containers }}"
@@ -53,7 +54,7 @@
 - name: check that placement constraint has been applied
   assert:
     that:
-      - "ecs_service.service.placementConstraints[0].type == 'distinctInstance'"
+      - ecs_service.service.placementConstraints[0].type == 'distinctInstance'
 
 - name: check that ECS service was created with deployment_circuit_breaker
   assert:
@@ -113,7 +114,7 @@
 - name: force_new_deployment should work without providing a task_definition
   ecs_service:
     state: present
-    force_new_deployment: yes
+    force_new_deployment: true
     name: "{{ ecs_service_name }}"
     cluster: "{{ ecs_cluster_name }}"
     desired_count: 1
@@ -150,7 +151,7 @@
     network_configuration:
       subnets: "{{ setup_subnet.results | map(attribute='subnet.id') | list }}"
       security_groups:
-        - '{{ setup_sg.group_id }}'
+        - "{{ setup_sg.group_id }}"
   register: ecs_service_network_without_awsvpc_task
   ignore_errors: true
 
@@ -234,7 +235,7 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     role: "{{ ecs_service_role_name }}"
-    enable_execute_command: True
+    enable_execute_command: true
   register: ecs_service_execute
 
 - name: check that ECS service changed
@@ -300,7 +301,7 @@
 - name: assert that network mode is awsvpc
   assert:
     that:
-      - "ecs_taskdefinition_info.network_mode == 'awsvpc'"
+      - ecs_taskdefinition_info.network_mode == 'awsvpc'
 
 - name: create ECS service definition with network configuration
   ecs_service:
@@ -318,7 +319,7 @@
     network_configuration:
       subnets: "{{ setup_subnet.results | map(attribute='subnet.id') | list }}"
       security_groups:
-        - '{{ setup_sg.group_id }}'
+        - "{{ setup_sg.group_id }}"
   register: create_ecs_service_with_vpc
 
 - name: assert that network configuration is correct
@@ -326,8 +327,8 @@
     that:
       - "'networkConfiguration' in create_ecs_service_with_vpc.service"
       - "'awsvpcConfiguration' in create_ecs_service_with_vpc.service.networkConfiguration"
-      - "create_ecs_service_with_vpc.service.networkConfiguration.awsvpcConfiguration.subnets|length == 2"
-      - "create_ecs_service_with_vpc.service.networkConfiguration.awsvpcConfiguration.securityGroups|length == 1"
+      - create_ecs_service_with_vpc.service.networkConfiguration.awsvpcConfiguration.subnets|length == 2
+      - create_ecs_service_with_vpc.service.networkConfiguration.awsvpcConfiguration.securityGroups|length == 1
 
 - name: create ecs_service using health_check_grace_period_seconds
   ecs_service:
@@ -338,7 +339,7 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     health_check_grace_period_seconds: 30
     desired_count: 1
     state: present
@@ -378,7 +379,7 @@
       - targetGroupArn: "{{ elb_target_group_instance.target_group_arn }}"
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
     desired_count: 1
     state: present
@@ -409,8 +410,8 @@
 - name: assert that existing service is available and running
   assert:
     that:
-      - "ecs_service_info.services|length == 1"
-      - "ecs_service_info.services_not_running|length == 0"
+      - ecs_service_info.services|length == 1
+      - ecs_service_info.services_not_running|length == 0
 
 - name: obtain facts for non-existent service in the cluster
   ecs_service_info:
@@ -423,7 +424,7 @@
 - name: assert that non-existent service is missing
   assert:
     that:
-      - "ecs_service_info.services_not_running[0].reason == 'MISSING'"
+      - ecs_service_info.services_not_running[0].reason == 'MISSING'
 
 - name: obtain specific ECS service facts
   ecs_service_info:
@@ -485,7 +486,7 @@
     name: "{{ ecs_service_name }}-lb"
     cluster: "{{ ecs_cluster_name }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     desired_count: 1
     state: present
   register: ecs_service_create_no_load_balancer
@@ -494,7 +495,7 @@
   assert:
     that:
       - ecs_service_create_no_load_balancer.changed
-      - "ecs_service_create_no_load_balancer.service.loadBalancers | length == 0"
+      - ecs_service_create_no_load_balancer.service.loadBalancers | length == 0
 
 - name: Update ecs_service load balancer
   ecs_service:
@@ -513,10 +514,10 @@
   assert:
     that:
       - ecs_service_update_load_balancer.changed
-      - "ecs_service_update_load_balancer.service.loadBalancers | length == 1"
-      - "ecs_service_update_load_balancer.service.loadBalancers[0].containerName ==  ecs_task_name"
-      - "ecs_service_update_load_balancer.service.loadBalancers[0].containerPort == ecs_task_container_port"
-      - "ecs_service_update_load_balancer.service.loadBalancers[0].targetGroupArn == elb_target_group_instance.target_group_arn"
+      - ecs_service_update_load_balancer.service.loadBalancers | length == 1
+      - ecs_service_update_load_balancer.service.loadBalancers[0].containerName ==  ecs_task_name
+      - ecs_service_update_load_balancer.service.loadBalancers[0].containerPort == ecs_task_container_port
+      - ecs_service_update_load_balancer.service.loadBalancers[0].targetGroupArn == elb_target_group_instance.target_group_arn
 
 - name: Create ecs service with placement constraints
   ecs_service:
@@ -527,7 +528,7 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     placement_constraints:
       - type: distinctInstance
     desired_count: 1
@@ -538,8 +539,8 @@
   assert:
     that:
       - ecs_service_creation_constraints.changed
-      - "ecs_service_creation_constraints.service.placementConstraints | length == 1"
-      - "ecs_service_creation_constraints.service.placementConstraints[0].type == 'distinctInstance'"
+      - ecs_service_creation_constraints.service.placementConstraints | length == 1
+      - ecs_service_creation_constraints.service.placementConstraints[0].type == 'distinctInstance'
 
 - name: >
     wait until deployment is completed |
@@ -547,7 +548,7 @@
 
       >> "rolloutStateReason": "ECS deployment ecs-svc/5156684577543126023 in progress.",
       constraints and placement strategies are only changeable if the rollout state is "COMPLETED"
-      
+
       a) ecs_service has currently no waiter function. so this is a DIY waiter
       b) the state reached never "COMPLETED" because something if wrong with the ECS EC2 Instances
          or the network setup. The EC2 instance never arrived as an active instance in the cluster.
@@ -555,7 +556,7 @@
          >> no container instance met all of its requirements. Reason: No Container Instances were found in your cluster.
          >> For more information, see the Troubleshooting section of the Amazon ECS Developer Guide.
          >> ec2_instance networking does not work correctly, no instance available for the cluster
-      
+
       Because all of this, all following tasks, that test the change of a constraint or placement stragegy are
       using `force_new_deployment: true`. That ignores a) and b).  
   ignore_errors: true
@@ -566,7 +567,7 @@
   register: ECS
   retries: 10
   delay: 5
-  until: "ECS.services[0].deployments[0].rolloutState == 'COMPLETED'"
+  until: ECS.services[0].deployments[0].rolloutState == 'COMPLETED'
 
 - name: Update ecs service's placement constraints
   ecs_service:
@@ -578,10 +579,10 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     placement_constraints:
       - type: memberOf
-        expression: 'attribute:ecs.instance-type == t3.micro'
+        expression: attribute:ecs.instance-type == t3.micro
     desired_count: 1
     state: present
   register: ecs_service_update_constraints
@@ -590,9 +591,9 @@
   assert:
     that:
       - ecs_service_update_constraints.changed
-      - "ecs_service_update_constraints.service.placementConstraints | length == 1"
-      - "ecs_service_update_constraints.service.placementConstraints[0].type == 'memberOf'"
-      - "ecs_service_update_constraints.service.placementConstraints[0].expression == 'attribute:ecs.instance-type == t3.micro'"
+      - ecs_service_update_constraints.service.placementConstraints | length == 1
+      - ecs_service_update_constraints.service.placementConstraints[0].type == 'memberOf'
+      - ecs_service_update_constraints.service.placementConstraints[0].expression == 'attribute:ecs.instance-type == t3.micro'
 
 - name: Remove ecs service's placement constraints
   ecs_service:
@@ -604,7 +605,7 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     purge_placement_constraints: true
     desired_count: 1
     state: present
@@ -614,7 +615,7 @@
   assert:
     that:
       - ecs_service_remove_constraints.changed
-      - "ecs_service_remove_constraints.service.placementConstraints | length == 0"
+      - ecs_service_remove_constraints.service.placementConstraints | length == 0
 
 - name: Create ecs service with placement strategy
   ecs_service:
@@ -625,7 +626,7 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     placement_strategy:
       - type: binpack
         field: MEMORY
@@ -637,9 +638,9 @@
   assert:
     that:
       - ecs_service_creation_strategy.changed
-      - "ecs_service_creation_strategy.service.placementStrategy | length == 1"
-      - "ecs_service_creation_strategy.service.placementStrategy[0].type == 'binpack'"
-      - "ecs_service_creation_strategy.service.placementStrategy[0].field == 'MEMORY'"
+      - ecs_service_creation_strategy.service.placementStrategy | length == 1
+      - ecs_service_creation_strategy.service.placementStrategy[0].type == 'binpack'
+      - ecs_service_creation_strategy.service.placementStrategy[0].field == 'MEMORY'
 
 - name: Update ecs service's placement strategy
   ecs_service:
@@ -651,7 +652,7 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     placement_strategy:
       - type: spread
         field: instanceId
@@ -663,9 +664,9 @@
   assert:
     that:
       - ecs_service_update_strategy.changed
-      - "ecs_service_update_strategy.service.placementStrategy | length == 1"
-      - "ecs_service_update_strategy.service.placementStrategy[0].type == 'spread'"
-      - "ecs_service_update_strategy.service.placementStrategy[0].field == 'instanceId'"
+      - ecs_service_update_strategy.service.placementStrategy | length == 1
+      - ecs_service_update_strategy.service.placementStrategy[0].type == 'spread'
+      - ecs_service_update_strategy.service.placementStrategy[0].field == 'instanceId'
 
 - name: Remove ecs service's placement strategy
   ecs_service:
@@ -677,7 +678,7 @@
         containerName: "{{ ecs_task_name }}"
         containerPort: "{{ ecs_task_container_port }}"
     task_definition: "{{ ecs_task_name }}:{{ ecs_task_definition.taskdefinition.revision }}"
-    scheduling_strategy: "REPLICA"
+    scheduling_strategy: REPLICA
     purge_placement_strategy: true
     desired_count: 1
     state: present
@@ -687,7 +688,7 @@
   assert:
     that:
       - ecs_service_remove_strategy.changed
-      - "ecs_service_remove_strategy.service.placementStrategy | length == 0"
+      - ecs_service_remove_strategy.service.placementStrategy | length == 0
 
 # ============================================================
 # Begin tests for Fargate
@@ -710,7 +711,7 @@
   assert:
     that:
       - ecs_fargate_task_definition_bridged_with_host_port is failed
-      - 'ecs_fargate_task_definition_bridged_with_host_port.msg == "To use FARGATE launch type, network_mode must be awsvpc"'
+      - ecs_fargate_task_definition_bridged_with_host_port.msg == "To use FARGATE launch type, network_mode must be awsvpc"
 
 - name: create Fargate VPC-networked task definition without CPU or Memory (expected to Fail)
   ecs_taskdefinition:
@@ -790,14 +791,14 @@
     network_configuration:
       subnets: "{{ setup_subnet.results | map(attribute='subnet.id') | list }}"
       security_groups:
-        - '{{ setup_sg.group_id }}'
+        - "{{ setup_sg.group_id }}"
       assign_public_ip: true
   register: ecs_fargate_service_network_with_awsvpc
 
 - name: assert that public IP assignment is enabled
   assert:
     that:
-      - 'ecs_fargate_service_network_with_awsvpc.service.networkConfiguration.awsvpcConfiguration.assignPublicIp == "ENABLED"'
+      - ecs_fargate_service_network_with_awsvpc.service.networkConfiguration.awsvpcConfiguration.assignPublicIp == "ENABLED"
 
 ### FIX - run tasks are all failing with CannotPullContainerError in AWS
 ### So using wait: True fails when waiting for tasks to be started
@@ -811,7 +812,7 @@
     network_configuration:
       subnets: "{{ setup_subnet.results | map(attribute='subnet.id') | list }}"
       security_groups:
-        - '{{ setup_sg.group_id }}'
+        - "{{ setup_sg.group_id }}"
       assign_public_ip: true
     started_by: ansible_user
     # wait: true
@@ -856,7 +857,7 @@
     network_configuration:
       subnets: "{{ setup_subnet.results | map(attribute='subnet.id') | list }}"
       security_groups:
-        - '{{ setup_sg.group_id }}'
+        - "{{ setup_sg.group_id }}"
       assign_public_ip: true
     started_by: ansible_user
   register: fargate_run_task_output_with_tags_fail
@@ -888,7 +889,7 @@
     network_configuration:
       subnets: "{{ setup_subnet.results | map(attribute='subnet.id') | list }}"
       security_groups:
-        - '{{ setup_sg.group_id }}'
+        - "{{ setup_sg.group_id }}"
       assign_public_ip: true
     started_by: ansible_user
   register: fargate_run_task_output_with_tags
@@ -903,7 +904,7 @@
     network_configuration:
       subnets: "{{ setup_subnet.results | map(attribute='subnet.id') | list }}"
       security_groups:
-        - '{{ setup_sg.group_id }}'
+        - "{{ setup_sg.group_id }}"
       assign_public_ip: false
     started_by: ansible_user
   register: fargate_run_task_output_with_assign_ip
@@ -919,8 +920,8 @@
     execution_role_arn: "{{ iam_execution_role.arn }}"
     state: present
     runtime_platform:
-      cpuArchitecture: "ARM64"
-      operatingSystemFamily: "LINUX"
+      cpuArchitecture: ARM64
+      operatingSystemFamily: LINUX
   vars:
     ecs_task_host_port: 8080
   register: fargate_arm_task_definition
@@ -941,8 +942,8 @@
     execution_role_arn: "{{ iam_execution_role.arn }}"
     state: present
     runtime_platform:
-      cpuArchitecture: "ARM64"
-      operatingSystemFamily: "LINUX"
+      cpuArchitecture: ARM64
+      operatingSystemFamily: LINUX
   vars:
     ecs_task_host_port: 8080
   register: fargate_arm_task_definition_again
@@ -963,8 +964,8 @@
     execution_role_arn: "{{ iam_execution_role.arn }}"
     state: present
     runtime_platform:
-      cpuArchitecture: "ARM64"
-      operatingSystemFamily: "LINUX"
+      cpuArchitecture: ARM64
+      operatingSystemFamily: LINUX
   vars:
     ecs_task_host_port: 8080
 

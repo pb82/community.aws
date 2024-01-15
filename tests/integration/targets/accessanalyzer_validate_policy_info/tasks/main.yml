@@ -1,10 +1,10 @@
 ---
 - module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
 
   block:
     - name: get ARN of calling user
@@ -13,7 +13,7 @@
 
     - name: Store Account ID for later use
       set_fact:
-        aws_account_id: '{{ aws_caller_info.account }}'
+        aws_account_id: "{{ aws_caller_info.account }}"
 
     # Notes:
     # - Because the policy validation includes both linting, security hints and error detection, we
@@ -27,19 +27,19 @@
     - name: Test with invalid role ('ERROR')
       accessanalyzer_validate_policy_info:
         policy:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Sid: AttachPolicyToInvalidRole
               Effect: Allow
               Action:
                 - iam:AttachRolePolicy
               Resource:
-                - 'arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role'
-                - 'arn:aws:iam::{{ aws_account_id }}:role/example-role'
+                - arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role
+                - arn:aws:iam::{{ aws_account_id }}:role/example-role
               Condition:
                 ArnLike:
                   iam:PolicyArn:
-                    - 'arn:aws:iam::aws:policy/MyExamplePolicy'
+                    - arn:aws:iam::aws:policy/MyExamplePolicy
       register: results
 
     - assert:
@@ -66,25 +66,25 @@
     - name: Test with duplicate role ('SUGGESTION')
       accessanalyzer_validate_policy_info:
         policy: |
-            {
-              "Version": "2012-10-17",
-              "Statement": [{
-                "Sid": "AttachPolicyToDuplicateWildcardRole",
-                "Effect": "Allow",
-                "Action": ["iam:AttachRolePolicy"],
-                "Resource": [
-                    "arn:aws:iam::123456789012:role/example-role",
-                    "arn:aws:iam::123456789012:role/example*"
-                ],
-                "Condition": {
-                  "ArnLike": {
-                    "iam:PolicyArn": [
-                      "arn:aws:iam::aws:policy/MyExamplePolicy"
-                    ]
-                  }
+          {
+            "Version": "2012-10-17",
+            "Statement": [{
+              "Sid": "AttachPolicyToDuplicateWildcardRole",
+              "Effect": "Allow",
+              "Action": ["iam:AttachRolePolicy"],
+              "Resource": [
+                  "arn:aws:iam::123456789012:role/example-role",
+                  "arn:aws:iam::123456789012:role/example*"
+              ],
+              "Condition": {
+                "ArnLike": {
+                  "iam:PolicyArn": [
+                    "arn:aws:iam::aws:policy/MyExamplePolicy"
+                  ]
                 }
-              }]
-            }
+              }
+            }]
+          }
       register: results
 
     - assert:
@@ -109,20 +109,20 @@
       accessanalyzer_validate_policy_info:
         policy_type: resource
         policy:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Sid: DuplicateSID
               Effect: Allow
               Action:
                 - sts:AssumeRole
               Principal:
-                Service: 'ssm-incidents.amazonaws.com'
+                Service: ssm-incidents.amazonaws.com
             - Sid: DuplicateSID
               Effect: Allow
               Action:
                 - sts:AssumeRole
               Principal:
-                Service: 'ec2.amazonaws.com'
+                Service: ec2.amazonaws.com
       register: results
 
     - assert:
@@ -146,14 +146,14 @@
     - name: Test with wildcard to PassRole ('SECURITY_WARNING')
       accessanalyzer_validate_policy_info:
         policy:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Sid: PassRoleWithWildcard
               Effect: Allow
               Action:
                 - iam:PassRole
               Resource:
-                - '*'
+                - "*"
       register: results
 
     - assert:
@@ -177,27 +177,27 @@
     - name: Test with single filter value
       accessanalyzer_validate_policy_info:
         policy:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Sid: AttachPolicyToInvalidRole
               Effect: Allow
               Action:
                 - iam:AttachRolePolicy
               Resource:
-                - 'arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role'
-                - 'arn:aws:iam::{{ aws_account_id }}:role/example-role'
-                - 'arn:aws:iam::{{ aws_account_id }}:role/example-*'
+                - arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role
+                - arn:aws:iam::{{ aws_account_id }}:role/example-role
+                - arn:aws:iam::{{ aws_account_id }}:role/example-*
               Condition:
                 ArnLike:
                   iam:PolicyArn:
-                    - 'arn:aws:iam::aws:policy/MyExamplePolicy'
+                    - arn:aws:iam::aws:policy/MyExamplePolicy
             - Sid: PassRoleWithWildcard
               Effect: Allow
               Action:
                 - iam:PassRole
               Resource:
-                - '*'
-        results_filter: 'error'
+                - "*"
+        results_filter: error
       register: results
 
     - assert:
@@ -210,29 +210,29 @@
     - name: Test with multiple filter value
       accessanalyzer_validate_policy_info:
         policy:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Sid: AttachPolicyToInvalidRole
               Effect: Allow
               Action:
                 - iam:AttachRolePolicy
               Resource:
-                - 'arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role'
-                - 'arn:aws:iam::{{ aws_account_id }}:role/example-role'
-                - 'arn:aws:iam::{{ aws_account_id }}:role/example-*'
+                - arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role
+                - arn:aws:iam::{{ aws_account_id }}:role/example-role
+                - arn:aws:iam::{{ aws_account_id }}:role/example-*
               Condition:
                 ArnLike:
                   iam:PolicyArn:
-                    - 'arn:aws:iam::aws:policy/MyExamplePolicy'
+                    - arn:aws:iam::aws:policy/MyExamplePolicy
             - Sid: PassRoleWithWildcard
               Effect: Allow
               Action:
                 - iam:PassRole
               Resource:
-                - '*'
+                - "*"
         results_filter:
-          - 'error'
-          - 'security'
+          - error
+          - security
       register: results
 
     - assert:
@@ -245,21 +245,21 @@
 
     - name: Test with Locale
       accessanalyzer_validate_policy_info:
-        locale: 'DE'
+        locale: DE
         policy:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Sid: AttachPolicyToInvalidRole
               Effect: Allow
               Action:
                 - iam:AttachRolePolicy
               Resource:
-                - 'arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role'
-                - 'arn:aws:iam::{{ aws_account_id }}:role/example-role'
+                - arn:aws:iam::{{ aws_account_id }}:invalid-role/example-role
+                - arn:aws:iam::{{ aws_account_id }}:role/example-role
               Condition:
                 ArnLike:
                   iam:PolicyArn:
-                    - 'arn:aws:iam::aws:policy/MyExamplePolicy'
+                    - arn:aws:iam::aws:policy/MyExamplePolicy
       register: results
 
     - assert:

@@ -2,29 +2,29 @@
 # Tests the manipulation of networkfirewall resources one option at a time
 
 - vars:
-    simple_firewall_name: '{{ firewall_name_prefix }}-Simple'
+    simple_firewall_name: "{{ firewall_name_prefix }}-Simple"
     first_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
     second_tags:
-      'New Key with Spaces': Value with spaces
+      New Key with Spaces: Value with spaces
       NewCamelCaseKey: CamelCaseValue
       newPascalCaseKey: pascalCaseValue
       new_snake_case_key: snake_case_value
     third_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
-      'New Key with Spaces': Updated Value with spaces
+      New Key with Spaces: Updated Value with spaces
     final_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
-      'New Key with Spaces': Updated Value with spaces
+      New Key with Spaces: Updated Value with spaces
       NewCamelCaseKey: CamelCaseValue
       newPascalCaseKey: pascalCaseValue
       new_snake_case_key: snake_case_value
@@ -32,14 +32,14 @@
     ###################################################################
     # Creation
 
-    - name: '(CHECK) Create a simple firewall with the minimum necessary parameters'
-      check_mode: True
+    - name: (CHECK) Create a simple firewall with the minimum necessary parameters
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_names[0] }}'
+        policy: "{{ default_policy_names[0] }}"
         subnets:
-        - '{{ subnet_id_a_1 }}'
+          - "{{ subnet_id_a_1 }}"
       register: simple_firewall
 
     - assert:
@@ -60,17 +60,17 @@
           - firewall_data.subnet_mappings
           - firewall_data.vpc_id == vpc_id_a
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Create a simple firewall with the minimum necessary parameters'
+    - name: Create a simple firewall with the minimum necessary parameters
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_names[0] }}'
+        policy: "{{ default_policy_names[0] }}"
         subnets:
-        - '{{ subnet_id_a_1 }}'
+          - "{{ subnet_id_a_1 }}"
       register: simple_firewall
 
     - assert:
@@ -108,25 +108,25 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Save Policy ID/ARN for later'
+    - name: Save Policy ID/ARN for later
       set_fact:
-        simple_firewall_id: '{{ firewall_data.firewall_id }}'
-        simple_firewall_arn: '{{ firewall_data.firewall_arn }}'
+        simple_firewall_id: "{{ firewall_data.firewall_id }}"
+        simple_firewall_arn: "{{ firewall_data.firewall_arn }}"
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
 
-    - name: '(CHECK) Create a simple firewall with the minimum necessary parameters (idempotency)'
-      check_mode: True
+    - name: (CHECK) Create a simple firewall with the minimum necessary parameters (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_names[0] }}'
+        policy: "{{ default_policy_names[0] }}"
         subnets:
-        - '{{ subnet_id_a_1 }}'
+          - "{{ subnet_id_a_1 }}"
       register: simple_firewall
 
     - assert:
@@ -164,17 +164,17 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Create a simple firewall with the minimum necessary parameters (idempotency)'
+    - name: Create a simple firewall with the minimum necessary parameters (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_names[0] }}'
+        policy: "{{ default_policy_names[0] }}"
         subnets:
-        - '{{ subnet_id_a_1 }}'
+          - "{{ subnet_id_a_1 }}"
       register: simple_firewall
 
     - assert:
@@ -212,20 +212,20 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Create a simple firewall with the minimum necessary parameters - test reference by ARN (idempotency)'
-      check_mode: True
+    - name: (CHECK) Create a simple firewall with the minimum necessary parameters - test reference by ARN (idempotency)
+      check_mode: true
       networkfirewall:
-        arn: '{{ simple_firewall_arn }}'
+        arn: "{{ simple_firewall_arn }}"
         state: present
-        policy: '{{ default_policy_names[0] }}'
+        policy: "{{ default_policy_names[0] }}"
         subnets:
-        - '{{ subnet_id_a_1 }}'
+          - "{{ subnet_id_a_1 }}"
       register: simple_firewall
 
     - assert:
@@ -263,17 +263,17 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Create a simple firewall with the minimum necessary parameters - test reference by ARN (idempotency)'
+    - name: Create a simple firewall with the minimum necessary parameters - test reference by ARN (idempotency)
       networkfirewall:
-        arn: '{{ simple_firewall_arn }}'
+        arn: "{{ simple_firewall_arn }}"
         state: present
-        policy: '{{ default_policy_names[0] }}'
+        policy: "{{ default_policy_names[0] }}"
         subnets:
-        - '{{ subnet_id_a_1 }}'
+          - "{{ subnet_id_a_1 }}"
       register: simple_firewall
 
     - assert:
@@ -311,19 +311,19 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###################################################################
     # Description
 
-    - name: '(CHECK) Set Description'
-      check_mode: True
+    - name: (CHECK) Set Description
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An example Description"
+        description: An example Description
       register: simple_firewall
 
     - assert:
@@ -363,15 +363,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Set Description'
+    - name: Set Description
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An example Description"
+        description: An example Description
       register: simple_firewall
 
     - assert:
@@ -411,16 +411,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Set Description (idempotency)'
-      check_mode: True
+    - name: (CHECK) Set Description (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An example Description"
+        description: An example Description
       register: simple_firewall
 
     - assert:
@@ -460,15 +460,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Set Description (idempotency)'
+    - name: Set Description (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An example Description"
+        description: An example Description
       register: simple_firewall
 
     - assert:
@@ -508,18 +508,18 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update Description'
-      check_mode: True
+    - name: (CHECK) Update Description
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An updated Description"
+        description: An updated Description
       register: simple_firewall
 
     - assert:
@@ -559,15 +559,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update Description'
+    - name: Update Description
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An updated Description"
+        description: An updated Description
       register: simple_firewall
 
     - assert:
@@ -607,16 +607,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update Description (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update Description (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An updated Description"
+        description: An updated Description
       register: simple_firewall
 
     - assert:
@@ -656,15 +656,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update Description (idempotency)'
+    - name: Update Description (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        description: "An updated Description"
+        description: An updated Description
       register: simple_firewall
 
     - assert:
@@ -704,19 +704,19 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###################################################################
     # Tags
 
-    - name: '(CHECK) Set Tags'
-      check_mode: True
+    - name: (CHECK) Set Tags
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: simple_firewall
 
     - assert:
@@ -756,15 +756,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Set Tags'
+    - name: Set Tags
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: simple_firewall
 
     - assert:
@@ -803,16 +803,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Set Tags (idempotency)'
-      check_mode: True
+    - name: (CHECK) Set Tags (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: simple_firewall
 
     - assert:
@@ -852,15 +852,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Set Tags (idempotency)'
+    - name: Set Tags (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: simple_firewall
 
     - assert:
@@ -900,18 +900,18 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update Tags with purge'
-      check_mode: True
+    - name: (CHECK) Update Tags with purge
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: simple_firewall
 
     - assert:
@@ -951,15 +951,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update Tags with purge'
+    - name: Update Tags with purge
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: simple_firewall
 
     - assert:
@@ -999,16 +999,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update Tags with purge (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update Tags with purge (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: simple_firewall
 
     - assert:
@@ -1048,15 +1048,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update Tags with purge (idempotency)'
+    - name: Update Tags with purge (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: simple_firewall
 
     - assert:
@@ -1096,19 +1096,19 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update Tags without purge'
-      check_mode: True
+    - name: (CHECK) Update Tags without purge
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: simple_firewall
 
     - assert:
@@ -1148,16 +1148,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update Tags without purge'
+    - name: Update Tags without purge
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: simple_firewall
 
     - assert:
@@ -1197,17 +1197,17 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update Tags without purge (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update Tags without purge (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: simple_firewall
 
     - assert:
@@ -1247,16 +1247,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update Tags without purge (idempotency)'
+    - name: Update Tags without purge (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: simple_firewall
 
     - assert:
@@ -1296,19 +1296,19 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###################################################################
     # Change Protection
 
-    - name: '(CHECK) Enable deletion protection'
-      check_mode: True
+    - name: (CHECK) Enable deletion protection
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: True
+        delete_protection: true
       register: simple_firewall
 
     - assert:
@@ -1348,15 +1348,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Enable deletion protection'
+    - name: Enable deletion protection
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: True
+        delete_protection: true
       register: simple_firewall
 
     - assert:
@@ -1396,16 +1396,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Enable deletion protection (idempotency)'
-      check_mode: True
+    - name: (CHECK) Enable deletion protection (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: True
+        delete_protection: true
       register: simple_firewall
 
     - assert:
@@ -1445,15 +1445,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Enable deletion protection (idempotency)'
+    - name: Enable deletion protection (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: True
+        delete_protection: true
       register: simple_firewall
 
     - assert:
@@ -1493,18 +1493,18 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Enable firewall policy change protection'
-      check_mode: True
+    - name: (CHECK) Enable firewall policy change protection
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: True
+        policy_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1544,15 +1544,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Enable firewall policy change protection'
+    - name: Enable firewall policy change protection
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: True
+        policy_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1592,16 +1592,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Enable firewall policy change protection (idempotency)'
-      check_mode: True
+    - name: (CHECK) Enable firewall policy change protection (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: True
+        policy_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1641,15 +1641,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Enable firewall policy change protection (idempotency)'
+    - name: Enable firewall policy change protection (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: True
+        policy_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1689,18 +1689,18 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Enable subnet change protection'
-      check_mode: True
+    - name: (CHECK) Enable subnet change protection
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: True
+        subnet_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1740,15 +1740,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Enable subnet change protection'
+    - name: Enable subnet change protection
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: True
+        subnet_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1788,16 +1788,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Enable subnet change protection (idempotency)'
-      check_mode: True
+    - name: (CHECK) Enable subnet change protection (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: True
+        subnet_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1837,15 +1837,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Enable subnet change protection (idempotency)'
+    - name: Enable subnet change protection (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: True
+        subnet_change_protection: true
       register: simple_firewall
 
     - assert:
@@ -1885,18 +1885,18 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Disable firewall policy change protection'
-      check_mode: True
+    - name: (CHECK) Disable firewall policy change protection
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: False
+        policy_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -1936,15 +1936,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Disable firewall policy change protection'
+    - name: Disable firewall policy change protection
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: False
+        policy_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -1984,16 +1984,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Disable firewall policy change protection (idempotency)'
-      check_mode: True
+    - name: (CHECK) Disable firewall policy change protection (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: False
+        policy_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -2033,15 +2033,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Disable firewall policy change protection (idempotency)'
+    - name: Disable firewall policy change protection (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy_change_protection: False
+        policy_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -2081,18 +2081,18 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Disable subnet change protection'
-      check_mode: True
+    - name: (CHECK) Disable subnet change protection
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: False
+        subnet_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -2132,15 +2132,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Disable subnet change protection'
+    - name: Disable subnet change protection
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: False
+        subnet_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -2180,16 +2180,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Disable subnet change protection (idempotency)'
-      check_mode: True
+    - name: (CHECK) Disable subnet change protection (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: False
+        subnet_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -2229,15 +2229,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Disable subnet change protection (idempotency)'
+    - name: Disable subnet change protection (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        subnet_change_protection: False
+        subnet_change_protection: false
       register: simple_firewall
 
     - assert:
@@ -2277,18 +2277,18 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Disable deletion protection'
-      check_mode: True
+    - name: (CHECK) Disable deletion protection
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: False
+        delete_protection: false
       register: simple_firewall
 
     - assert:
@@ -2328,15 +2328,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Disable deletion protection'
+    - name: Disable deletion protection
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: False
+        delete_protection: false
       register: simple_firewall
 
     - assert:
@@ -2376,16 +2376,16 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Disable deletion protection (idempotency)'
-      check_mode: True
+    - name: (CHECK) Disable deletion protection (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: False
+        delete_protection: false
       register: simple_firewall
 
     - assert:
@@ -2425,15 +2425,15 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Disable deletion protection (idempotency)'
+    - name: Disable deletion protection (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        delete_protection: False
+        delete_protection: false
       register: simple_firewall
 
     - assert:
@@ -2473,20 +2473,20 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###################################################################
     # Change Firewall policy
 
-    - name: '(CHECK) Update policy assigned to firewall - without waiting'
-      check_mode: True
+    - name: (CHECK) Update policy assigned to firewall - without waiting
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         wait: false
-        policy: '{{ default_policy_names[1] }}'
+        policy: "{{ default_policy_names[1] }}"
       register: simple_firewall
 
     - assert:
@@ -2525,28 +2525,28 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update policy assigned to firewall - without waiting'
+    - name: Update policy assigned to firewall - without waiting
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         wait: false
-        policy: '{{ default_policy_names[1] }}'
+        policy: "{{ default_policy_names[1] }}"
       register: simple_firewall
 
     # There's a delay of a couple of seconds between requesting a change and the
     # firewall entering a PENDING/PROVISIONING state.  The delay is enough to
     # let the firewall enter the expected PENDING state
-    - name: 'Pause to let synchroization start'
+    - name: Pause to let synchroization start
       pause:
         seconds: 5
 
-    - name: 'Check firewall state'
+    - name: Check firewall state
       networkfirewall_info:
-        arn: '{{ simple_firewall_arn }}'
+        arn: "{{ simple_firewall_arn }}"
       register: simple_firewall_info
 
     - assert:
@@ -2588,17 +2588,17 @@
           # so we check using _info a couple of seconds later
           - simple_firewall_info.firewalls[0].firewall_metadata.configuration_sync_state_summary == 'PENDING'
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update policy assigned to firewall - without waiting (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update policy assigned to firewall - without waiting (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         wait: false
-        policy: '{{ default_policy_names[1] }}'
+        policy: "{{ default_policy_names[1] }}"
       register: simple_firewall
 
     - assert:
@@ -2638,16 +2638,16 @@
           - firewall_metadata.configuration_sync_state_summary == 'PENDING'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update policy assigned to firewall - without waiting (idempotency)'
+    - name: Update policy assigned to firewall - without waiting (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         wait: false
-        policy: '{{ default_policy_names[1] }}'
+        policy: "{{ default_policy_names[1] }}"
       register: simple_firewall
 
     - assert:
@@ -2687,19 +2687,19 @@
           - firewall_metadata.configuration_sync_state_summary == 'PENDING'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update policy assigned to firewall - without waiting - by arn (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update policy assigned to firewall - without waiting - by arn (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         wait: false
-        policy: '{{ default_policy_arns[1] }}'
+        policy: "{{ default_policy_arns[1] }}"
       register: simple_firewall
 
     - assert:
@@ -2739,16 +2739,16 @@
           - firewall_metadata.configuration_sync_state_summary == 'PENDING'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update policy assigned to firewall - without waiting (idempotency)'
+    - name: Update policy assigned to firewall - without waiting (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         wait: false
-        policy: '{{ default_policy_arns[1] }}'
+        policy: "{{ default_policy_arns[1] }}"
       register: simple_firewall
 
     - assert:
@@ -2788,18 +2788,18 @@
           - firewall_metadata.configuration_sync_state_summary == 'PENDING'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update policy assigned to firewall - waiting'
-      check_mode: True
+    - name: (CHECK) Update policy assigned to firewall - waiting
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_arns[2] }}'
+        policy: "{{ default_policy_arns[2] }}"
       register: simple_firewall
 
     - assert:
@@ -2838,28 +2838,28 @@
           - firewall_metadata.status == 'READY'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update policy assigned to firewall - waiting'
+    - name: Update policy assigned to firewall - waiting
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_arns[2] }}'
+        policy: "{{ default_policy_arns[2] }}"
       register: simple_firewall
 
     # There's a delay of a couple of seconds between requesting a change and the
     # firewall entering a PENDING/PROVISIONING state.  The delay is enough to
     # let the firewall enter the PENDING state if we didn't wait (because we're
     # waiting, we should be back to IN_SYNC.
-    - name: 'Pause to let synchroization start'
+    - name: Pause to let synchroization start
       pause:
         seconds: 5
 
-    - name: 'Check firewall state'
+    - name: Check firewall state
       networkfirewall_info:
-        arn: '{{ simple_firewall_arn }}'
+        arn: "{{ simple_firewall_arn }}"
       register: simple_firewall_info
 
     - assert:
@@ -2900,16 +2900,16 @@
           - subnet_az_a_1 in firewall_metadata.sync_states
           - simple_firewall_info.firewalls[0].firewall_metadata.configuration_sync_state_summary == 'IN_SYNC'
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update policy assigned to firewall - waiting (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update policy assigned to firewall - waiting (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_names[2] }}'
+        policy: "{{ default_policy_names[2] }}"
       register: simple_firewall
 
     - assert:
@@ -2949,15 +2949,15 @@
           - firewall_metadata.configuration_sync_state_summary == 'IN_SYNC'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update policy assigned to firewall - waiting (idempotency)'
+    - name: Update policy assigned to firewall - waiting (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_names[2] }}'
+        policy: "{{ default_policy_names[2] }}"
       register: simple_firewall
 
     - assert:
@@ -2997,18 +2997,18 @@
           - firewall_metadata.configuration_sync_state_summary == 'IN_SYNC'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update policy assigned to firewall - waiting - by name (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update policy assigned to firewall - waiting - by name (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_names[2] }}'
+        policy: "{{ default_policy_names[2] }}"
       register: simple_firewall
 
     - assert:
@@ -3048,15 +3048,15 @@
           - firewall_metadata.configuration_sync_state_summary == 'IN_SYNC'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update policy assigned to firewall - waiting - by name (idempotency)'
+    - name: Update policy assigned to firewall - waiting - by name (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
-        policy: '{{ default_policy_arns[2] }}'
+        policy: "{{ default_policy_arns[2] }}"
       register: simple_firewall
 
     - assert:
@@ -3096,21 +3096,21 @@
           - firewall_metadata.configuration_sync_state_summary == 'IN_SYNC'
           - subnet_az_a_1 in firewall_metadata.sync_states
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###################################################################
     # Change Subnets
 
-    - name: '(CHECK) Update subnets - duplicate AZ (FAIL)'
-      check_mode: True
-      ignore_errors: True
+    - name: (CHECK) Update subnets - duplicate AZ (FAIL)
+      check_mode: true
+      ignore_errors: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_1a }}'
+          - "{{ subnet_id_a_1a }}"
         purge_subnets: false
       register: simple_firewall
 
@@ -3118,44 +3118,13 @@
         that:
           - simple_firewall is failed
 
-    - name: 'Update subnets - duplicate AZ (FAIL)'
-      ignore_errors: True
+    - name: Update subnets - duplicate AZ (FAIL)
+      ignore_errors: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        purge_subnets: false
-      register: simple_firewall
-
-    - assert:
-        that:
-          - simple_firewall is failed
-
-    ###
-
-    - name: '(CHECK) Update subnets - Different VPC (FAIL)'
-      check_mode: True
-      ignore_errors: True
-      networkfirewall:
-        name: '{{ simple_firewall_name }}'
-        state: present
-        subnets:
-        - '{{ subnet_id_b_2 }}'
-        purge_subnets: false
-      register: simple_firewall
-
-    - assert:
-        that:
-          - simple_firewall is failed
-
-    - name: 'Update subnets - Different VPC (FAIL)'
-      ignore_errors: True
-      networkfirewall:
-        name: '{{ simple_firewall_name }}'
-        state: present
-        subnets:
-        - '{{ subnet_id_b_2 }}'
+          - "{{ subnet_id_a_1a }}"
         purge_subnets: false
       register: simple_firewall
 
@@ -3165,14 +3134,45 @@
 
     ###
 
-    - name: '(CHECK) Update subnets - Different VPC with purge (FAIL)'
-      check_mode: True
-      ignore_errors: True
+    - name: (CHECK) Update subnets - Different VPC (FAIL)
+      check_mode: true
+      ignore_errors: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_b_2 }}'
+          - "{{ subnet_id_b_2 }}"
+        purge_subnets: false
+      register: simple_firewall
+
+    - assert:
+        that:
+          - simple_firewall is failed
+
+    - name: Update subnets - Different VPC (FAIL)
+      ignore_errors: true
+      networkfirewall:
+        name: "{{ simple_firewall_name }}"
+        state: present
+        subnets:
+          - "{{ subnet_id_b_2 }}"
+        purge_subnets: false
+      register: simple_firewall
+
+    - assert:
+        that:
+          - simple_firewall is failed
+
+    ###
+
+    - name: (CHECK) Update subnets - Different VPC with purge (FAIL)
+      check_mode: true
+      ignore_errors: true
+      networkfirewall:
+        name: "{{ simple_firewall_name }}"
+        state: present
+        subnets:
+          - "{{ subnet_id_b_2 }}"
         purge_subnets: true
       register: simple_firewall
 
@@ -3180,13 +3180,13 @@
         that:
           - simple_firewall is failed
 
-    - name: 'Update subnets - Different VPC with purge (FAIL)'
-      ignore_errors: True
+    - name: Update subnets - Different VPC with purge (FAIL)
+      ignore_errors: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_b_2 }}'
+          - "{{ subnet_id_b_2 }}"
         purge_subnets: true
       register: simple_firewall
 
@@ -3196,13 +3196,13 @@
 
     ###
 
-    - name: '(CHECK) Update subnets - without purge'
-      check_mode: True
+    - name: (CHECK) Update subnets - without purge
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
+          - "{{ subnet_id_a_2 }}"
         purge_subnets: false
         wait: false
       register: simple_firewall
@@ -3244,16 +3244,16 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update subnets - without purge'
+    - name: Update subnets - without purge
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
+          - "{{ subnet_id_a_2 }}"
         purge_subnets: false
         wait: false
       register: simple_firewall
@@ -3295,17 +3295,17 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update subnets - without purge (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update subnets - without purge (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
+          - "{{ subnet_id_a_2 }}"
         purge_subnets: false
         wait: false
       register: simple_firewall
@@ -3347,16 +3347,16 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update subnets - without purge (idempotency)'
+    - name: Update subnets - without purge (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
+          - "{{ subnet_id_a_2 }}"
         purge_subnets: false
         wait: false
       register: simple_firewall
@@ -3398,20 +3398,20 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update subnets - with purge'
-      check_mode: True
+    - name: (CHECK) Update subnets - with purge
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         purge_subnets: true
         wait: false
       register: simple_firewall
@@ -3453,17 +3453,17 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update subnets - with purge'
+    - name: Update subnets - with purge
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         purge_subnets: true
         wait: false
       register: simple_firewall
@@ -3505,18 +3505,18 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update subnets - with purge (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update subnets - with purge (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         purge_subnets: true
         wait: false
       register: simple_firewall
@@ -3558,17 +3558,17 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update subnets - with purge (idempotency)'
+    - name: Update subnets - with purge (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         purge_subnets: true
         wait: false
       register: simple_firewall
@@ -3610,21 +3610,21 @@
           # We're not waiting, so we can't assert anything about the sync states
           # in the metadata
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###
 
-    - name: '(CHECK) Update subnets - with wait'
-      check_mode: True
+    - name: (CHECK) Update subnets - with wait
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         wait: true
       register: simple_firewall
 
@@ -3664,18 +3664,18 @@
           - '"status" in firewall_metadata'
           - '"sync_states" in firewall_metadata'
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update subnets - with wait'
+    - name: Update subnets - with wait
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         wait: true
       register: simple_firewall
 
@@ -3715,19 +3715,19 @@
           - '"status" in firewall_metadata'
           - '"sync_states" in firewall_metadata'
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update subnets - with wait (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update subnets - with wait (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         wait: true
       register: simple_firewall
 
@@ -3767,18 +3767,18 @@
           - '"status" in firewall_metadata'
           - '"sync_states" in firewall_metadata'
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update subnets - with wait (idempotency)'
+    - name: Update subnets - with wait (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: present
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
         wait: true
       register: simple_firewall
 
@@ -3818,23 +3818,23 @@
           - '"status" in firewall_metadata'
           - '"sync_states" in firewall_metadata'
       vars:
-        firewall_data: '{{ simple_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ simple_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ simple_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ simple_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###################################################################
     # Delete firewall
 
-    - name: '(CHECK) Delete firewall'
-      check_mode: True
+    - name: (CHECK) Delete firewall
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: absent
       register: simple_firewall
 
-    - name: 'Check firewall state'
+    - name: Check firewall state
       networkfirewall_info:
-        arn: '{{ simple_firewall_arn }}'
+        arn: "{{ simple_firewall_arn }}"
       register: simple_firewall_info
 
     - assert:
@@ -3842,9 +3842,9 @@
           - simple_firewall is changed
           - simple_firewall_info.firewalls[0].firewall_metadata.status == 'READY'
 
-    - name: 'Delete firewall'
+    - name: Delete firewall
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: absent
       register: simple_firewall
 
@@ -3852,9 +3852,9 @@
         that:
           - simple_firewall is changed
 
-    - name: 'Check firewall is gone'
+    - name: Check firewall is gone
       networkfirewall_info:
-        arn: '{{ simple_firewall_arn }}'
+        arn: "{{ simple_firewall_arn }}"
       register: simple_firewall_info
 
     - assert:
@@ -3862,10 +3862,10 @@
           - simple_firewall_info is successful
           - simple_firewall_info.firewalls | length == 0
 
-    - name: '(CHECK) Delete firewall (idempotency)'
-      check_mode: True
+    - name: (CHECK) Delete firewall (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: absent
       register: simple_firewall
 
@@ -3873,9 +3873,9 @@
         that:
           - simple_firewall is not changed
 
-    - name: 'Delete firewall (idempotency)'
+    - name: Delete firewall (idempotency)
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: absent
       register: simple_firewall
 
@@ -3884,10 +3884,10 @@
           - simple_firewall is not changed
 
   always:
-    - name: 'Cleanup simple firewall'
+    - name: Cleanup simple firewall
       networkfirewall:
-        name: '{{ simple_firewall_name }}'
+        name: "{{ simple_firewall_name }}"
         state: absent
-        delete_protection: False
-        wait: False
-      ignore_errors: True
+        delete_protection: false
+        wait: false
+      ignore_errors: true

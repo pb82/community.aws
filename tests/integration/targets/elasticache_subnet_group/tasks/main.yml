@@ -8,21 +8,20 @@
 #
 - module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     # ============================================================
 
     - name: Create Subnet Group with no subnets - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-      check_mode: True
+        name: "{{ group_name }}"
+      check_mode: true
       register: create_group
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Check result - Create Subnet Group with no subnets - check_mode
       assert:
@@ -39,9 +38,9 @@
     - name: Create Subnet Group with no subnets
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
       register: create_group
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Check result - Create Subnet Group with no subnets
       assert:
@@ -60,55 +59,55 @@
     - name: create a VPC
       ec2_vpc_net:
         state: present
-        name: '{{ vpc_name }}'
-        cidr_block: '{{ vpc_cidr }}'
+        name: "{{ vpc_name }}"
+        cidr_block: "{{ vpc_cidr }}"
         tags:
-          TestPrefix: '{{ resource_prefix }}'
+          TestPrefix: "{{ resource_prefix }}"
       register: vpc_result
 
     - name: create subnets
       ec2_vpc_subnet:
         state: present
-        cidr: '{{ item.cidr }}'
-        az: '{{ item.zone }}'
-        vpc_id: '{{ vpc_result.vpc.id }}'
+        cidr: "{{ item.cidr }}"
+        az: "{{ item.zone }}"
+        vpc_id: "{{ vpc_result.vpc.id }}"
         tags:
-          Name: '{{ item.name }}'
-          TestPrefix: '{{ resource_prefix }}'
+          Name: "{{ item.name }}"
+          TestPrefix: "{{ resource_prefix }}"
       register: vpc_subnet_create
       loop:
-      - name: '{{ subnet_name_a }}'
-        cidr: '{{ subnet_cidr_a }}'
-        zone: '{{ subnet_zone_a }}'
-      - name: '{{ subnet_name_b }}'
-        cidr: '{{ subnet_cidr_b }}'
-        zone: '{{ subnet_zone_b }}'
-      - name: '{{ subnet_name_c }}'
-        cidr: '{{ subnet_cidr_c }}'
-        zone: '{{ subnet_zone_c }}'
-      - name: '{{ subnet_name_d }}'
-        cidr: '{{ subnet_cidr_d }}'
-        zone: '{{ subnet_zone_d }}'
+        - name: "{{ subnet_name_a }}"
+          cidr: "{{ subnet_cidr_a }}"
+          zone: "{{ subnet_zone_a }}"
+        - name: "{{ subnet_name_b }}"
+          cidr: "{{ subnet_cidr_b }}"
+          zone: "{{ subnet_zone_b }}"
+        - name: "{{ subnet_name_c }}"
+          cidr: "{{ subnet_cidr_c }}"
+          zone: "{{ subnet_zone_c }}"
+        - name: "{{ subnet_name_d }}"
+          cidr: "{{ subnet_cidr_d }}"
+          zone: "{{ subnet_zone_d }}"
 
     - name: Store IDs of subnets and VPC
       set_fact:
-        vpc_id: '{{ vpc_result.vpc.id }}'
-        subnet_id_a: '{{ vpc_subnet_create.results[0].subnet.id }}'
-        subnet_id_b: '{{ vpc_subnet_create.results[1].subnet.id }}'
-        subnet_id_c: '{{ vpc_subnet_create.results[2].subnet.id }}'
-        subnet_id_d: '{{ vpc_subnet_create.results[3].subnet.id }}'
+        vpc_id: "{{ vpc_result.vpc.id }}"
+        subnet_id_a: "{{ vpc_subnet_create.results[0].subnet.id }}"
+        subnet_id_b: "{{ vpc_subnet_create.results[1].subnet.id }}"
+        subnet_id_c: "{{ vpc_subnet_create.results[2].subnet.id }}"
+        subnet_id_d: "{{ vpc_subnet_create.results[3].subnet.id }}"
 
     # ============================================================
 
     - name: Create Subnet Group - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_default }}'
+        name: "{{ group_name }}"
+        description: "{{ description_default }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
-      check_mode: True
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
+      check_mode: true
       register: create_group
 
     - name: Check result - Create Subnet Group - check_mode
@@ -120,11 +119,11 @@
     - name: Create Subnet Group
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_default }}'
+        name: "{{ group_name }}"
+        description: "{{ description_default }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
       register: create_group
 
     - name: Check result - Create Subnet Group
@@ -151,12 +150,12 @@
     - name: Create Subnet Group - idempotency - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_default }}'
+        name: "{{ group_name }}"
+        description: "{{ description_default }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
-      check_mode: True
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
+      check_mode: true
       register: create_group
 
     - name: Check result - Create Subnet Group - idempotency - check_mode
@@ -168,11 +167,11 @@
     - name: Create Subnet Group - idempotency
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_default }}'
+        name: "{{ group_name }}"
+        description: "{{ description_default }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
       register: create_group
 
     - name: Check result - Create Subnet Group - idempotency
@@ -201,13 +200,13 @@
     - name: Update Subnet Group Description - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         ## No longer mandatory
         # subnets:
         # - '{{ subnet_id_a }}'
         # - '{{ subnet_id_b }}'
-      check_mode: True
+      check_mode: true
       register: update_description
 
     - name: Check result - Update Subnet Group Description - check_mode
@@ -219,8 +218,8 @@
     - name: Update Subnet Group Description
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         ## No longer mandatory
         # subnets:
         # - '{{ subnet_id_a }}'
@@ -251,13 +250,13 @@
     - name: Update Subnet Group Description - idempotency - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         ## No longer mandatory
         # subnets:
         # - '{{ subnet_id_a }}'
         # - '{{ subnet_id_b }}'
-      check_mode: True
+      check_mode: true
       register: update_description
 
     - name: Check result - Update Subnet Group Description - idempotency - check_mode
@@ -269,8 +268,8 @@
     - name: Update Subnet Group Description - idempotency
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         ## No longer mandatory
         # subnets:
         # - '{{ subnet_id_a }}'
@@ -303,13 +302,13 @@
     - name: Update Subnet Group subnets - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         ## No longer mandatory
         # description: '{{ description_updated }}'
         subnets:
-        - '{{ subnet_id_c }}'
-        - '{{ subnet_id_d }}'
-      check_mode: True
+          - "{{ subnet_id_c }}"
+          - "{{ subnet_id_d }}"
+      check_mode: true
       register: update_subnets
 
     - name: Check result - Update Subnet Group subnets - check_mode
@@ -321,12 +320,12 @@
     - name: Update Subnet Group subnets
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         ## No longer mandatory
         # description: '{{ description_updated }}'
         subnets:
-        - '{{ subnet_id_c }}'
-        - '{{ subnet_id_d }}'
+          - "{{ subnet_id_c }}"
+          - "{{ subnet_id_d }}"
       register: update_subnets
 
     - name: Check result - Update Subnet Group subnets
@@ -353,13 +352,13 @@
     - name: Update Subnet Group subnets - idempotency - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         ## No longer mandatory
         # description: '{{ description_updated }}'
         subnets:
-        - '{{ subnet_id_c }}'
-        - '{{ subnet_id_d }}'
-      check_mode: True
+          - "{{ subnet_id_c }}"
+          - "{{ subnet_id_d }}"
+      check_mode: true
       register: update_subnets
 
     - name: Check result - Update Subnet Group subnets - idempotency - check_mode
@@ -371,12 +370,12 @@
     - name: Update Subnet Group subnets - idempotency
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         ## No longer mandatory
         # description: '{{ description_updated }}'
         subnets:
-        - '{{ subnet_id_c }}'
-        - '{{ subnet_id_d }}'
+          - "{{ subnet_id_c }}"
+          - "{{ subnet_id_d }}"
       register: update_subnets
 
     - name: Check result - Update Subnet Group subnets - idempotency
@@ -405,8 +404,8 @@
     - name: Delete Subnet Group - check_mode
       elasticache_subnet_group:
         state: absent
-        name: '{{ group_name }}'
-      check_mode: True
+        name: "{{ group_name }}"
+      check_mode: true
       register: delete_group
 
     - name: Check result - Delete Subnet Group - check_mode
@@ -417,7 +416,7 @@
     - name: Delete Subnet Group
       elasticache_subnet_group:
         state: absent
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
       register: delete_group
 
     - name: Check result - Delete Subnet Group
@@ -428,8 +427,8 @@
     - name: Delete Subnet Group - idempotency - check_mode
       elasticache_subnet_group:
         state: absent
-        name: '{{ group_name }}'
-      check_mode: True
+        name: "{{ group_name }}"
+      check_mode: true
       register: delete_group
 
     - name: Check result - Delete Subnet Group - idempotency - check_mode
@@ -440,7 +439,7 @@
     - name: Delete Subnet Group - idempotency
       elasticache_subnet_group:
         state: absent
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
       register: delete_group
 
     - name: Check result - Delete Subnet Group - idempotency
@@ -453,10 +452,10 @@
     - name: Create minimal Subnet Group - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         subnets:
-        - '{{ subnet_id_a }}'
-      check_mode: True
+          - "{{ subnet_id_a }}"
+      check_mode: true
       register: create_group
 
     - name: Check result - Create minimal Subnet Group - check_mode
@@ -468,9 +467,9 @@
     - name: Create minimal Subnet Group
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         subnets:
-        - '{{ subnet_id_a }}'
+          - "{{ subnet_id_a }}"
       register: create_group
 
     - name: Check result - Create minimal Subnet Group
@@ -497,10 +496,10 @@
     - name: Create minimal Subnet Group - idempotency - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         subnets:
-        - '{{ subnet_id_a }}'
-      check_mode: True
+          - "{{ subnet_id_a }}"
+      check_mode: true
       register: create_group
 
     - name: Check result - Create minimal Subnet Group - idempotency - check_mode
@@ -512,9 +511,9 @@
     - name: Create minimal Subnet Group - idempotency
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
         subnets:
-        - '{{ subnet_id_a }}'
+          - "{{ subnet_id_a }}"
       register: create_group
 
     - name: Check result - Create minimal Subnet Group - idempotency
@@ -543,12 +542,12 @@
     - name: Full Update Subnet Group - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
-      check_mode: True
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
+      check_mode: true
       register: update_complex
 
     - name: Check result - Full Update Subnet Group - check_mode
@@ -560,11 +559,11 @@
     - name: Update Subnet Group
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
       register: update_complex
 
     - name: Check result - Full Update Subnet Group
@@ -591,12 +590,12 @@
     - name: Full Update Subnet Group - idempotency - check_mode
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
-      check_mode: True
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
+      check_mode: true
       register: update_complex
 
     - name: Check result - Full Update Subnet Group - idempotency - check_mode
@@ -608,11 +607,11 @@
     - name: Full Update Subnet Group - idempotency
       elasticache_subnet_group:
         state: present
-        name: '{{ group_name }}'
-        description: '{{ description_updated }}'
+        name: "{{ group_name }}"
+        description: "{{ description_updated }}"
         subnets:
-        - '{{ subnet_id_a }}'
-        - '{{ subnet_id_b }}'
+          - "{{ subnet_id_a }}"
+          - "{{ subnet_id_b }}"
       register: update_complex
 
     - name: Check result - Full Update Subnet Group - idempotency
@@ -641,7 +640,7 @@
     - name: Delete Subnet Group
       elasticache_subnet_group:
         state: absent
-        name: '{{ group_name }}'
+        name: "{{ group_name }}"
       register: delete_group
 
     - name: Check result - Delete Subnet Group
@@ -650,7 +649,6 @@
           - delete_group is changed
 
   always:
-
     ################################################
     # TEARDOWN STARTS HERE
     ################################################
@@ -658,24 +656,24 @@
     - name: Delete Subnet Group
       elasticache_subnet_group:
         state: absent
-        name: '{{ group_name }}'
-      ignore_errors: True
+        name: "{{ group_name }}"
+      ignore_errors: true
 
     - name: tidy up subnet
       ec2_vpc_subnet:
         state: absent
-        cidr: '{{ item }}'
-        vpc_id: '{{ vpc_result.vpc.id }}'
+        cidr: "{{ item }}"
+        vpc_id: "{{ vpc_result.vpc.id }}"
       loop:
-      - '{{ subnet_cidr_a }}'
-      - '{{ subnet_cidr_b }}'
-      - '{{ subnet_cidr_c }}'
-      - '{{ subnet_cidr_d }}'
-      ignore_errors: True
+        - "{{ subnet_cidr_a }}"
+        - "{{ subnet_cidr_b }}"
+        - "{{ subnet_cidr_c }}"
+        - "{{ subnet_cidr_d }}"
+      ignore_errors: true
 
     - name: tidy up VPC
       ec2_vpc_net:
         state: absent
-        name: '{{ vpc_name }}'
-        cidr_block: '{{ vpc_cidr }}'
-      ignore_errors: True
+        name: "{{ vpc_name }}"
+        cidr_block: "{{ vpc_cidr }}"
+      ignore_errors: true

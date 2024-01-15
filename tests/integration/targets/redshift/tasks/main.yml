@@ -13,7 +13,6 @@
       session_token: "{{ security_token | default(omit) }}"
       region: "{{ aws_region }}"
   block:
-
     # ============================================================
     - name: test failure with no parameters
       redshift:
@@ -23,21 +22,21 @@
     - name: assert failure with no parameters
       assert:
         that:
-           - 'result.failed'
-           - 'result.msg == "missing required arguments: command, identifier"'
+          - result.failed
+          - 'result.msg == "missing required arguments: command, identifier"'
 
     # ============================================================
     - name: test failure with only identifier
       redshift:
-        identifier: '{{ redshift_cluster_name }}'
+        identifier: "{{ redshift_cluster_name }}"
       register: result
       ignore_errors: true
 
     - name: assert failure with only identifier
       assert:
         that:
-           - 'result.failed'
-           - 'result.msg == "missing required arguments: command"'
+          - result.failed
+          - 'result.msg == "missing required arguments: command"'
 
     # ============================================================
     - name: test create with no identifier
@@ -49,7 +48,7 @@
     - name: assert failure with no identifier
       assert:
         that:
-          - 'result.failed'
+          - result.failed
           - 'result.msg == "missing required arguments: identifier"'
 
     # ============================================================
@@ -63,7 +62,7 @@
     - name: assert failure with missing node_type
       assert:
         that:
-          - 'result.failed'
+          - result.failed
           - 'result.msg == "command is create but all of the following are missing: node_type, username, password"'
 
     # ============================================================
@@ -79,7 +78,7 @@
     - name: assert create failure with missing password
       assert:
         that:
-          - 'result.failed'
+          - result.failed
           - 'result.msg == "command is create but all of the following are missing: node_type, password"'
 
     # ============================================================
@@ -95,7 +94,7 @@
     - name: assert create failure with missing username
       assert:
         that:
-          - 'result.failed'
+          - result.failed
           - 'result.msg == "command is create but all of the following are missing: node_type, username"'
 
     # ============================================================
@@ -107,7 +106,7 @@
         username: "{{ redshift_master_username }}"
         password: "{{ reshift_master_password }}"
         node_type: "{{ node_type }}"
-        wait: yes
+        wait: true
         wait_timeout: 1000
         tags:
           foo: bar
@@ -119,10 +118,10 @@
     - name: assert create success
       assert:
         that:
-          - 'result.changed'
+          - result.changed
           - result.cluster.identifier == redshift_cluster_name
-          - 'result.cluster.tags.foo == "bar"'
-          - 'result.cluster.tags.Tizio == "Caio"'
+          - result.cluster.tags.foo == "bar"
+          - result.cluster.tags.Tizio == "Caio"
 
     # ============================================================
 
@@ -142,11 +141,11 @@
     - name: assert no change gets made to the existing cluster
       assert:
         that:
-          - 'not result.changed'
+          - not result.changed
           - result.cluster.identifier == redshift_cluster_name
-          - 'result.cluster.tags.foo == "bar"'
-          - 'result.cluster.tags.Tizio == "Caio"'
-          - 'result.cluster.tags | count() == 2'
+          - result.cluster.tags.foo == "bar"
+          - result.cluster.tags.Tizio == "Caio"
+          - result.cluster.tags | count() == 2
 
     # ============================================================
 
@@ -155,8 +154,8 @@
         command: modify
         identifier: "{{ redshift_cluster_name }}"
         new_cluster_identifier: "{{ redshift_cluster_name }}-modified"
-        enhanced_vpc_routing: True
-        wait: yes
+        enhanced_vpc_routing: true
+        wait: true
         wait_timeout: 1000
         tags:
           foo: bar
@@ -165,11 +164,11 @@
     - name: assert cluster was modified
       assert:
         that:
-          - 'result.changed'
+          - result.changed
           - result.cluster.identifier == redshift_cluster_name ~ '-modified'
-          - 'result.cluster.enhanced_vpc_routing == True'
-          - 'result.cluster.tags | count() == 1'
-          - 'result.cluster.tags.foo == "bar"'
+          - result.cluster.enhanced_vpc_routing == True
+          - result.cluster.tags | count() == 1
+          - result.cluster.tags.foo == "bar"
 
     # ============================================================
     - name: test delete with no cluster identifier
@@ -181,7 +180,7 @@
     - name: assert failure with no identifier
       assert:
         that:
-          - 'result.failed'
+          - result.failed
           - 'result.msg == "missing required arguments: identifier"'
 
     # ============================================================
@@ -195,9 +194,8 @@
     - name: assert failure for no snapshot identifier
       assert:
         that:
-          - 'result.failed'
-          - 'result.msg == "Need to specify final_cluster_snapshot_identifier if skip_final_cluster_snapshot is False"'
-
+          - result.failed
+          - result.msg == "Need to specify final_cluster_snapshot_identifier if skip_final_cluster_snapshot is False"
 
     # ============================================================
     - name: test successful delete
@@ -205,16 +203,16 @@
         command: delete
         identifier: "{{ redshift_cluster_name }}-modified"
         skip_final_cluster_snapshot: true
-        wait: yes
+        wait: true
         wait_timeout: 1200
       register: result
 
     - name: assert delete
       assert:
         that:
-          - 'result.changed'
+          - result.changed
 
-  # ============================================================
+    # ============================================================
 
     - name: test create multi-node cluster with custom db-name
       redshift:
@@ -225,19 +223,19 @@
         node_type: "{{ node_type }}"
         cluster_type: multi-node
         number_of_nodes: 3
-        wait: yes
-        db_name: "integration_test"
+        wait: true
+        db_name: integration_test
         wait_timeout: 1800
       register: result
 
     - name: assert create
       assert:
         that:
-          - 'result.changed'
+          - result.changed
           - result.cluster.identifier == redshift_cluster_name
-          - 'result.cluster.db_name == "integration_test"'
+          - result.cluster.db_name == "integration_test"
 
-  #  ============================================================
+    #  ============================================================
 
     - name: test tag update on existing cluster
       redshift:
@@ -248,24 +246,22 @@
         node_type: "{{ node_type }}"
         cluster_type: multi-node
         number_of_nodes: 3
-        wait: yes
-        db_name: "integration_test"
+        wait: true
+        db_name: integration_test
         tags:
           foo: bar
         wait_timeout: 1800
       register: result
 
-
     - name: assert tags change
       assert:
         that:
-          - 'result.changed'
+          - result.changed
           - result.cluster.identifier == redshift_cluster_name
-          - 'result.cluster.db_name == "integration_test"'
-          - 'result.cluster.tags.foo == "bar"'
+          - result.cluster.db_name == "integration_test"
+          - result.cluster.tags.foo == "bar"
 
-
-  #  ============================================================
+    #  ============================================================
 
     - name: test purge tags
       redshift:
@@ -276,28 +272,25 @@
         node_type: "{{ node_type }}"
         cluster_type: multi-node
         number_of_nodes: 3
-        wait: yes
-        db_name: "integration_test"
+        wait: true
+        db_name: integration_test
         tags:
           test1: value1
         purge_tags: false
         wait_timeout: 1800
       register: result
 
-
     - name: assert tags change
       assert:
         that:
-          - 'result.changed'
+          - result.changed
           - result.cluster.identifier == redshift_cluster_name
-          - 'result.cluster.db_name == "integration_test"'
-          - 'result.cluster.tags.test1 == "value1"'
-          - 'result.cluster.tags.foo == "bar"'
-          - 'result.cluster.tags | count() == 2'
+          - result.cluster.db_name == "integration_test"
+          - result.cluster.tags.test1 == "value1"
+          - result.cluster.tags.foo == "bar"
+          - result.cluster.tags | count() == 2
 
-
-
-  #  ============================================================
+    #  ============================================================
 
     - name: test no change to tags when tags is None
       redshift:
@@ -308,48 +301,45 @@
         node_type: "{{ node_type }}"
         cluster_type: multi-node
         number_of_nodes: 3
-        wait: yes
-        db_name: "integration_test"
+        wait: true
+        db_name: integration_test
         wait_timeout: 1800
       register: result
-
 
     - name: assert create
       assert:
         that:
-          - 'not result.changed'
+          - not result.changed
           - result.cluster.identifier == redshift_cluster_name
-          - 'result.cluster.db_name == "integration_test"'
-          - 'result.cluster.tags | count() == 2'
+          - result.cluster.db_name == "integration_test"
+          - result.cluster.tags | count() == 2
 
-
-  #  ============================================================
+    #  ============================================================
 
     - name: test successful delete of multi-node cluster
       redshift:
         command: delete
         identifier: "{{ redshift_cluster_name }}"
         skip_final_cluster_snapshot: true
-        wait: yes
+        wait: true
         wait_timeout: 1200
       register: result
 
     - name: assert delete
       assert:
         that:
-          - 'result.changed'
+          - result.changed
 
   always:
-
     - name: Remove cluster if tests failed
       redshift:
         command: delete
         identifier: "{{ item }}"
         skip_final_cluster_snapshot: true
-        wait: yes
+        wait: true
         wait_timeout: 1200
       register: cleanup
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
       delay: 10
       until: cleanup is success

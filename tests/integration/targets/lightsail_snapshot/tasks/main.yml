@@ -1,14 +1,12 @@
 ---
-
 - module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
 
   block:
-
     # ==== Tests ===================================================
 
     - name: Create a new instance
@@ -17,28 +15,28 @@
         zone: "{{ zone }}"
         blueprint_id: amazon_linux_2
         bundle_id: nano_2_0
-        wait: yes
+        wait: true
 
     - name: Create a new snapshot
       lightsail_snapshot:
         snapshot_name: "{{ snapshot_name }}"
         instance_name: "{{ instance_name }}"
         region: "{{ aws_region }}"
-        wait: yes
+        wait: true
       register: result
 
     - assert:
         that:
           - result.changed == True
           - "'instance_snapshot' in result and result.instance_snapshot.name == snapshot_name"
-          - "result.instance_snapshot.state == 'available'"
+          - result.instance_snapshot.state == 'available'
 
     - name: Make sure instance snapshot creation is idempotent
       lightsail_snapshot:
         snapshot_name: "{{ snapshot_name }}"
         instance_name: "{{ instance_name }}"
         region: "{{ aws_region }}"
-        wait: yes
+        wait: true
       register: result
 
     - assert:
@@ -70,16 +68,15 @@
   # ==== Cleanup ====================================================
 
   always:
-
     - name: Cleanup - delete instance snapshot
       lightsail_snapshot:
         snapshot_name: "{{ snapshot_name }}"
         region: "{{ aws_region }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Cleanup - delete instance
       lightsail:
         name: "{{ instance_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

@@ -9,20 +9,19 @@
       session_token: "{{ security_token | default(omit) }}"
       region: "{{ aws_region }}"
   block:
-
     - name: Create minimal Glue crawler role
       iam_role:
         name: "{{ glue_crawler_role_name }}"
         assume_role_policy_document:
           Version: "2008-10-17"
           Statement:
-            - Action: "sts:AssumeRole"
+            - Action: sts:AssumeRole
               Effect: Allow
               Principal:
                 Service: glue.amazonaws.com
         create_instance_profile: false
         managed_policies:
-          - "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+          - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
 
     - name: Pause for role creation to finish
       pause:
@@ -76,14 +75,14 @@
       register: glue_crawler
 
     - name: Get info on Glue crawler
-      command: "aws glue get-crawler --name {{ glue_crawler_name }}"
+      command: aws glue get-crawler --name {{ glue_crawler_name }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
         AWS_SESSION_TOKEN: "{{ security_token | default('') }}"
         AWS_DEFAULT_REGION: "{{ aws_region }}"
       register: crawler_info_query
-      no_log: True
+      no_log: true
 
     - name: Convert it to an object
       set_fact:
@@ -123,14 +122,14 @@
       register: glue_crawler_idempotent_check
 
     - name: Get info on Glue crawler
-      command: "aws glue get-crawler --name {{ glue_crawler_name }}"
+      command: aws glue get-crawler --name {{ glue_crawler_name }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
         AWS_SESSION_TOKEN: "{{ security_token | default('') }}"
         AWS_DEFAULT_REGION: "{{ aws_region }}"
       register: crawler_info_query_idempotent_check
-      no_log: True
+      no_log: true
 
     - name: Convert it to an object
       set_fact:
@@ -169,14 +168,14 @@
       register: glue_crawler_idempotent
 
     - name: Get info on Glue crawler
-      command: "aws glue get-crawler --name {{ glue_crawler_name }}"
+      command: aws glue get-crawler --name {{ glue_crawler_name }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
         AWS_SESSION_TOKEN: "{{ security_token | default('') }}"
         AWS_DEFAULT_REGION: "{{ aws_region }}"
       register: crawler_info_query_idempotent
-      no_log: True
+      no_log: true
 
     - name: Convert it to an object
       set_fact:
@@ -216,14 +215,14 @@
       register: glue_crawler_update_check
 
     - name: Get info on Glue crawler
-      command: "aws glue get-crawler --name {{ glue_crawler_name }}"
+      command: aws glue get-crawler --name {{ glue_crawler_name }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
         AWS_SESSION_TOKEN: "{{ security_token | default('') }}"
         AWS_DEFAULT_REGION: "{{ aws_region }}"
       register: crawler_info_query_update_check
-      no_log: True
+      no_log: true
 
     - name: Convert it to an object
       set_fact:
@@ -262,14 +261,14 @@
       register: glue_crawler_update
 
     - name: Get info on Glue crawler
-      command: "aws glue get-crawler --name {{ glue_crawler_name }}"
+      command: aws glue get-crawler --name {{ glue_crawler_name }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
         AWS_SESSION_TOKEN: "{{ security_token | default('') }}"
         AWS_DEFAULT_REGION: "{{ aws_region }}"
       register: crawler_info_query_update
-      no_log: True
+      no_log: true
 
     - name: Convert it to an object
       set_fact:
@@ -295,14 +294,14 @@
       register: glue_crawler_delete_check
 
     - name: Get info on Glue crawler
-      command: "aws glue get-crawler --name {{ glue_crawler_name }}"
+      command: aws glue get-crawler --name {{ glue_crawler_name }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
         AWS_SESSION_TOKEN: "{{ security_token | default('') }}"
         AWS_DEFAULT_REGION: "{{ aws_region }}"
       register: crawler_info_query_delete_check
-      no_log: True
+      no_log: true
 
     - name: Convert it to an object
       set_fact:

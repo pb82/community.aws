@@ -1,12 +1,13 @@
+---
 - block:
     - name: Create IAM role for test
       iam_role:
         name: "{{ test_role_name }}-1"
         assume_role_policy_document: "{{ lookup('file','assume-role-policy.json') }}"
         state: present
-        create_instance_profile: yes
+        create_instance_profile: true
         managed_policy:
-        - AWSDenyAll
+          - AWSDenyAll
       register: iam_role
 
     - name: Create second IAM role for test
@@ -14,9 +15,9 @@
         name: "{{ test_role_name }}-2"
         assume_role_policy_document: "{{ lookup('file','assume-role-policy.json') }}"
         state: present
-        create_instance_profile: yes
+        create_instance_profile: true
         managed_policy:
-        - AWSDenyAll
+          - AWSDenyAll
       register: iam_role_2
 
     - name: Make instance with an instance_role
@@ -29,7 +30,7 @@
 
     - assert:
         that:
-          - 'template_with_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")'
+          - template_with_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")
 
     - name: Create template again, with no change to instance_role
       ec2_launch_template:
@@ -41,8 +42,8 @@
 
     - assert:
         that:
-          - 'template_with_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")'
-          - 'template_with_role is not changed'
+          - template_with_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")
+          - template_with_role is not changed
 
     - name: Update instance with new instance_role
       ec2_launch_template:
@@ -54,11 +55,11 @@
 
     - assert:
         that:
-          - 'template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role_2.arn.replace(":role/", ":instance-profile/")'
-          - 'template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role_2.arn.replace(":role/", ":instance-profile/")'
-          - 'template_with_role.default_template.version_number < template_with_updated_role.default_template.version_number'
-          - 'template_with_updated_role is changed'
-          - 'template_with_updated_role is not failed'
+          - template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role_2.arn.replace(":role/", ":instance-profile/")
+          - template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role_2.arn.replace(":role/", ":instance-profile/")
+          - template_with_role.default_template.version_number < template_with_updated_role.default_template.version_number
+          - template_with_updated_role is changed
+          - template_with_updated_role is not failed
 
     - name: Re-set with same new instance_role
       ec2_launch_template:
@@ -70,8 +71,8 @@
 
     - assert:
         that:
-          - 'template_with_updated_role is not changed'
-          - 'template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role_2.arn.replace(":role/", ":instance-profile/")'
+          - template_with_updated_role is not changed
+          - template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role_2.arn.replace(":role/", ":instance-profile/")
 
     - name: Update instance with original instance_role (pass profile ARN)
       ec2_launch_template:
@@ -84,11 +85,11 @@
 
     - assert:
         that:
-          - 'template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")'
-          - 'template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")'
-          - 'template_with_role.default_template.version_number < template_with_updated_role.default_template.version_number'
-          - 'template_with_updated_role is changed'
-          - 'template_with_updated_role is not failed'
+          - template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")
+          - template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")
+          - template_with_role.default_template.version_number < template_with_updated_role.default_template.version_number
+          - template_with_updated_role is changed
+          - template_with_updated_role is not failed
 
     - name: Re-set with same new instance_role (pass profile ARN)
       ec2_launch_template:
@@ -100,8 +101,8 @@
 
     - assert:
         that:
-          - 'template_with_updated_role is not changed'
-          - 'template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")'
+          - template_with_updated_role is not changed
+          - template_with_updated_role.default_template.launch_template_data.iam_instance_profile.arn == iam_role.arn.replace(":role/", ":instance-profile/")
 
   always:
     - name: delete launch template
@@ -110,25 +111,25 @@
         state: absent
       register: lt_removed
       until: lt_removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
     - name: Delete IAM role for test
       iam_role:
         name: "{{ test_role_name }}-1"
         assume_role_policy_document: "{{ lookup('file','assume-role-policy.json') }}"
         state: absent
-        delete_instance_profile: yes
+        delete_instance_profile: true
       register: iam_removed
       until: iam_removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
     - name: Delete IAM role for test
       iam_role:
         name: "{{ test_role_name }}-2"
         assume_role_policy_document: "{{ lookup('file','assume-role-policy.json') }}"
         state: absent
-        delete_instance_profile: yes
+        delete_instance_profile: true
       register: iam_2_removed
       until: iam_2_removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10

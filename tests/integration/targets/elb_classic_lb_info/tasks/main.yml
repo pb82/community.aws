@@ -23,7 +23,6 @@
       secret_key: "{{ aws_secret_key }}"
       session_token: "{{ security_token | default(omit) }}"
   block:
-
     # ============================================================
     # create test elb with listeners, certificate, and health check
 
@@ -42,13 +41,13 @@
             load_balancer_port: 8080
             instance_port: 8080
         health_check:
-            ping_protocol: http
-            ping_port: 80
-            ping_path: "/index.html"
-            response_timeout: 5
-            interval: 30
-            unhealthy_threshold: 2
-            healthy_threshold: 10
+          ping_protocol: http
+          ping_port: 80
+          ping_path: /index.html
+          response_timeout: 5
+          interval: 30
+          unhealthy_threshold: 2
+          healthy_threshold: 10
       register: create
 
     - assert:
@@ -120,15 +119,15 @@
           - protocol: http
             load_balancer_port: 80
             instance_port: 80
-        purge_zones: yes
+        purge_zones: true
         health_check:
-            ping_protocol: http
-            ping_port: 80
-            ping_path: "/index.html"
-            response_timeout: 5
-            interval: 30
-            unhealthy_threshold: 2
-            healthy_threshold: 10
+          ping_protocol: http
+          ping_port: 80
+          ping_path: /index.html
+          response_timeout: 5
+          interval: 30
+          unhealthy_threshold: 2
+          healthy_threshold: 10
       register: update_az
 
     - assert:
@@ -164,7 +163,7 @@
           - protocol: http
             load_balancer_port: 80
             instance_port: 80
-        purge_zones: yes
+        purge_zones: true
       register: update_az
 
     - assert:
@@ -204,7 +203,7 @@
           - protocol: http
             load_balancer_port: 80
             instance_port: 81
-        purge_listeners: yes
+        purge_listeners: true
       register: purge_listeners
 
     - assert:
@@ -225,7 +224,6 @@
       vars:
         elb: "{{ info.elbs[0] }}"
 
-
     # ============================================================
 
     # add Listeners
@@ -242,7 +240,7 @@
           - protocol: http
             load_balancer_port: 8081
             instance_port: 8081
-        purge_listeners: no
+        purge_listeners: false
       register: update_listeners
 
     - assert:
@@ -271,7 +269,7 @@
     # Test getting nonexistent load balancer
     - name: get nonexistent load balancer
       elb_classic_lb_info:
-        names: "invalid-elb"
+        names: invalid-elb
       register: info
 
     - assert:
@@ -281,7 +279,7 @@
     # Test getting a valid and nonexistent load balancer
     - name: get nonexistent load balancer
       elb_classic_lb_info:
-        names: ["{{ elb_name }}", "invalid-elb"]
+        names: ["{{ elb_name }}", invalid-elb]
       register: info
 
     - assert:
@@ -301,7 +299,6 @@
           - info.elbs|length>0
 
   always:
-
     # ============================================================
     - name: remove the test load balancer completely
       elb_classic_lb:

@@ -1,9 +1,10 @@
+---
 - module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   collections:
     - amazon.aws
   block:
@@ -32,7 +33,7 @@
       ecs_service_info:
         service: "{{ resource_prefix }}"
         cluster: "{{ resource_prefix }}"
-        details: yes
+        details: true
       register: ecs_service_info_results
 
     - name: delay if the service was not inactive
@@ -118,14 +119,13 @@
           temp:
           temp_two:
       register: taglist
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: cluster tags - check that there was no fail, but changed is false
       assert:
         that:
           - taglist.failed == false
           - taglist.changed == false
-
 
     - name: cluster tags - invalid cluster name
       ecs_tag:
@@ -137,14 +137,14 @@
           temp:
           temp_two:
       register: taglist
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: cluster tags - Make sure invalid clustername is handled
       assert:
         that:
           - taglist.failed == true
           - taglist.changed == false
-          - 'taglist.msg is regex("Failed to find cluster ansible-test-.*-foo")'
+          - taglist.msg is regex("Failed to find cluster ansible-test-.*-foo")
 
     # Test tagging service resource
 
@@ -155,15 +155,15 @@
         resource_type: service
         state: present
         tags:
-          Name: "service-{{resource_prefix}}"
+          Name: service-{{resource_prefix}}
       register: taglist
 
     - name: service tag - name tags should be there
       assert:
         that:
           - taglist.changed == true
-          - "taglist.added_tags.Name == 'service-' ~ resource_prefix"
-          - "taglist.tags.Name == 'service-' ~ resource_prefix"
+          - taglist.added_tags.Name == 'service-' ~ resource_prefix
+          - taglist.tags.Name == 'service-' ~ resource_prefix
 
     - name: services tags - Add name tag again - see no change
       ecs_tag:
@@ -172,14 +172,14 @@
         resource_type: service
         state: present
         tags:
-          Name: "service-{{resource_prefix}}"
+          Name: service-{{resource_prefix}}
       register: taglist
 
     - name: service tag - test adding tag twice has no effect
       assert:
         that:
           - taglist.changed == false
-          - "taglist.tags.Name == 'service-' ~ resource_prefix"
+          - taglist.tags.Name == 'service-' ~ resource_prefix
 
     - name: service tags - remove service tags
       ecs_tag:
@@ -198,7 +198,6 @@
           - taglist.changed == true
           - '"Name" not in taglist.tags'
 
-
     # Test tagging task_definition resource
 
     - name: task_definition tags - Add name tag
@@ -208,15 +207,15 @@
         resource_type: task_definition
         state: present
         tags:
-          Name: "task_definition-{{resource_prefix}}"
+          Name: task_definition-{{resource_prefix}}
       register: taglist
 
     - name: task_definition tag - name tags should be there
       assert:
         that:
           - taglist.changed == true
-          - "taglist.added_tags.Name == 'task_definition-' ~ resource_prefix"
-          - "taglist.tags.Name == 'task_definition-' ~ resource_prefix"
+          - taglist.added_tags.Name == 'task_definition-' ~ resource_prefix
+          - taglist.tags.Name == 'task_definition-' ~ resource_prefix
 
     - name: task_definition tags - Add name tag again - see no change
       ecs_tag:
@@ -225,14 +224,14 @@
         resource_type: task_definition
         state: present
         tags:
-          Name: "task_definition-{{resource_prefix}}"
+          Name: task_definition-{{resource_prefix}}
       register: taglist
 
     - name: task_definition tag - test adding tag twice has no effect
       assert:
         that:
           - taglist.changed == false
-          - "taglist.tags.Name == 'task_definition-' ~ resource_prefix"
+          - taglist.tags.Name == 'task_definition-' ~ resource_prefix
 
     - name: task_definition tags - remove task_definition tags
       ecs_tag:
@@ -262,7 +261,7 @@
         state: present
         tags:
           Name: foo
-          "Last Name": bar
+          Last Name: bar
       register: ecs_service_creation_tags
 
     - name: ecs_service up
@@ -287,7 +286,7 @@
         state: present
         tags:
           test: test
-      ignore_errors: yes
+      ignore_errors: true
       register: ecs_service_creation_again
 
     - name: check that creation again with tags failed
@@ -304,7 +303,7 @@
         task_definition: "{{ resource_prefix }}"
         desired_count: 0
         state: present
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: scale down ecs service
       ecs_service:
@@ -313,7 +312,7 @@
         task_definition: "{{ resource_prefix }}"
         desired_count: 0
         state: present
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: pause to wait for scale down
       pause:
@@ -326,7 +325,7 @@
         task_definition: "{{ resource_prefix }}"
         desired_count: 1
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove ecs service
       ecs_service:
@@ -335,7 +334,7 @@
         task_definition: "{{ resource_prefix }}"
         desired_count: 1
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove ecs task definition
       ecs_taskdefinition:
@@ -346,10 +345,10 @@
         family: "{{ resource_prefix }}"
         revision: "{{ ecs_taskdefinition_creation.taskdefinition.revision }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove ecs cluster
       ecs_cluster:
         name: "{{ resource_prefix }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

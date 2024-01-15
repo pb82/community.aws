@@ -1,16 +1,15 @@
 ---
-  - name: set up elb_target_info test prerequisites
-    module_defaults:
-      group/aws:
-        access_key: "{{ aws_access_key }}"
-        secret_key: "{{ aws_secret_key }}"
-        session_token: "{{ security_token | default(omit) }}"
-        region: "{{ aws_region }}"
-    collections:
-      - amazon.aws
+- name: set up elb_target_info test prerequisites
+  module_defaults:
+    group/aws:
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
+  collections:
+    - amazon.aws
 
-    block:
-
+  block:
     # ============================================================
 
     - name:
@@ -23,7 +22,7 @@
         cidr_block: 20.0.0.0/16
         tags:
           Name: "{{ resource_prefix }}-vpc"
-          Description: "Created by ansible-test"
+          Description: Created by ansible-test
       register: vpc
 
     - name: set up testing internet gateway
@@ -58,7 +57,7 @@
         tags:
           created: "{{ resource_prefix }}-route"
         routes:
-          - dest: 0.0.0.0/0
+          - dest: "0.0.0.0/0"
             gateway_id: "{{ igw.gateway_id }}"
         subnets:
           - "{{ subnet_1.subnet.id }}"
@@ -74,11 +73,11 @@
           - proto: tcp
             from_port: 80
             to_port: 80
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
       register: sg
 
     - name: set up testing target group (type=instance)
@@ -88,13 +87,13 @@
         health_check_port: 80
         protocol: http
         port: 80
-        vpc_id: '{{ vpc.vpc.id }}'
+        vpc_id: "{{ vpc.vpc.id }}"
         state: present
         target_type: instance
         # set this to 30 to test polling for changes, instead of having everything go out immediately
         deregistration_delay_timeout: 30
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
 
     - name: set up testing target group (type=ip)
       register: nlb_target_group
@@ -103,13 +102,13 @@
         health_check_port: 80
         protocol: tcp
         port: 80
-        vpc_id: '{{ vpc.vpc.id }}'
+        vpc_id: "{{ vpc.vpc.id }}"
         state: present
         # set this to 30 to test polling for changes, instead of having everything go out immediately
         deregistration_delay_timeout: 30
         target_type: ip
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
 
     - name: set up testing target group which will not be associated with any load balancers
       register: idle_target_group
@@ -118,11 +117,11 @@
         health_check_port: 80
         protocol: tcp
         port: 80
-        vpc_id: '{{ vpc.vpc.id }}'
+        vpc_id: "{{ vpc.vpc.id }}"
         state: present
         target_type: instance
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
 
     - name: set up ec2 instance to use as a target
       ec2_instance:
@@ -166,7 +165,6 @@
                 TargetGroupName: "{{ tg_name }}-inst"
         state: present
 
-
     - name: create a network load balancer
       elb_network_lb:
         name: "{{ lb_name }}-nlb"
@@ -186,14 +184,14 @@
         target_group_name: "{{ tg_name }}-inst"
         target_id: "{{ instance_id }}"
         state: present
-        target_status: "initial"
+        target_status: initial
 
     - name: register with the NLB IP target group
       elb_target:
         target_group_name: "{{ tg_name }}-ip"
         target_id: "{{ ec2.instances[0].private_ip_address }}"
         state: present
-        target_status: "initial"
+        target_status: initial
 
     # ============================================================
 
@@ -207,19 +205,18 @@
 
     - assert:
         that:
-          - "alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
-          - "nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
-          - "idle_target_group.target_group_arn not in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
+          - alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
+          - nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
+          - idle_target_group.target_group_arn not in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
           - (target_facts.instance_target_groups | length) == 2
-        msg: "target facts showed the target in the right target groups"
-
+        msg: target facts showed the target in the right target groups
 
     - name: register with unused target group
       elb_target:
         target_group_name: "{{ tg_name }}-idle"
         target_id: "{{ instance_id }}"
         state: present
-        target_status: "unused"
+        target_status: unused
 
     - name: gather facts again, including the idle group
       elb_target_info:
@@ -228,11 +225,11 @@
 
     - assert:
         that:
-          - "alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
-          - "nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
-          - "idle_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
+          - alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
+          - nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
+          - idle_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
           - (target_facts.instance_target_groups | length) == 3
-        msg: "target facts reflected the addition of the target to the idle group"
+        msg: target facts reflected the addition of the target to the idle group
 
     - name: gather facts again, this time excluding the idle group
       elb_target_info:
@@ -242,11 +239,11 @@
 
     - assert:
         that:
-          - "alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
-          - "nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
-          - "idle_target_group.target_group_arn not in (target_facts.instance_target_groups | map(attribute='target_group_arn'))"
+          - alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
+          - nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
+          - idle_target_group.target_group_arn not in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
           - (target_facts.instance_target_groups | length) == 2
-        msg: "target_facts.instance_target_groups did not gather unused target groups when variable was set"
+        msg: target_facts.instance_target_groups did not gather unused target groups when variable was set
 
     - name: register twice in the same target group
       elb_target:
@@ -254,7 +251,7 @@
         target_port: 22
         target_id: "{{ ec2.instances[0].private_ip_address }}"
         state: present
-        target_status: "healthy"
+        target_status: healthy
         target_status_timeout: 400
 
     - name: gather facts
@@ -268,28 +265,24 @@
           - alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
           - nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
           - (target_facts.instance_target_groups | length) == 2
-          - (target_facts.instance_target_groups |
-             selectattr('target_group_arn', 'equalto', nlb_target_group.target_group_arn) |
-             map(attribute='targets') |
-             flatten |
-             list |
-             length) == 2
-        msg: "registering a target twice didn't affect the overall target group count, increased target count"
+          - (target_facts.instance_target_groups | selectattr('target_group_arn', 'equalto', nlb_target_group.target_group_arn) | map(attribute='targets') | flatten
+            | list | length) == 2
+        msg: registering a target twice didn't affect the overall target group count, increased target count
 
     - set_fact:
         original_target_groups: "{{ target_facts.instance_target_groups }}"
 
     - name: Deregister instance from all target groups
       elb_target:
-          target_group_arn: "{{ item.0.target_group_arn }}"
-          target_port: "{{ item.1.target_port }}"
-          target_az: "{{ item.1.target_az }}"
-          target_id: "{{ item.1.target_id }}"
-          state: absent
-          target_status: "draining"
+        target_group_arn: "{{ item.0.target_group_arn }}"
+        target_port: "{{ item.1.target_port }}"
+        target_az: "{{ item.1.target_az }}"
+        target_id: "{{ item.1.target_id }}"
+        state: absent
+        target_status: draining
       with_subelements:
         - "{{ original_target_groups }}"
-        - "targets"
+        - targets
 
     - name: wait for all targets to deregister simultaneously
       elb_target_info:
@@ -307,10 +300,10 @@
         target_az: "{{ item.1.target_az }}"
         target_id: "{{ item.1.target_id }}"
         state: present
-        target_status: "initial"
+        target_status: initial
       with_subelements:
         - "{{ original_target_groups }}"
-        - "targets"
+        - targets
 
     # wait until all groups associated with this instance are 'healthy' or
     # 'unused'
@@ -320,14 +313,14 @@
         instance_id: "{{ instance_id }}"
       register: target_facts
       until: >
-                (target_facts.instance_target_groups |
-                 map(attribute='targets') |
-                 flatten |
-                 map(attribute='target_health') |
-                 rejectattr('state', 'equalto', 'healthy') |
-                 rejectattr('state', 'equalto', 'unused') |
-                 list |
-                 length) == 0
+        (target_facts.instance_target_groups |
+         map(attribute='targets') |
+         flatten |
+         map(attribute='target_health') |
+         rejectattr('state', 'equalto', 'healthy') |
+         rejectattr('state', 'equalto', 'unused') |
+         list |
+         length) == 0
       retries: 61
       delay: 10
 
@@ -336,16 +329,11 @@
           - alb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
           - nlb_target_group.target_group_arn in (target_facts.instance_target_groups | map(attribute='target_group_arn'))
           - (target_facts.instance_target_groups | length) == 2
-          - (target_facts.instance_target_groups |
-             selectattr('target_group_arn', 'equalto', nlb_target_group.target_group_arn) |
-             map(attribute='targets') |
-             flatten |
-             list |
-             length) == 2
-        msg: "reregistration completed successfully"
+          - (target_facts.instance_target_groups | selectattr('target_group_arn', 'equalto', nlb_target_group.target_group_arn) | map(attribute='targets') | flatten
+            | list | length) == 2
+        msg: reregistration completed successfully
 
-    always:
-
+  always:
     - name:
       debug: msg="********** Tearing down elb_target_info test dependencies **********"
 
@@ -353,7 +341,7 @@
       ec2_instance:
         name: "{{ resource_prefix }}-inst"
         state: absent
-        wait: True
+        wait: true
       ignore_errors: true
 
     - name: remove application load balancer
@@ -390,11 +378,11 @@
         health_check_port: 80
         protocol: http
         port: 80
-        vpc_id: '{{ vpc.vpc.id }}'
+        vpc_id: "{{ vpc.vpc.id }}"
         state: absent
         target_type: instance
         tags:
-          Description: "Created by {{ resource_prefix }}"
+          Description: Created by {{ resource_prefix }}
         wait: true
         wait_timeout: 200
       register: removed
@@ -416,11 +404,11 @@
           - proto: tcp
             from_port: 80
             to_port: 80
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
       register: removed
       retries: 10
       until: removed is not failed
@@ -478,10 +466,10 @@
         cidr_block: 20.0.0.0/16
         tags:
           Name: "{{ resource_prefix }}-vpc"
-          Description: "Created by ansible-test"
+          Description: Created by ansible-test
       register: removed
       retries: 10
       until: removed is not failed
-      ignore_errors: True
+      ignore_errors: true
 
     # ============================================================

@@ -1,3 +1,4 @@
+---
 - name: run ec2_lc tests
   module_defaults:
     group/aws:
@@ -9,17 +10,16 @@
     - amazon.aws
 
   block:
-
     - name: set up environment for testing.
       include_tasks: env_setup.yml
 
     - name: Create launch configuration 1
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc1'
-        image_id: '{{ ec2_ami_id }}'
-        assign_public_ip: yes
-        instance_type: '{{ ec2_instance_type }}'
-        security_groups: '{{ sg.group_id }}'
+        name: "{{ resource_prefix }}-lc1"
+        image_id: "{{ ec2_ami_id }}"
+        assign_public_ip: true
+        instance_type: "{{ ec2_instance_type }}"
+        security_groups: "{{ sg.group_id }}"
         volumes:
           - device_name: /dev/xvda
             volume_size: 10
@@ -29,7 +29,7 @@
 
     - name: Gather information about launch configuration 1
       community.aws.autoscaling_launch_config_info:
-        name: '{{ resource_prefix }}-lc1'
+        name: "{{ resource_prefix }}-lc1"
       register: lc_1_info_result
 
     - assert:
@@ -43,11 +43,11 @@
 
     - name: Create launch configuration 1 - Idempotency
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc1'
-        image_id: '{{ ec2_ami_id }}'
-        assign_public_ip: yes
-        instance_type: '{{ ec2_instance_type }}'
-        security_groups: '{{ sg.group_id }}'
+        name: "{{ resource_prefix }}-lc1"
+        image_id: "{{ ec2_ami_id }}"
+        assign_public_ip: true
+        instance_type: "{{ ec2_instance_type }}"
+        security_groups: "{{ sg.group_id }}"
         volumes:
           - device_name: /dev/xvda
             volume_size: 10
@@ -62,11 +62,11 @@
 
     - name: Create launch configuration 2
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc2'
-        image_id: '{{ ec2_ami_id }}'
-        assign_public_ip: yes
-        instance_type: 't3.small'
-        security_groups: '{{ sg.group_id }}'
+        name: "{{ resource_prefix }}-lc2"
+        image_id: "{{ ec2_ami_id }}"
+        assign_public_ip: true
+        instance_type: t3.small
+        security_groups: "{{ sg.group_id }}"
         volumes:
           - device_name: /dev/xvda
             volume_size: 10
@@ -76,7 +76,7 @@
 
     - name: Gather information about launch configuration 2
       community.aws.autoscaling_launch_config_info:
-        name: '{{ resource_prefix }}-lc2'
+        name: "{{ resource_prefix }}-lc2"
       register: lc_2_info_result
 
     - assert:
@@ -91,11 +91,11 @@
 
     - name: Create launch configuration 2 - Idempotency
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc2'
-        image_id: '{{ ec2_ami_id }}'
-        assign_public_ip: yes
-        instance_type: '{{ ec2_instance_type }}'
-        security_groups: '{{ sg.group_id }}'
+        name: "{{ resource_prefix }}-lc2"
+        image_id: "{{ ec2_ami_id }}"
+        assign_public_ip: true
+        instance_type: "{{ ec2_instance_type }}"
+        security_groups: "{{ sg.group_id }}"
         volumes:
           - device_name: /dev/xvda
             volume_size: 10
@@ -110,9 +110,9 @@
 
     - name: Create launch configuration 3 - test throughput parameter
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc3'
-        image_id: '{{ ec2_ami_id }}'
-        instance_type: '{{ ec2_instance_type }}'
+        name: "{{ resource_prefix }}-lc3"
+        image_id: "{{ ec2_ami_id }}"
+        instance_type: "{{ ec2_instance_type }}"
         volumes:
           - device_name: /dev/sda1
             volume_size: 10
@@ -123,7 +123,7 @@
 
     - name: Gather information about launch configuration 3
       community.aws.autoscaling_launch_config_info:
-        name: '{{ resource_prefix }}-lc3'
+        name: "{{ resource_prefix }}-lc3"
       register: lc_3_info_result
 
     - assert:
@@ -138,9 +138,9 @@
 
     - name: Create launch configuration 3 - Idempotency
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc3'
-        image_id: '{{ ec2_ami_id }}'
-        instance_type: '{{ ec2_instance_type }}'
+        name: "{{ resource_prefix }}-lc3"
+        image_id: "{{ ec2_ami_id }}"
+        instance_type: "{{ ec2_instance_type }}"
         volumes:
           - device_name: /dev/sda1
             volume_size: 10
@@ -156,7 +156,7 @@
 
     - name: Search for the Launch Configurations that start with test resource_prefix
       community.aws.autoscaling_launch_config_find:
-        name_regex: '{{ resource_prefix }}*'
+        name_regex: "{{ resource_prefix }}*"
         sort_order: descending
       register: lc_find_result
 
@@ -167,7 +167,7 @@
 
     - name: Delete launch configuration 1
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc1'
+        name: "{{ resource_prefix }}-lc1"
         state: absent
       register: lc_1_delete
 
@@ -178,7 +178,7 @@
 
     - name: Delete launch configuration 1 - Idempotency
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc1'
+        name: "{{ resource_prefix }}-lc1"
         state: absent
       register: lc_1_delete_idem
 
@@ -189,7 +189,7 @@
 
     - name: Gather information about launch configuration 1
       community.aws.autoscaling_launch_config_info:
-        name: '{{ resource_prefix }}-lc1'
+        name: "{{ resource_prefix }}-lc1"
       register: lc_1_info_result
 
     - assert:
@@ -199,7 +199,7 @@
 
     - name: Delete launch configuration 2
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc2'
+        name: "{{ resource_prefix }}-lc2"
         state: absent
       register: lc_2_delete
 
@@ -210,7 +210,7 @@
 
     - name: Delete launch configuration 2 - Idempotency
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc2'
+        name: "{{ resource_prefix }}-lc2"
         state: absent
       register: lc_2_delete_idem
 
@@ -221,7 +221,7 @@
 
     - name: Gather information about launch configuration 2
       community.aws.autoscaling_launch_config_info:
-        name: '{{ resource_prefix }}-lc2'
+        name: "{{ resource_prefix }}-lc2"
       register: lc_2_info_result
 
     - assert:
@@ -231,7 +231,7 @@
 
     - name: Delete launch configuration 3
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc3'
+        name: "{{ resource_prefix }}-lc3"
         state: absent
       register: lc_3_delete
 
@@ -242,7 +242,7 @@
 
     - name: Delete launch configuration 3 - Idempotency
       community.aws.autoscaling_launch_config:
-        name: '{{ resource_prefix }}-lc3'
+        name: "{{ resource_prefix }}-lc3"
         state: absent
       register: lc_3_delete_idem
 
@@ -253,7 +253,7 @@
 
     - name: Gather information about launch configuration 3
       community.aws.autoscaling_launch_config_info:
-        name: '{{ resource_prefix }}-lc2'
+        name: "{{ resource_prefix }}-lc2"
       register: lc_3_info_result
 
     - assert:
@@ -262,5 +262,4 @@
           - lc_3_info_result.launch_configurations | length == 0
 
   always:
-
     - include_tasks: env_cleanup.yml

@@ -7,29 +7,29 @@
 # - Waiting for deletion
 
 - vars:
-    common_policy_name: '{{ policy_name_prefix }}-Common'
+    common_policy_name: "{{ policy_name_prefix }}-Common"
     first_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
     second_tags:
-      'New Key with Spaces': Value with spaces
+      New Key with Spaces: Value with spaces
       NewCamelCaseKey: CamelCaseValue
       newPascalCaseKey: pascalCaseValue
       new_snake_case_key: snake_case_value
     third_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
-      'New Key with Spaces': Updated Value with spaces
+      New Key with Spaces: Updated Value with spaces
     final_tags:
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       CamelCaseKey: CamelCaseValue
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
-      'New Key with Spaces': Updated Value with spaces
+      New Key with Spaces: Updated Value with spaces
       NewCamelCaseKey: CamelCaseValue
       newPascalCaseKey: pascalCaseValue
       new_snake_case_key: snake_case_value
@@ -37,10 +37,10 @@
     ###################################################################
     # Creation - Fully tested in 'default_order.yml' and 'strict_order.yml'
 
-    - name: 'C - Create a simple firewall policy with `default` rule order'
+    - name: C - Create a simple firewall policy with `default` rule order
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
-        stateful_rule_order: 'default'
+        name: "{{ common_policy_name }}"
+        stateful_rule_order: default
         state: present
       register: common_policy
 
@@ -64,25 +64,25 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Save Policy ID/ARN for later'
+    - name: C - Save Policy ID/ARN for later
       set_fact:
-        common_policy_id: '{{ policy_metadata.firewall_policy_id }}'
-        common_policy_arn: '{{ policy_metadata.firewall_policy_arn }}'
+        common_policy_id: "{{ policy_metadata.firewall_policy_id }}"
+        common_policy_arn: "{{ policy_metadata.firewall_policy_arn }}"
       vars:
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
     ###################################################################
     # Description
 
-    - name: '(CHECK) C - Set Description'
-      check_mode: True
+    - name: (CHECK) C - Set Description
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Example Description'
+        description: Example Description
       register: common_policy
 
     - assert:
@@ -107,14 +107,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Set Description'
+    - name: C - Set Description
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Example Description'
+        description: Example Description
       register: common_policy
 
     - assert:
@@ -139,15 +139,15 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: '(CHECK) C - Set Description (idempotency)'
-      check_mode: True
+    - name: (CHECK) C - Set Description (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Example Description'
+        description: Example Description
       register: common_policy
 
     - assert:
@@ -172,14 +172,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Set Description (idempotency)'
+    - name: C - Set Description (idempotency)
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Example Description'
+        description: Example Description
       register: common_policy
 
     - assert:
@@ -204,17 +204,17 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
     ###
 
-    - name: '(CHECK) C - Update Description'
-      check_mode: True
+    - name: (CHECK) C - Update Description
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Updated Description'
+        description: Updated Description
       register: common_policy
 
     - assert:
@@ -239,14 +239,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Update Description'
+    - name: C - Update Description
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Updated Description'
+        description: Updated Description
       register: common_policy
 
     - assert:
@@ -271,15 +271,15 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: '(CHECK) C - Update Description (idempotency)'
-      check_mode: True
+    - name: (CHECK) C - Update Description (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Updated Description'
+        description: Updated Description
       register: common_policy
 
     - assert:
@@ -304,14 +304,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Update Description (idempotency)'
+    - name: C - Update Description (idempotency)
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        description: 'Updated Description'
+        description: Updated Description
       register: common_policy
 
     - assert:
@@ -336,18 +336,18 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
     ###################################################################
     # Tags
 
-    - name: '(CHECK) C - Set Tags'
-      check_mode: True
+    - name: (CHECK) C - Set Tags
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: common_policy
 
     - assert:
@@ -372,14 +372,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Set Tags'
+    - name: C - Set Tags
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: common_policy
 
     - assert:
@@ -404,15 +404,15 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: '(CHECK) C - Set Tags (idempotency)'
-      check_mode: True
+    - name: (CHECK) C - Set Tags (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: common_policy
 
     - assert:
@@ -437,14 +437,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Set Tags (idempotency)'
+    - name: C - Set Tags (idempotency)
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ first_tags }}'
+        tags: "{{ first_tags }}"
       register: common_policy
 
     - assert:
@@ -469,17 +469,17 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
     ###
 
-    - name: '(CHECK) C - Update Tags with purge'
-      check_mode: True
+    - name: (CHECK) C - Update Tags with purge
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: common_policy
 
     - assert:
@@ -504,14 +504,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Update Tags with purge'
+    - name: C - Update Tags with purge
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: common_policy
 
     - assert:
@@ -536,15 +536,15 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: '(CHECK) C - Update Tags with purge (idempotency)'
-      check_mode: True
+    - name: (CHECK) C - Update Tags with purge (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: common_policy
 
     - assert:
@@ -569,14 +569,14 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Update Tags with purge (idempotency)'
+    - name: C - Update Tags with purge (idempotency)
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ second_tags }}'
+        tags: "{{ second_tags }}"
       register: common_policy
 
     - assert:
@@ -601,18 +601,18 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
     ###
 
-    - name: '(CHECK) C - Update tags without purge'
-      check_mode: True
+    - name: (CHECK) C - Update tags without purge
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: common_policy
 
     - assert:
@@ -637,15 +637,15 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Update tags without purge'
+    - name: C - Update tags without purge
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: common_policy
 
     - assert:
@@ -670,16 +670,16 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: '(CHECK) C - Update tags without purge (idempotency)'
-      check_mode: True
+    - name: (CHECK) C - Update tags without purge (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: common_policy
 
     - assert:
@@ -704,15 +704,15 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
-    - name: 'C - Update tags without purge (idempotency)'
+    - name: C - Update tags without purge (idempotency)
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: present
-        tags: '{{ third_tags }}'
-        purge_tags: False
+        tags: "{{ third_tags }}"
+        purge_tags: false
       register: common_policy
 
     - assert:
@@ -737,16 +737,16 @@
           - policy_data.stateless_default_actions == ["aws:forward_to_sfe"]
           - policy_data.stateless_fragment_default_actions == ["aws:forward_to_sfe"]
       vars:
-        policy_data: '{{ common_policy.policy.policy }}'
-        policy_metadata: '{{ common_policy.policy.policy_metadata }}'
+        policy_data: "{{ common_policy.policy.policy }}"
+        policy_metadata: "{{ common_policy.policy.policy_metadata }}"
 
     ###################################################################
     # Delete policy
 
-    - name: '(CHECK) C - Delete policy with default order'
-      check_mode: True
+    - name: (CHECK) C - Delete policy with default order
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: absent
       register: common_policy
 
@@ -754,9 +754,9 @@
         that:
           - common_policy is changed
 
-    - name: 'C - Delete policy with default order'
+    - name: C - Delete policy with default order
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: absent
       register: common_policy
 
@@ -764,9 +764,9 @@
         that:
           - common_policy is changed
 
-    - name: 'C - Check policy is gone'
+    - name: C - Check policy is gone
       networkfirewall_policy_info:
-        arn: '{{ common_policy_arn }}'
+        arn: "{{ common_policy_arn }}"
       register: common_policy_info
 
     - assert:
@@ -774,10 +774,10 @@
           - common_policy_info is successful
           - common_policy_info.policies | length == 0
 
-    - name: '(CHECK) C - Delete policy with default order (idempotency)'
-      check_mode: True
+    - name: (CHECK) C - Delete policy with default order (idempotency)
+      check_mode: true
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: absent
       register: common_policy
 
@@ -785,9 +785,9 @@
         that:
           - common_policy is not changed
 
-    - name: 'C - Delete policy with default order (idempotency)'
+    - name: C - Delete policy with default order (idempotency)
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: absent
       register: common_policy
 
@@ -796,9 +796,9 @@
           - common_policy is not changed
 
   always:
-    - name: 'C - Cleanup firewall policy'
+    - name: C - Cleanup firewall policy
       networkfirewall_policy:
-        name: '{{ common_policy_name }}'
+        name: "{{ common_policy_name }}"
         state: absent
-        wait: False
-      ignore_errors: True
+        wait: false
+      ignore_errors: true

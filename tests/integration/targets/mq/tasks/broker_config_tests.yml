@@ -1,10 +1,11 @@
+---
 - name: get broker details
   mq_broker_info:
-    broker_id:      "{{ broker_id }}"
+    broker_id: "{{ broker_id }}"
   register: result
 - name: verify test broker is running
   assert:
-    fail_msg: "broker with id {{ broker_id }} is not in RUNNING state"
+    fail_msg: broker with id {{ broker_id }} is not in RUNNING state
     that:
       - result.broker['broker_state'] == 'RUNNING'
   when: not ansible_check_mode
@@ -31,7 +32,7 @@
   assert:
     fail_msg: test1a failed
     that:
-    - not (result.changed | bool )
+      - not (result.changed | bool )
   when: not ansible_check_mode
 - name: test 2 - send (almost) same config again - differs by whitespace
   mq_broker_config:
@@ -48,7 +49,7 @@
   mq_broker_config:
     broker_id: "{{ broker_id }}"
     config_xml: "{{ lookup('file', '../files/broker_cfg.2.xml')}}"
-    config_description: "test 3 used custom description"
+    config_description: test 3 used custom description
     reboot: true
   register: result
 - name: verify test3
@@ -60,23 +61,23 @@
   when: not ansible_check_mode
 - name: wait for reboot
   mq_broker_info:
-    broker_id:      "{{ broker_id }}"
+    broker_id: "{{ broker_id }}"
   register: result
   until: result.broker['broker_state'] == 'RUNNING'
   retries: 15
-  delay:   60
+  delay: 60
   when: not ansible_check_mode
 - name: test 3a - send new config again
   mq_broker_config:
     broker_id: "{{ broker_id }}"
     config_xml: "{{ lookup('file', '../files/broker_cfg.2.xml')}}"
-    config_description: "test 3 used custom description"
+    config_description: test 3 used custom description
     reboot: true
   register: result
 - name: verify test3a
   assert:
     fail_msg: test3a failed
     that:
-    - not (result.changed | bool )
+      - not (result.changed | bool )
   when: not ansible_check_mode
 # Note: currently there's no way to delete a broker configuration (version)

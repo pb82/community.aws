@@ -1,6 +1,5 @@
 ---
 - block:
-
     # If us-west-1 does become supported, change this test to use an unsupported region
     # or if all regions are supported, delete this test
     - name: attempt to use eks in unsupported region
@@ -12,7 +11,7 @@
         session_token: "{{ security_token | default(omit) }}"
         region: us-west-1
       register: aws_eks_unsupported_region
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: check that aws_eks_cluster did nothing
       assert:
@@ -36,7 +35,7 @@
         name: aws_eks_cluster_role
         assume_role_policy_document: "{{ lookup('file','eks-trust-policy.json') }}"
         state: present
-        create_instance_profile: no
+        create_instance_profile: false
         managed_policies:
           - AmazonEKSServicePolicy
           - AmazonEKSClusterPolicy
@@ -46,17 +45,17 @@
       ec2_vpc_net:
         cidr_block: 10.0.0.0/16
         state: present
-        name: '{{ resource_prefix }}_aws_eks'
+        name: "{{ resource_prefix }}_aws_eks"
         resource_tags:
-          Name: '{{ resource_prefix }}_aws_eks'
+          Name: "{{ resource_prefix }}_aws_eks"
       register: setup_vpc
 
     - name: create subnets
       ec2_vpc_subnet:
-        az: '{{ aws_region }}{{ item.zone }}'
+        az: "{{ aws_region }}{{ item.zone }}"
         tags:
-          Name: '{{ resource_prefix }}_aws_eks-subnet-{{ item.zone }}'
-        vpc_id: '{{ setup_vpc.vpc.id }}'
+          Name: "{{ resource_prefix }}_aws_eks-subnet-{{ item.zone }}"
+        vpc_id: "{{ setup_vpc.vpc.id }}"
         cidr: "{{ item.cidr }}"
         state: present
       register: setup_subnets
@@ -70,7 +69,7 @@
         state: present
         rules: "{{ item.rules }}"
         rules_egress: "{{ item.rules_egress|default(omit) }}"
-        vpc_id: '{{ setup_vpc.vpc.id }}'
+        vpc_id: "{{ setup_vpc.vpc.id }}"
       with_items: "{{ eks_security_groups }}"
       register: setup_security_groups
 
@@ -98,7 +97,7 @@
         security_groups: "{{ eks_security_groups | map(attribute='name') }}"
         subnets: "{{ setup_subnets.results | map(attribute='subnet.id') }}"
         role_arn: "{{ iam_role.arn }}"
-        wait: yes
+        wait: true
       register: eks_create
 
     - name: Check that EKS cluster is active and has CA and endpoint data
@@ -130,7 +129,7 @@
       eks_cluster:
         name: "{{ eks_cluster_name }}"
         state: absent
-        wait: yes
+        wait: true
       register: eks_delete
 
     - name: check that EKS cluster was removed
@@ -144,7 +143,7 @@
         security_groups: "{{ eks_security_groups | map(attribute='name') }}"
         subnets: "{{ setup_subnets.results | map(attribute='subnet.id') }}"
         role_arn: "{{ iam_role.arn }}"
-        wait: yes
+        wait: true
       register: eks_create
 
     - name: check that EKS cluster was created
@@ -183,7 +182,7 @@
       eks_cluster:
         name: "{{ eks_cluster_short_name }}"
         state: absent
-        wait: yes
+        wait: true
       register: eks_delete
 
   always:
@@ -195,17 +194,17 @@
       eks_cluster:
         name: "{{ eks_cluster_name }}"
         state: absent
-        wait: yes
+        wait: true
       register: eks_delete
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove EKS cluster
       eks_cluster:
         name: "{{ eks_cluster_short_name }}"
         state: absent
-        wait: yes
+        wait: true
       register: eks_delete
-      ignore_errors: yes
+      ignore_errors: true
 
     - debug:
         msg: "{{ eks_security_groups|reverse|list }}"
@@ -222,32 +221,32 @@
         state: present
         rules: []
         rules_egress: []
-        purge_rules: yes
-        purge_rules_egress: yes
-        vpc_id: '{{ setup_vpc.vpc.id }}'
+        purge_rules: true
+        purge_rules_egress: true
+        vpc_id: "{{ setup_vpc.vpc.id }}"
       with_items: "{{ eks_security_groups }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove security groups
       ec2_security_group:
-        name: '{{ item.name }}'
+        name: "{{ item.name }}"
         state: absent
-        vpc_id: '{{ setup_vpc.vpc.id }}'
+        vpc_id: "{{ setup_vpc.vpc.id }}"
       with_items: "{{ eks_security_groups|reverse|list + additional_eks_sg }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove setup subnet
       ec2_vpc_subnet:
-        az: '{{ aws_region }}{{ item.zone }}'
-        vpc_id: '{{ setup_vpc.vpc.id }}'
+        az: "{{ aws_region }}{{ item.zone }}"
+        vpc_id: "{{ setup_vpc.vpc.id }}"
         cidr: "{{ item.cidr}}"
         state: absent
       with_items: "{{ eks_subnets }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove setup VPC
       ec2_vpc_net:
         cidr_block: 10.0.0.0/16
         state: absent
-        name: '{{ resource_prefix }}_aws_eks'
-      ignore_errors: yes
+        name: "{{ resource_prefix }}_aws_eks"
+      ignore_errors: true

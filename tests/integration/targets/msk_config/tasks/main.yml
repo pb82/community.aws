@@ -12,10 +12,10 @@
     - name: create msk configuration (check mode)
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "present"
+        state: present
         kafka_versions: "{{ msk_kafka_versions }}"
         config: "{{ msk_configs[0] }}"
-      check_mode: yes
+      check_mode: true
       register: msk_config
 
     - name: assert that the msk configuration be created
@@ -26,7 +26,7 @@
     - name: create msk configuration
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "present"
+        state: present
         kafka_versions: "{{ msk_kafka_versions }}"
         config: "{{ msk_configs[0] }}"
       register: msk_config
@@ -39,7 +39,7 @@
     - name: create msk configuration (idempotency)
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "present"
+        state: present
         kafka_versions: "{{ msk_kafka_versions }}"
         config: "{{ msk_configs[0] }}"
       register: msk_config
@@ -53,17 +53,17 @@
       assert:
         that:
           - msk_config.revision == 1
-          - "msk_config.arn.startswith('arn:aws:kafka:' ~ aws_region ~ ':')"
+          - msk_config.arn.startswith('arn:aws:kafka:' ~ aws_region ~ ':')
           - "'auto.create.topics.enable=True' in msk_config.server_properties"
           - "'zookeeper.session.timeout.ms=18000' in msk_config.server_properties"
 
     - name: update msk configuration (check mode)
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "present"
+        state: present
         kafka_versions: "{{ msk_kafka_versions }}"
         config: "{{ msk_configs[1] }}"
-      check_mode: yes
+      check_mode: true
       register: msk_config
 
     - name: assert that the msk configuration be changed
@@ -74,7 +74,7 @@
     - name: update msk configuration
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "present"
+        state: present
         kafka_versions: "{{ msk_kafka_versions }}"
         config: "{{ msk_configs[1] }}"
       register: msk_config
@@ -95,7 +95,7 @@
     - name: update msk configuration (idempotency)
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "present"
+        state: present
         kafka_versions: "{{ msk_kafka_versions }}"
         config: "{{ msk_configs[1] }}"
       register: msk_config
@@ -108,8 +108,8 @@
     - name: delete msk configuration (check mode)
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "absent"
-      check_mode: yes
+        state: absent
+      check_mode: true
       register: msk_config
 
     - name: assert that the msk configuration be changed
@@ -120,7 +120,7 @@
     - name: delete msk configuration
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "absent"
+        state: absent
       register: msk_config
 
     - name: assert that the msk configuration is changed
@@ -131,7 +131,7 @@
     - name: delete msk configuration (idempotency)
       msk_config:
         name: "{{ msk_config_name }}"
-        state: "absent"
+        state: absent
       register: msk_config
 
     - name: assert that the msk configuration wasn't changed
@@ -140,9 +140,8 @@
           - msk_config is not changed
 
   always:
-
     - name: remove msk configuration
       msk_config:
         name: "{{ msk_config_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

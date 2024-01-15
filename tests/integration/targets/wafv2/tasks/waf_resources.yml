@@ -1,3 +1,4 @@
+---
 ################################
 # test wafv2 resouces
 # bind ALB to WAFv2 ACL
@@ -8,7 +9,7 @@
     scope: REGIONAL
     state: present
     arn: "{{ alb.load_balancer_arn }}"
-  check_mode: yes
+  check_mode: true
   register: out
 
 - name: verify check_mode create

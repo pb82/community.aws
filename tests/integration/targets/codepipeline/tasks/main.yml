@@ -1,15 +1,14 @@
 ---
-- name: 'aws_codebuild integration tests'
+- name: aws_codebuild integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     # ==================== preparaions ========================================
 
     - name: create IAM role needed for CodePipeline test
@@ -37,7 +36,7 @@
                   category: Source
                   owner: AWS
                   provider: S3
-                  version: '1'
+                  version: "1"
                 configuration:
                   S3Bucket: foo
                   S3ObjectKey: bar
@@ -50,7 +49,7 @@
                   category: Build
                   owner: AWS
                   provider: CodeBuild
-                  version: '1'
+                  version: "1"
                 inputArtifacts:
                   - { name: step_one_output }
                 outputArtifacts:
@@ -84,7 +83,7 @@
                   category: Source
                   owner: AWS
                   provider: S3
-                  version: '1'
+                  version: "1"
                 configuration:
                   S3Bucket: foo
                   S3ObjectKey: bar
@@ -97,7 +96,7 @@
                   category: Build
                   owner: AWS
                   provider: CodeBuild
-                  version: '1'
+                  version: "1"
                 inputArtifacts:
                   - { name: step_one_output }
                 outputArtifacts:
@@ -115,7 +114,7 @@
     - name: Test deletion of CodePipeline
       codepipeline:
         name: "{{ codepipeline_name }}"
-        role_arn: ''
+        role_arn: ""
         artifact_store: {}
         stages: []
         state: absent
@@ -129,11 +128,10 @@
   # ==================== cleanup =======================
 
   always:
-
     - name: Cleanup - delete test CodePipeline
       codepipeline:
         name: "{{ codepipeline_name }}"
-        role_arn: ''
+        role_arn: ""
         artifact_store: {}
         stages: []
         state: absent

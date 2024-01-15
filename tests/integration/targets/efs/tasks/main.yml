@@ -1,15 +1,14 @@
 ---
-- name: 'efs integration tests'
+- name: efs integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     # ============================================================
     - name: Create VPC for testing
       ec2_vpc_net:
@@ -49,19 +48,18 @@
     - set_fact:
         vpc_default_sg_id: "{{sg_facts.security_groups[0].group_id}}"
 
-
     # ============================================================
     - name: Create Efs for testing
       efs:
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
-        throughput_mode: 'bursting'
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
+        throughput_mode: bursting
       register: created_efs
 
     # ============================================================
@@ -159,12 +157,12 @@
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
-        throughput_mode: 'provisioned'
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
+        throughput_mode: provisioned
         provisioned_throughput_in_mibps: 5.0
       register: efs_result
 
@@ -178,12 +176,12 @@
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
-        throughput_mode: 'provisioned'
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
+        throughput_mode: provisioned
         provisioned_throughput_in_mibps: 5.0
       register: efs_result
 
@@ -199,12 +197,12 @@
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
-        throughput_mode: 'provisioned'
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
+        throughput_mode: provisioned
         provisioned_throughput_in_mibps: 8.0
       register: efs_result
 
@@ -239,11 +237,11 @@
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
         transition_to_ia: 60
       register: efs_result
 
@@ -256,11 +254,11 @@
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
         transition_to_ia: 60
       register: efs_result
 
@@ -274,11 +272,11 @@
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
         transition_to_ia: None
       register: efs_result
 
@@ -291,11 +289,11 @@
         state: present
         name: "{{ efs_name }}-test-efs"
         tags:
-            Name: "{{ efs_name }}-test-tag"
-            Purpose: file-storage
+          Name: "{{ efs_name }}-test-tag"
+          Purpose: file-storage
         targets:
-            - subnet_id: "{{testing_subnet_a.subnet.id}}"
-            - subnet_id: "{{testing_subnet_b.subnet.id}}"
+          - subnet_id: "{{testing_subnet_a.subnet.id}}"
+          - subnet_id: "{{testing_subnet_b.subnet.id}}"
         transition_to_ia: None
       register: efs_result
 
@@ -332,13 +330,13 @@
       efs_tag:
         state: present
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
-          check_mode_tag: 'this tag should not be applied'
-      check_mode: yes
+          check_mode_tag: this tag should not be applied
+      check_mode: true
       register: efs_tag_result
 
     - assert:
@@ -349,16 +347,16 @@
       efs_tag:
         state: present
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
-          "Title Case": 'Hello Cruel World'
-          "lowercase spaced": 'hello cruel world'
-          CamelCase: 'SimpleCamelCase'
+          Title Case: Hello Cruel World
+          lowercase spaced: hello cruel world
+          CamelCase: SimpleCamelCase
           Env: IntegrationTests
-          snake_case: 'simple_snake_case'
+          snake_case: simple_snake_case
       register: efs_tag_result
 
     - assert:
@@ -377,13 +375,13 @@
       efs_tag:
         state: present
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
           Env: IntegrationTests
-          snake_case: 'simple_snake_case'
+          snake_case: simple_snake_case
       register: efs_tag_result
 
     - assert:
@@ -394,13 +392,13 @@
       efs_tag:
         state: absent
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
-          snake_case: 'simple_snake_case'
-      check_mode: yes
+          snake_case: simple_snake_case
+      check_mode: true
       register: efs_tag_result
 
     - assert:
@@ -412,9 +410,9 @@
       efs_tag:
         state: present
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
           Env: OtherIntegrationTests
@@ -430,9 +428,9 @@
       efs_tag:
         state: present
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
           Env: OtherIntegrationTests
@@ -448,15 +446,15 @@
       efs_tag:
         state: absent
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
-          "Title Case": 'Hello Cruel World'
-          "lowercase spaced": 'hello cruel world'
-          CamelCase: 'SimpleCamelCase'
-          snake_case: 'simple_snake_case'
+          Title Case: Hello Cruel World
+          lowercase spaced: hello cruel world
+          CamelCase: SimpleCamelCase
+          snake_case: simple_snake_case
       register: efs_tag_result
 
     - assert:
@@ -474,12 +472,12 @@
       efs_tag:
         state: absent
         resource: "{{ created_efs.efs.file_system_id }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         region: "{{ aws_region }}"
         tags:
-          snake_case: 'simple_snake_case'
+          snake_case: simple_snake_case
       register: efs_tag_result
 
     - assert:
@@ -491,9 +489,9 @@
         state: absent
         resource: "{{ created_efs.efs.file_system_id }}"
         region: "{{ aws_region }}"
-        access_key: '{{ aws_access_key }}'
-        secret_key: '{{ aws_secret_key }}'
-        session_token: '{{ security_token | default(omit) }}'
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        session_token: "{{ security_token | default(omit) }}"
         tags: {}
         purge_tags: true
       register: efs_tag_result
@@ -513,7 +511,7 @@
           Purpose: file-storage
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: Remove test subnet in zone A
@@ -526,7 +524,7 @@
           Name: "{{ efs_name }}-subnet-a"
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: Remove test subnet in zone B
@@ -539,7 +537,7 @@
           Name: "{{ efs_name }}-subnet-b"
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: remove the VPC
@@ -549,5 +547,5 @@
         state: absent
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10

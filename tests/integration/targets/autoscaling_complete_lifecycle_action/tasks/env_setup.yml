@@ -1,3 +1,4 @@
+---
 - name: Run ec2_asg_lifecycle_hook integration tests.
 
   block:
@@ -31,7 +32,7 @@
         tags:
           Name: "{{ rtb_name }}"
         routes:
-          - dest: 0.0.0.0/0
+          - dest: "0.0.0.0/0"
             gateway_id: "{{ igw.gateway_id }}"
         subnets:
           - "{{ testing_subnet.subnet.id }}"
@@ -45,11 +46,11 @@
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
           - proto: tcp
             from_port: 80
             to_port: 80
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
       register: sg
 
     - name: create a launch configuration
@@ -57,7 +58,7 @@
         name: "{{ lc_name }}"
         image_id: "{{ ec2_ami_id }}"
         instance_type: t2.micro
-        assign_public_ip: yes
+        assign_public_ip: true
       register: create_lc
 
     - name: ensure that lc is created
@@ -72,7 +73,7 @@
         launch_config_name: "{{ lc_name }}"
         health_check_period: 60
         health_check_type: ELB
-        replace_all_instances: yes
+        replace_all_instances: true
         min_size: 0
         max_size: 0
         desired_capacity: 0

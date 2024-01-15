@@ -1,14 +1,12 @@
 ---
-
 - module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
 
   block:
-
     # ==== Tests ===================================================
 
     - name: Create a new instance
@@ -20,18 +18,18 @@
         public_ports:
           - from_port: 50
             to_port: 50
-            protocol: "tcp"
+            protocol: tcp
             cidrs: ["0.0.0.0/0"]
             ipv6_cidrs: ["::/0"]
-        wait: yes
+        wait: true
       register: result
 
     - assert:
         that:
           - result.changed == True
           - "'instance' in result and result.instance.name == instance_name"
-          - "result.instance.state.name == 'running'"
-          - "result.instance.networking.ports[0].from_port == 50"
+          - result.instance.state.name == 'running'
+          - result.instance.networking.ports[0].from_port == 50
           - result.instance.networking.ports|length == 1
 
     - name: Check if it does not delete public ports config when no value is provided
@@ -55,7 +53,7 @@
         public_ports:
           - from_port: 50
             to_port: 50
-            protocol: "tcp"
+            protocol: tcp
             cidrs: ["0.0.0.0/0"]
             ipv6_cidrs: ["::/0"]
       register: result
@@ -78,13 +76,13 @@
       lightsail:
         name: "{{ instance_name }}"
         state: stopped
-        wait: yes
+        wait: true
       register: result
 
     - assert:
         that:
           - result.changed == True
-          - "result.instance.state.name == 'stopped'"
+          - result.instance.state.name == 'stopped'
 
     - name: Stop the stopped instance
       lightsail:
@@ -105,7 +103,7 @@
     - assert:
         that:
           - result.changed == True
-          - "result.instance.state.name == 'running'"
+          - result.instance.state.name == 'running'
 
     - name: Restart the instance
       lightsail:
@@ -140,9 +138,8 @@
   # ==== Cleanup ====================================================
 
   always:
-
     - name: Cleanup - delete instance
       lightsail:
         name: "{{ instance_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

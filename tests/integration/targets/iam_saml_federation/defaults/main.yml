@@ -1,2 +1,2 @@
 ---
-provider_name: 'ansible-test-{{ resource_prefix }}'
+provider_name: ansible-test-{{ resource_prefix }}

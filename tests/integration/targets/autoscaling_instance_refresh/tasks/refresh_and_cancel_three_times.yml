@@ -1,19 +1,18 @@
 ---
-
 - name: try to cancel pre-loop
   autoscaling_instance_refresh:
     name: "{{ asg_name }}"
-    state: "cancelled"
-  ignore_errors: yes
+    state: cancelled
+  ignore_errors: true
 
 - name: test starting a refresh with an ASG name
   autoscaling_instance_refresh:
     name: "{{ asg_name }}"
-    state: "started"
+    state: started
     access_key: "{{ aws_access_key }}"
     secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
-  ignore_errors: no
+  ignore_errors: false
   retries: 10
   delay: 5
   register: refreshout
@@ -22,8 +21,8 @@
 - name: test cancelling a refresh with an ASG name
   autoscaling_instance_refresh:
     name: "{{ asg_name }}"
-    state: "cancelled"
+    state: cancelled
     access_key: "{{ aws_access_key }}"
     secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
-  ignore_errors: yes
+  ignore_errors: true

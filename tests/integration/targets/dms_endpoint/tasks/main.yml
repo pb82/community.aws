@@ -1,27 +1,26 @@
 ---
-- name: 'dms_endpoint integration tests'
+- name: dms_endpoint integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     - name: create endpoints
       dms_endpoint:
-          state: present
-          endpointidentifier: "{{ dms_identifier }}"
-          endpointtype: source
-          enginename: aurora
-          username: testing
-          password: testint1234
-          servername: "{{ resource_prefix }}.exampledomain.com"
-          port: 3306
-          databasename: 'testdb'
-          sslmode: none
+        state: present
+        endpointidentifier: "{{ dms_identifier }}"
+        endpointtype: source
+        enginename: aurora
+        username: testing
+        password: testint1234
+        servername: "{{ resource_prefix }}.exampledomain.com"
+        port: 3306
+        databasename: testdb
+        sslmode: none
       register: result
 
     - assert:
@@ -31,16 +30,16 @@
 
     - name: create endpoints no change
       dms_endpoint:
-          state: present
-          endpointidentifier: "{{ dms_identifier }}"
-          endpointtype: source
-          enginename: aurora
-          username: testing
-          password: testint1234
-          servername: "{{ resource_prefix }}.exampledomain.com"
-          port: 3306
-          databasename: 'testdb'
-          sslmode: none
+        state: present
+        endpointidentifier: "{{ dms_identifier }}"
+        endpointtype: source
+        enginename: aurora
+        username: testing
+        password: testint1234
+        servername: "{{ resource_prefix }}.exampledomain.com"
+        port: 3306
+        databasename: testdb
+        sslmode: none
       register: result
 
     - assert:
@@ -58,7 +57,7 @@
         password: testint1234
         servername: "{{ resource_prefix }}.exampledomain.com"
         port: 3306
-        databasename: 'testdb2'
+        databasename: testdb2
         sslmode: none
       register: result
 
@@ -77,7 +76,7 @@
         password: testint1234
         servername: "{{ resource_prefix }}.exampledomain.com"
         port: 3306
-        databasename: 'testdb2'
+        databasename: testdb2
         sslmode: none
       register: result
 
@@ -86,13 +85,13 @@
           - result is not changed
           - result is not failed
 
-    - include_tasks: 'tags.yml'
+    - include_tasks: tags.yml
 
     - name: delete endpoints
       dms_endpoint:
         state: absent
         endpointidentifier: "{{ dms_identifier }}"
-        wait: True
+        wait: true
         timeout: 60
         retries: 10
       register: result
@@ -105,8 +104,8 @@
     - name: delete endpoints no change
       dms_endpoint:
         state: absent
-        endpointidentifier:  "{{ dms_identifier }}"
-        wait: False
+        endpointidentifier: "{{ dms_identifier }}"
+        wait: false
       register: result
 
     - assert:
@@ -125,9 +124,9 @@
         password: testint1234
         servername: "{{ resource_prefix }}.exampledomain.com"
         port: 3306
-        databasename: 'testdb'
+        databasename: testdb
         sslmode: none
-        wait: True
+        wait: true
         timeout: 60
         retries: 10
-      ignore_errors: True
+      ignore_errors: true

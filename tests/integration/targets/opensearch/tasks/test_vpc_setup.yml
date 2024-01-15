@@ -1,3 +1,4 @@
+---
 - name: Configure pre-requisites for test, VPC and KMS resources
   block:
     - name: Create VPC for use in testing
@@ -15,13 +16,13 @@
       ec2_vpc_net_info:
         filters:
           tag:AnsibleEIPTest:
-          - "{{ tiny_prefix }}-vpc"
+            - "{{ tiny_prefix }}-vpc"
       register: vpc_info
       retries: 120
       delay: 5
       until:
-      - vpc_info.vpcs | length > 0
-      - vpc_info.vpcs[0].state == 'available'
+        - vpc_info.vpcs | length > 0
+        - vpc_info.vpcs[0].state == 'available'
 
     - name: Create internet gateway for use in testing
       ec2_vpc_igw:
@@ -41,7 +42,7 @@
     - assert:
         that:
           # We cannot run the test if this region does not have at least 2 AZs
-          - "az_info.availability_zones | length >= 2"
+          - az_info.availability_zones | length >= 2
     - set_fact:
         test_az_zone1: "{{ az_info.availability_zones[0].zone_name }}"
         test_az_zone2: "{{ az_info.availability_zones[1].zone_name }}"
@@ -73,7 +74,7 @@
       ec2_vpc_route_table:
         vpc_id: "{{ testing_vpc.vpc.id }}"
         routes:
-          - dest: 0.0.0.0/0
+          - dest: "0.0.0.0/0"
             gateway_id: "{{ igw.gateway_id }}"
         subnets:
           - "{{ testing_subnet_1.subnet.id }}"
@@ -94,11 +95,11 @@
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
           - proto: tcp
             from_port: 80
             to_port: 80
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
       register: sg
 
     # A private route53 zone is needed to configure a custom endpoint in the OpenSearch cluster.
@@ -106,10 +107,10 @@
     - name: Create private Route53 zone for the VPC
       register: route53_zone
       route53_zone:
-        comment: "zone for ansible integration tests"
-        zone: "ansible-integ-test.com"
+        comment: zone for ansible integration tests
+        zone: ansible-integ-test.com
         state: present
-        vpc_id: '{{ testing_vpc.vpc.id }}'
+        vpc_id: "{{ testing_vpc.vpc.id }}"
         tags:
           Name: "{{ tiny_prefix }}-zone"
           AnsibleTest: AnsibleTestVpc
@@ -124,7 +125,7 @@
         alias: "{{ tiny_prefix }}-kms"
         description: a key used for encryption at rest in test OpenSearch cluster
         state: present
-        enabled: yes
+        enabled: true
         key_spec: SYMMETRIC_DEFAULT
         key_usage: ENCRYPT_DECRYPT
         policy: "{{ lookup('template', 'kms_policy.j2') }}"

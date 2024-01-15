@@ -1,11 +1,12 @@
+---
 # Create a EKS Cluster to test Nodegroup
 # This space was a copy by aws_eks_cluster integration test
 - name: ensure IAM instance role exists
   iam_role:
     name: ansible-test-{{ tiny_prefix }}-eks_nodegroup-cluster
-    assume_role_policy_document: '{{ lookup(''file'',''eks-trust-policy.json'') }}'
+    assume_role_policy_document: "{{ lookup('file','eks-trust-policy.json') }}"
     state: present
-    create_instance_profile: 'no'
+    create_instance_profile: "no"
     managed_policies:
       - AmazonEKSServicePolicy
       - AmazonEKSClusterPolicy
@@ -15,59 +16,59 @@
   ec2_vpc_net:
     cidr_block: 10.0.0.0/16
     state: present
-    name: '{{ resource_prefix }}_aws_eks'
+    name: "{{ resource_prefix }}_aws_eks"
     resource_tags:
-      Name: '{{ resource_prefix }}_aws_eks'
+      Name: "{{ resource_prefix }}_aws_eks"
   register: setup_vpc
 
 - name: create subnets
   ec2_vpc_subnet:
-    az: '{{ aws_region }}{{ item.zone }}'
+    az: "{{ aws_region }}{{ item.zone }}"
     tags: '{ "Name": "{{ resource_prefix }}_aws_eks-subnet-{{ item.type }}-{{ item.zone }}" }'
-    vpc_id: '{{ setup_vpc.vpc.id }}'
-    cidr: '{{ item.cidr }}'
-    map_public: 'yes'
+    vpc_id: "{{ setup_vpc.vpc.id }}"
+    cidr: "{{ item.cidr }}"
+    map_public: "yes"
     state: present
   register: setup_subnets
   with_items:
-    - '{{ eks_subnets }}'
+    - "{{ eks_subnets }}"
 
 - name: create Internet Gateway
   amazon.aws.ec2_vpc_igw:
-    vpc_id: '{{ setup_vpc.vpc.id }}'
+    vpc_id: "{{ setup_vpc.vpc.id }}"
     state: present
     tags:
-      Name: '{{ resource_prefix }}_IGW'
+      Name: "{{ resource_prefix }}_IGW"
   register: setup_igw
 
 - name: Set up public subnet route table
   community.aws.ec2_vpc_route_table:
-    vpc_id: '{{ setup_vpc.vpc.id }}'
+    vpc_id: "{{ setup_vpc.vpc.id }}"
     tags:
-      Name: "EKS-ng-{{ tiny_prefix }}"
-    subnets: '{{ setup_subnets.results | map(attribute=''subnet.id'') }}'
+      Name: EKS-ng-{{ tiny_prefix }}
+    subnets: "{{ setup_subnets.results | map(attribute='subnet.id') }}"
     routes:
-      - dest: 0.0.0.0/0
-        gateway_id: '{{ setup_igw.gateway_id }}'
+      - dest: "0.0.0.0/0"
+        gateway_id: "{{ setup_igw.gateway_id }}"
   register: public_route_table
 
 - name: create security groups to use for EKS
   ec2_security_group:
-    name: '{{ item.name }}'
-    description: '{{ item.description }}'
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
     state: present
-    rules: '{{ item.rules }}'
-    rules_egress: '{{ item.rules_egress|default(omit) }}'
-    vpc_id: '{{ setup_vpc.vpc.id }}'
-  with_items: '{{ eks_security_groups }}'
+    rules: "{{ item.rules }}"
+    rules_egress: "{{ item.rules_egress|default(omit) }}"
+    vpc_id: "{{ setup_vpc.vpc.id }}"
+  with_items: "{{ eks_security_groups }}"
   register: setup_security_groups
 
 - name: create EKS cluster
   eks_cluster:
-    name: '{{ eks_cluster_name }}'
-    security_groups: '{{ eks_security_groups | map(attribute=''name'') }}'
-    subnets: '{{ setup_subnets.results | map(attribute=''subnet.id'') }}'
-    role_arn: '{{ iam_role.arn }}'
+    name: "{{ eks_cluster_name }}"
+    security_groups: "{{ eks_security_groups | map(attribute='name') }}"
+    subnets: "{{ setup_subnets.results | map(attribute='subnet.id') }}"
+    role_arn: "{{ iam_role.arn }}"
     wait: true
   register: eks_create
 
@@ -79,10 +80,10 @@
 # Dependecies to eks nodegroup
 - name: create IAM instance role
   iam_role:
-    name: 'ansible-test-{{ tiny_prefix }}-eks_nodegroup-ng'
-    assume_role_policy_document: '{{ lookup(''file'',''eks-nodegroup-trust-policy.json'') }}'
+    name: ansible-test-{{ tiny_prefix }}-eks_nodegroup-ng
+    assume_role_policy_document: "{{ lookup('file','eks-nodegroup-trust-policy.json') }}"
     state: present
-    create_instance_profile: no
+    create_instance_profile: false
     managed_policies:
       - AmazonEKSWorkerNodePolicy
       - AmazonEC2ContainerRegistryReadOnly
@@ -109,17 +110,17 @@
 
 - name: Create securitygroup for node access
   amazon.aws.ec2_security_group:
-    name: 'ansible-test-eks_nodegroup'
-    description: "SSH access"
-    vpc_id: '{{ setup_vpc.vpc.id }}'
+    name: ansible-test-eks_nodegroup
+    description: SSH access
+    vpc_id: "{{ setup_vpc.vpc.id }}"
     rules:
       - proto: tcp
         ports:
           - 22
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: "0.0.0.0/0"
   register: securitygroup_eks_nodegroup
 
 - name: Create Keypair for Access to Nodegroup nodes
   amazon.aws.ec2_key:
-    name: "ansible-test-eks_nodegroup"
+    name: ansible-test-eks_nodegroup
   register: ec2_key_eks_nodegroup

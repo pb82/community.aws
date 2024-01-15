@@ -1,3 +1,4 @@
+---
 - name: test add s3 bucket notification
   collections:
     - amazon.aws

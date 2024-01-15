@@ -1,25 +1,24 @@
 ---
-- name: 'dms_replication_subnet_group integration tests'
+- name: dms_replication_subnet_group integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     - name: ensure IAM role exists
       iam_role:
         name: "{{ dms_role_role_name }}"
         assume_role_policy_document: "{{ lookup('file','dmsAssumeRolePolicyDocument.json') }}"
         state: present
-        create_instance_profile: no
+        create_instance_profile: false
         managed_policy:
-          - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
+          - arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole
       register: iam_role_output
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Create VPC for use in testing
       ec2_vpc_net:
@@ -30,23 +29,23 @@
         tenancy: default
       register: testing_vpc
 
-    - name: 'Fetch AZ availability'
+    - name: Fetch AZ availability
       aws_az_info:
       register: az_info
 
-    - name: 'Assert that we have multiple AZs available to us'
+    - name: Assert that we have multiple AZs available to us
       assert:
         that: az_info.availability_zones | length >= 2
 
-    - name: 'Pick AZs'
+    - name: Pick AZs
       set_fact:
-        az_one: '{{ az_info.availability_zones[0].zone_name }}'
-        az_two: '{{ az_info.availability_zones[1].zone_name }}'
+        az_one: "{{ az_info.availability_zones[0].zone_name }}"
+        az_two: "{{ az_info.availability_zones[1].zone_name }}"
 
     - name: create subnet1
       ec2_vpc_subnet:
         state: present
-        vpc_id:  "{{ testing_vpc.vpc.id }}"
+        vpc_id: "{{ testing_vpc.vpc.id }}"
         cidr: 10.22.32.16/28
         az: "{{ az_one }}"
       register: subnet1
@@ -54,7 +53,7 @@
     - name: create subnet2
       ec2_vpc_subnet:
         state: present
-        vpc_id:  "{{ testing_vpc.vpc.id }}"
+        vpc_id: "{{ testing_vpc.vpc.id }}"
         cidr: 10.22.32.32/28
         az: "{{ az_two }}"
       register: subnet2
@@ -63,8 +62,8 @@
       dms_replication_subnet_group:
         state: present
         identifier: "{{ dms_sg_identifier }}"
-        description: "Development Subnet Group"
-        subnet_ids: [ "{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
+        description: Development Subnet Group
+        subnet_ids: ["{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
       register: result
 
     - assert:
@@ -76,8 +75,8 @@
       dms_replication_subnet_group:
         state: present
         identifier: "{{ dms_sg_identifier }}"
-        description: "Development Subnet Group"
-        subnet_ids: [ "{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
+        description: Development Subnet Group
+        subnet_ids: ["{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
       register: result
 
     - assert:
@@ -89,8 +88,8 @@
       dms_replication_subnet_group:
         state: present
         identifier: "{{ dms_sg_identifier }}"
-        description: "Development Subnet Group updated"
-        subnet_ids: [ "{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
+        description: Development Subnet Group updated
+        subnet_ids: ["{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
       register: result
 
     - assert:
@@ -102,8 +101,8 @@
       dms_replication_subnet_group:
         state: present
         identifier: "{{ dms_sg_identifier }}"
-        description: "Development Subnet Group updated"
-        subnet_ids: [ "{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
+        description: Development Subnet Group updated
+        subnet_ids: ["{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
       register: result
 
     - assert:
@@ -116,8 +115,8 @@
       dms_replication_subnet_group:
         state: absent
         identifier: "{{ dms_sg_identifier }}"
-        description: "Development Subnet Group updated"
-        subnet_ids: [ "{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
+        description: Development Subnet Group updated
+        subnet_ids: ["{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
       register: result
 
     - assert:
@@ -129,8 +128,8 @@
       dms_replication_subnet_group:
         state: absent
         identifier: "{{ dms_sg_identifier }}"
-        description: "Development Subnet Group updated"
-        subnet_ids: [ "{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
+        description: Development Subnet Group updated
+        subnet_ids: ["{{ subnet1.subnet.id }}", "{{ subnet2.subnet.id }}"]
       register: result
 
     - assert:
@@ -141,14 +140,14 @@
     - name: delete subnet1
       ec2_vpc_subnet:
         state: absent
-        vpc_id:  "{{ testing_vpc.vpc.id }}"
+        vpc_id: "{{ testing_vpc.vpc.id }}"
         cidr: 10.22.32.16/28
         az: "{{ az_one }}"
 
     - name: delete subnet2
       ec2_vpc_subnet:
         state: absent
-        vpc_id:  "{{ testing_vpc.vpc.id }}"
+        vpc_id: "{{ testing_vpc.vpc.id }}"
         cidr: 10.22.32.32/28
         az: "{{ az_two }}"
 
@@ -166,8 +165,8 @@
         name: "{{ dms_role_role_name }}"
         assume_role_policy_document: "{{ lookup('file','dmsAssumeRolePolicyDocument.json') }}"
         state: absent
-        create_instance_profile: no
+        create_instance_profile: false
         managed_policy:
-          - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
+          - arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole
       register: iam_role_output
-      ignore_errors: yes
+      ignore_errors: true

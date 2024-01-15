@@ -9,7 +9,7 @@
     - amazon.aws
 
   block:
-  - include_tasks: 'basic.yml'
+    - include_tasks: basic.yml
   # Permissions missing
   #- include_tasks: 'rotation.yml'
   # Multi-Region CI not supported (yet)

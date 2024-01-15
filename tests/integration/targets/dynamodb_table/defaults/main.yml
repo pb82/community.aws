@@ -5,11 +5,11 @@ table_name_composite_pk_local_indexes: "{{ resource_prefix }}-composite-pk-local
 table_name_on_demand: "{{ resource_prefix }}-pay-per-request"
 table_name_on_demand_complex: "{{ resource_prefix }}-pay-per-request-complex"
 
-table_index: "id"
-table_index_type: "NUMBER"
+table_index: id
+table_index_type: NUMBER
 
-range_index: "variety"
-range_index_type: "STRING"
+range_index: variety
+range_index_type: STRING
 
 indexes:
   - name: NamedIndex
@@ -36,8 +36,8 @@ indexes:
 local_indexes:
   - name: NamedIndex
     type: include
-    hash_key_name: "id"  ## == table_index
-    hash_key_type: "NUMBER"  ## == table_index_type
+    hash_key_name: id ## == table_index
+    hash_key_type: NUMBER ## == table_index_type
     range_key_name: create_time
     includes:
       - other_field
@@ -46,15 +46,15 @@ local_indexes:
     write_capacity: 10
   - name: AnotherIndex
     type: all
-    hash_key_name: id  ## == table_index
-    hash_key_type: "NUMBER"  ## == table_index_type
+    hash_key_name: id ## == table_index
+    hash_key_type: NUMBER ## == table_index_type
     range_key_name: bar
     read_capacity: 5
     write_capacity: 5
   - name: KeysOnlyIndex
     type: keys_only
-    hash_key_name: id  ## == table_index
-    hash_key_type: "NUMBER"  ## == table_index_type
+    hash_key_name: id ## == table_index
+    hash_key_type: NUMBER ## == table_index_type
     range_key_name: baz
     read_capacity: 2
     write_capacity: 2
@@ -107,8 +107,8 @@ tags_default:
   snake_case_key: snake_case_value
   camelCaseKey: camelCaseValue
   PascalCaseKey: PascalCaseValue
-  "key with spaces": value with spaces
-  "Upper With Spaces": Upper With Spaces
+  key with spaces: value with spaces
+  Upper With Spaces: Upper With Spaces
 
 partial_tags:
   snake_case_key: snake_case_value
@@ -118,5 +118,5 @@ updated_tags:
   updated_snake_case_key: updated_snake_case_value
   updatedCamelCaseKey: updatedCamelCaseValue
   UpdatedPascalCaseKey: UpdatedPascalCaseValue
-  "updated key with spaces": updated value with spaces
-  "updated Upper With Spaces": Updated Upper With Spaces
+  updated key with spaces: updated value with spaces
+  updated Upper With Spaces: Updated Upper With Spaces

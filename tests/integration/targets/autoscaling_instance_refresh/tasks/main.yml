@@ -15,7 +15,7 @@
     - name: Create VPC for use in testing
       ec2_vpc_net:
         name: "{{ vpc_name }}"
-        cidr_block: '{{ subnet_a_cidr }}'
+        cidr_block: "{{ subnet_a_cidr }}"
         tenancy: default
       register: testing_vpc
 
@@ -29,7 +29,7 @@
       ec2_vpc_subnet:
         state: present
         vpc_id: "{{ testing_vpc.vpc.id }}"
-        cidr: '{{ subnet_a_cidr }}'
+        cidr: "{{ subnet_a_cidr }}"
         az: "{{ aws_region }}a"
         resource_tags:
           Name: "{{ subnet_name }}"
@@ -41,7 +41,7 @@
         tags:
           created: "{{ route_name }}"
         routes:
-          - dest: 0.0.0.0/0
+          - dest: "0.0.0.0/0"
             gateway_id: "{{ igw.gateway_id }}"
         subnets:
           - "{{ testing_subnet.subnet.id }}"
@@ -55,11 +55,11 @@
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
           - proto: tcp
             from_port: 80
             to_port: 80
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: "0.0.0.0/0"
       register: sg
 
     - name: ensure launch configs exist
@@ -88,66 +88,68 @@
         min_size: 1
         max_size: 1
         vpc_zone_identifier: "{{ testing_subnet.subnet.id }}"
-        wait_for_instances: no
+        wait_for_instances: false
         state: present
       register: output
 
     - assert:
         that:
-        - "output.viable_instances == 0"
+          - output.viable_instances == 0
 
-  # ============================================================
+    # ============================================================
 
     - name: test invalid cancelation - V1 - (pre-refresh)
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
-      ignore_errors: yes
+        state: cancelled
+      ignore_errors: true
       register: result
 
     - assert:
         that:
-        - "'An error occurred (ActiveInstanceRefreshNotFound) when calling the CancelInstanceRefresh operation: No in progress or pending Instance Refresh found for Auto Scaling group ' ~ resource_prefix ~ '-asg' in result.msg"
+          - "'An error occurred (ActiveInstanceRefreshNotFound) when calling the CancelInstanceRefresh operation: No in progress or pending Instance Refresh found
+            for Auto Scaling group ' ~ resource_prefix ~ '-asg' in result.msg"
 
     - name: test starting a refresh with a valid ASG name - check_mode
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "started"
+        state: started
       check_mode: true
       register: output
 
     - assert:
         that:
-        - output is not failed
-        - output is changed
-        - '"autoscaling:StartInstanceRefresh" not in output.resource_actions'
+          - output is not failed
+          - output is changed
+          - '"autoscaling:StartInstanceRefresh" not in output.resource_actions'
 
     - name: test starting a refresh with a valid ASG name
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "started"
+        state: started
       register: output
 
     - assert:
         that:
-        - "'instance_refresh_id' in output.instance_refreshes"
+          - "'instance_refresh_id' in output.instance_refreshes"
 
     - name: test starting a refresh with a valid ASG name - Idempotent
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "started"
+        state: started
       ignore_errors: true
       register: output
 
     - assert:
         that:
           - output is not changed
-          - '"Failed to start InstanceRefresh: An error occurred (InstanceRefreshInProgress) when calling the StartInstanceRefresh operation: An Instance Refresh is already in progress and blocks the execution of this Instance Refresh." in output.msg'
+          - '"Failed to start InstanceRefresh: An error occurred (InstanceRefreshInProgress) when calling the StartInstanceRefresh operation: An Instance Refresh
+            is already in progress and blocks the execution of this Instance Refresh." in output.msg'
 
     - name: test starting a refresh with a valid ASG name - Idempotent (check_mode)
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "started"
+        state: started
       ignore_errors: true
       check_mode: true
       register: output
@@ -160,53 +162,54 @@
 
     - name: test starting a refresh with a nonexistent ASG name
       autoscaling_instance_refresh:
-        name: "nonexistentname-asg"
-        state: "started"
-      ignore_errors: yes
+        name: nonexistentname-asg
+        state: started
+      ignore_errors: true
       register: result
 
     - assert:
         that:
-        - "'Failed to start InstanceRefresh: An error occurred (ValidationError) when calling the StartInstanceRefresh operation: AutoScalingGroup name not found' in result.msg"
+          - "'Failed to start InstanceRefresh: An error occurred (ValidationError) when calling the StartInstanceRefresh operation: AutoScalingGroup name not found'
+            in result.msg"
 
     - name: test canceling a refresh with an ASG name - check_mode
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
+        state: cancelled
       check_mode: true
       register: output
 
     - assert:
         that:
-        - output is not failed
-        - output is changed
-        - '"autoscaling:CancelInstanceRefresh" not in output.resource_actions'
+          - output is not failed
+          - output is changed
+          - '"autoscaling:CancelInstanceRefresh" not in output.resource_actions'
 
     - name: test canceling a refresh with an ASG name
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
+        state: cancelled
       register: output
 
     - assert:
         that:
-        - "'instance_refresh_id' in output.instance_refreshes"
+          - "'instance_refresh_id' in output.instance_refreshes"
 
     - name: test canceling a refresh with a ASG name - Idempotent
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
-      ignore_errors: yes
+        state: cancelled
+      ignore_errors: true
       register: output
 
     - assert:
         that:
-        - output is not changed
+          - output is not changed
 
     - name: test cancelling a refresh with a valid ASG name - Idempotent (check_mode)
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
+        state: cancelled
       ignore_errors: true
       check_mode: true
       register: output
@@ -219,7 +222,7 @@
     - name: test starting a refresh with an ASG name and preferences dict
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "started"
+        state: started
         preferences:
           min_healthy_percentage: 10
           instance_warmup: 10
@@ -229,73 +232,73 @@
 
     - assert:
         that:
-        - "'instance_refresh_id' in output.instance_refreshes"
+          - "'instance_refresh_id' in output.instance_refreshes"
 
     - name: re-test canceling a refresh with an ASG name
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
+        state: cancelled
       register: output
 
     - assert:
         that:
-        - "'instance_refresh_id' in output.instance_refreshes"
+          - "'instance_refresh_id' in output.instance_refreshes"
 
     - name: test valid start - V1 - (with preferences missing instance_warmup)
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "started"
+        state: started
         preferences:
           min_healthy_percentage: 10
-      ignore_errors: yes
+      ignore_errors: true
       retries: 5
       register: output
       until: output is not failed
 
     - assert:
         that:
-        - "'instance_refresh_id' in output.instance_refreshes"
+          - "'instance_refresh_id' in output.instance_refreshes"
 
     - name: re-test canceling a refresh with an ASG name
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
+        state: cancelled
       register: output
 
     - assert:
         that:
-        - "'instance_refresh_id' in output.instance_refreshes"
+          - "'instance_refresh_id' in output.instance_refreshes"
 
     - name: test valid start - V2 - (with preferences missing min_healthy_percentage)
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "started"
+        state: started
         preferences:
           instance_warmup: 10
       retries: 5
       register: output
       until: output is not failed
-      ignore_errors: yes
+      ignore_errors: true
 
     - assert:
         that:
-        - "'instance_refresh_id' in output.instance_refreshes"
+          - "'instance_refresh_id' in output.instance_refreshes"
 
     - name: test invalid cancelation - V2 - (with preferences)
       autoscaling_instance_refresh:
         name: "{{ asg_name }}"
-        state: "cancelled"
+        state: cancelled
         preferences:
           min_healthy_percentage: 10
           instance_warmup: 10
-      ignore_errors: yes
+      ignore_errors: true
       register: result
 
     - assert:
         that:
-        - "'can not pass preferences dict when canceling a refresh' in result.msg"
+          - "'can not pass preferences dict when canceling a refresh' in result.msg"
 
-  # ============================================================
+    # ============================================================
 
     - name: run setup with refresh_and_cancel_three_times.yml
       include_tasks: refresh_and_cancel_three_times.yml
@@ -305,7 +308,7 @@
       autoscaling_instance_refresh_info:
         name: "{{ asg_name }}"
         region: "{{ aws_region }}"
-      ignore_errors: yes
+      ignore_errors: true
       register: output
 
     - assert:
@@ -317,8 +320,8 @@
     - name: test using fake refresh ID
       autoscaling_instance_refresh_info:
         name: "{{ asg_name }}"
-        ids: ['0e367f58-blabla-bla-bla-ca870dc5dbfe']
-      ignore_errors: yes
+        ids: ["0e367f58-blabla-bla-bla-ca870dc5dbfe"]
+      ignore_errors: true
       register: output
 
     - assert:
@@ -328,8 +331,8 @@
     - name: test using a real refresh ID
       autoscaling_instance_refresh_info:
         name: "{{ asg_name }}"
-        ids: [ '{{ refreshout.instance_refreshes.instance_refresh_id }}' ]
-      ignore_errors: yes
+        ids: ["{{ refreshout.instance_refreshes.instance_refresh_id }}"]
+      ignore_errors: true
       register: output
 
     - assert:
@@ -339,17 +342,18 @@
     - name: test getting info for an ASG name which doesn't exist
       autoscaling_instance_refresh_info:
         name: n0n3x1stentname27b
-      ignore_errors: yes
+      ignore_errors: true
       register: output
 
     - assert:
         that:
-          - "'Failed to describe InstanceRefreshes: An error occurred (ValidationError) when calling the DescribeInstanceRefreshes operation: AutoScalingGroup name not found - AutoScalingGroup n0n3x1stentname27b not found' == output.msg"
+          - "'Failed to describe InstanceRefreshes: An error occurred (ValidationError) when calling the DescribeInstanceRefreshes operation: AutoScalingGroup name
+            not found - AutoScalingGroup n0n3x1stentname27b not found' == output.msg"
 
     - name: assert that the correct number of records are returned
       autoscaling_instance_refresh_info:
         name: "{{ asg_name }}"
-      ignore_errors: yes
+      ignore_errors: true
       register: output
 
     - assert:
@@ -359,19 +363,20 @@
     - name: assert that valid message with fake-token is returned
       autoscaling_instance_refresh_info:
         name: "{{ asg_name }}"
-        next_token: "fake-token-123"
-      ignore_errors: yes
+        next_token: fake-token-123
+      ignore_errors: true
       register: output
 
     - assert:
         that:
-          - '"Failed to describe InstanceRefreshes: An error occurred (InvalidNextToken) when calling the DescribeInstanceRefreshes operation: The token ''********'' is invalid." == output.msg'
+          - "\"Failed to describe InstanceRefreshes: An error occurred (InvalidNextToken) when calling the DescribeInstanceRefreshes operation: The token '********'
+            is invalid.\" == output.msg"
 
     - name: assert that max records=1 returns no more than one record
       autoscaling_instance_refresh_info:
         name: "{{ asg_name }}"
         max_records: 1
-      ignore_errors: yes
+      ignore_errors: true
       register: output
 
     - assert:
@@ -382,7 +387,7 @@
       autoscaling_instance_refresh_info:
         name: "{{ asg_name }}"
         next_token: "{{ output.next_token }}"
-      ignore_errors: yes
+      ignore_errors: true
       register: output
 
     - assert:
@@ -394,7 +399,7 @@
         name: "{{ asg_name }}"
         max_records: 1
         next_token: "{{ output.next_token }}"
-      ignore_errors: yes
+      ignore_errors: true
       register: output
 
     - assert:
@@ -402,14 +407,13 @@
           - output.instance_refreshes | length == 1
 
   always:
-
     - name: kill asg
       autoscaling_group:
         name: "{{ asg_name }}"
         state: absent
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
     # Remove the testing dependencies
 
@@ -420,23 +424,23 @@
         security_group_ids:
           - "{{ sg.group_id }}"
         subnets: "{{ testing_subnet.subnet.id }}"
-        wait: yes
+        wait: true
         connection_draining_timeout: 60
         listeners:
           - protocol: http
             load_balancer_port: 80
             instance_port: 80
         health_check:
-            ping_protocol: tcp
-            ping_port: 80
-            ping_path: "/"
-            response_timeout: 5
-            interval: 10
-            unhealthy_threshold: 4
-            healthy_threshold: 2
+          ping_protocol: tcp
+          ping_port: 80
+          ping_path: /
+          response_timeout: 5
+          interval: 10
+          unhealthy_threshold: 4
+          healthy_threshold: 2
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: remove launch configs
@@ -445,7 +449,7 @@
         state: absent
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
       loop:
         - "{{ lc_name_1 }}"
@@ -468,7 +472,7 @@
         state: absent
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: remove routing rules
@@ -478,13 +482,13 @@
         tags:
           created: "{{ route_name }}"
         routes:
-          - dest: 0.0.0.0/0
+          - dest: "0.0.0.0/0"
             gateway_id: "{{ igw.gateway_id }}"
         subnets:
           - "{{ testing_subnet.subnet.id }}"
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: remove internet gateway
@@ -493,25 +497,25 @@
         state: absent
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: remove the subnet
       ec2_vpc_subnet:
         state: absent
         vpc_id: "{{ testing_vpc.vpc.id }}"
-        cidr: '{{ subnet_a_cidr }}'
+        cidr: "{{ subnet_a_cidr }}"
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10
 
     - name: remove the VPC
       ec2_vpc_net:
         name: "{{ vpc_name }}"
-        cidr_block: '{{ subnet_a_cidr }}'
+        cidr_block: "{{ subnet_a_cidr }}"
         state: absent
       register: removed
       until: removed is not failed
-      ignore_errors: yes
+      ignore_errors: true
       retries: 10

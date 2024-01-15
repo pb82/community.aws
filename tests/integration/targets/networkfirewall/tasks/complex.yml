@@ -2,17 +2,17 @@
 # Tests the manipulation of networkfirewall resources one option at a time
 
 - vars:
-    complex_firewall_name: '{{ firewall_name_prefix }}-Complex'
+    complex_firewall_name: "{{ firewall_name_prefix }}-Complex"
     first_tags:
       CamelCaseKey: CamelCaseValue
-      'Key with Spaces': Value with spaces
+      Key with Spaces: Value with spaces
       pascalCaseKey: pascalCaseValue
       snake_case_key: snake_case_value
     second_tags:
       CamelCaseKey: CamelCaseValue
-      'Key with Spaces': Updated Value with spaces
+      Key with Spaces: Updated Value with spaces
       NewCamelCaseKey: CamelCaseValue
-      'New Key with Spaces': Value with spaces
+      New Key with Spaces: Value with spaces
       newPascalCaseKey: pascalCaseValue
       new_snake_case_key: snake_case_value
       pascalCaseKey: pascalCaseValue
@@ -21,20 +21,20 @@
     ###################################################################
     # Creation
 
-    - name: '(CHECK) Create a complex firewall'
-      check_mode: True
+    - name: (CHECK) Create a complex firewall
+      check_mode: true
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        delete_protection: True
-        description: "An example Description"
-        policy: '{{ default_policy_names[0] }}'
-        policy_change_protection: True
+        delete_protection: true
+        description: An example Description
+        policy: "{{ default_policy_names[0] }}"
+        policy_change_protection: true
         subnets:
-        - '{{ subnet_id_a_1 }}'
-        - '{{ subnet_id_a_2 }}'
-        subnet_change_protection: True
-        tags: '{{ first_tags }}'
+          - "{{ subnet_id_a_1 }}"
+          - "{{ subnet_id_a_2 }}"
+        subnet_change_protection: true
+        tags: "{{ first_tags }}"
       register: complex_firewall
 
     - assert:
@@ -65,22 +65,22 @@
           - firewall_data.vpc_id == vpc_id_a
           - firewall_data.tags == first_tags
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Create a complex firewall'
+    - name: Create a complex firewall
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        delete_protection: True
-        description: "An example Description"
-        policy: '{{ default_policy_names[0] }}'
-        policy_change_protection: True
+        delete_protection: true
+        description: An example Description
+        policy: "{{ default_policy_names[0] }}"
+        policy_change_protection: true
         subnets:
-        - '{{ subnet_id_a_1 }}'
-        - '{{ subnet_id_a_2 }}'
-        subnet_change_protection: True
-        tags: '{{ first_tags }}'
+          - "{{ subnet_id_a_1 }}"
+          - "{{ subnet_id_a_2 }}"
+        subnet_change_protection: true
+        tags: "{{ first_tags }}"
       register: complex_firewall
 
     - assert:
@@ -120,31 +120,31 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ complex_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ complex_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Save Policy ID/ARN for later'
+    - name: Save Policy ID/ARN for later
       set_fact:
-        complex_firewall_id: '{{ firewall_data.firewall_id }}'
-        complex_firewall_arn: '{{ firewall_data.firewall_arn }}'
+        complex_firewall_id: "{{ firewall_data.firewall_id }}"
+        complex_firewall_arn: "{{ firewall_data.firewall_arn }}"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
 
-    - name: '(CHECK) Create a complex firewall (idempotency)'
-      check_mode: True
+    - name: (CHECK) Create a complex firewall (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        delete_protection: True
-        description: "An example Description"
-        policy: '{{ default_policy_names[0] }}'
-        policy_change_protection: True
+        delete_protection: true
+        description: An example Description
+        policy: "{{ default_policy_names[0] }}"
+        policy_change_protection: true
         subnets:
-        - '{{ subnet_id_a_1 }}'
-        - '{{ subnet_id_a_2 }}'
-        subnet_change_protection: True
-        tags: '{{ first_tags }}'
+          - "{{ subnet_id_a_1 }}"
+          - "{{ subnet_id_a_2 }}"
+        subnet_change_protection: true
+        tags: "{{ first_tags }}"
       register: complex_firewall
 
     - assert:
@@ -184,23 +184,23 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ complex_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ complex_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Create a complex firewall (idempotency)'
+    - name: Create a complex firewall (idempotency)
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        delete_protection: True
-        description: "An example Description"
-        policy: '{{ default_policy_names[0] }}'
-        policy_change_protection: True
+        delete_protection: true
+        description: An example Description
+        policy: "{{ default_policy_names[0] }}"
+        policy_change_protection: true
         subnets:
-        - '{{ subnet_id_a_1 }}'
-        - '{{ subnet_id_a_2 }}'
-        subnet_change_protection: True
-        tags: '{{ first_tags }}'
+          - "{{ subnet_id_a_1 }}"
+          - "{{ subnet_id_a_2 }}"
+        subnet_change_protection: true
+        tags: "{{ first_tags }}"
       register: complex_firewall
 
     - assert:
@@ -240,27 +240,27 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ complex_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ complex_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     ###################################################################
     # Update
 
-    - name: '(CHECK) Update a complex firewall'
-      check_mode: True
+    - name: (CHECK) Update a complex firewall
+      check_mode: true
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        description: "An updated Description"
-        policy: '{{ default_policy_arns[2] }}'
-        policy_change_protection: False
-        subnet_change_protection: False
+        description: An updated Description
+        policy: "{{ default_policy_arns[2] }}"
+        policy_change_protection: false
+        subnet_change_protection: false
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
-        tags: '{{ second_tags }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
+        tags: "{{ second_tags }}"
       register: complex_firewall
 
     - assert:
@@ -301,23 +301,23 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ complex_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ complex_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update a complex firewall'
+    - name: Update a complex firewall
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        description: "An updated Description"
-        policy: '{{ default_policy_arns[2] }}'
-        policy_change_protection: False
-        subnet_change_protection: False
+        description: An updated Description
+        policy: "{{ default_policy_arns[2] }}"
+        policy_change_protection: false
+        subnet_change_protection: false
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
-        tags: '{{ second_tags }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
+        tags: "{{ second_tags }}"
       register: complex_firewall
 
     - assert:
@@ -358,21 +358,21 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ complex_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ complex_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
     # There's a delay of a couple of seconds between requesting a change and the
     # firewall entering a PENDING/PROVISIONING state.  The delay is enough to
     # let the firewall enter the expected PENDING state is it's going to.
-    - name: 'Pause to let synchroization start'
+    - name: Pause to let synchroization start
       pause:
         seconds: 5
 
     # Also checks that we get the info we expect
-    - name: 'Check firewall is not still updating'
+    - name: Check firewall is not still updating
       networkfirewall_info:
-        arn: '{{ complex_firewall_arn }}'
+        arn: "{{ complex_firewall_arn }}"
       register: complex_firewall_info
 
     - assert:
@@ -414,24 +414,24 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall_info.firewalls[0].firewall }}'
-        firewall_metadata: '{{ complex_firewall_info.firewalls[0].firewall_metadata }}'
+        firewall_data: "{{ complex_firewall_info.firewalls[0].firewall }}"
+        firewall_metadata: "{{ complex_firewall_info.firewalls[0].firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: '(CHECK) Update a complex firewall (idempotency)'
-      check_mode: True
+    - name: (CHECK) Update a complex firewall (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        description: "An updated Description"
-        policy: '{{ default_policy_arns[2] }}'
-        policy_change_protection: False
-        subnet_change_protection: False
+        description: An updated Description
+        policy: "{{ default_policy_arns[2] }}"
+        policy_change_protection: false
+        subnet_change_protection: false
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
-        tags: '{{ second_tags }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
+        tags: "{{ second_tags }}"
       register: complex_firewall
 
     - assert:
@@ -472,23 +472,23 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ complex_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ complex_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
 
-    - name: 'Update a complex firewall (idempotency)'
+    - name: Update a complex firewall (idempotency)
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: present
-        description: "An updated Description"
-        policy: '{{ default_policy_arns[2] }}'
-        policy_change_protection: False
-        subnet_change_protection: False
+        description: An updated Description
+        policy: "{{ default_policy_arns[2] }}"
+        policy_change_protection: false
+        subnet_change_protection: false
         subnets:
-        - '{{ subnet_id_a_1a }}'
-        - '{{ subnet_id_a_2 }}'
-        - '{{ subnet_id_a_3 }}'
-        tags: '{{ second_tags }}'
+          - "{{ subnet_id_a_1a }}"
+          - "{{ subnet_id_a_2 }}"
+          - "{{ subnet_id_a_3 }}"
+        tags: "{{ second_tags }}"
       register: complex_firewall
 
     - assert:
@@ -529,10 +529,9 @@
           - firewall_metadata.status == "READY"
           - firewall_metadata.configuration_sync_state_summary == "IN_SYNC"
       vars:
-        firewall_data: '{{ complex_firewall.firewall.firewall }}'
-        firewall_metadata: '{{ complex_firewall.firewall.firewall_metadata }}'
+        firewall_data: "{{ complex_firewall.firewall.firewall }}"
+        firewall_metadata: "{{ complex_firewall.firewall.firewall_metadata }}"
         subnet_ids: '{{ firewall_data.subnet_mappings | map(attribute="subnet_id") | list }}'
-
 
     ###################################################################
     # Delete firewall
@@ -542,21 +541,21 @@
     # checking is that deletion protection updates happen prior to attempting to
     # delete the firewall.
 
-    - name: '(CHECK) Delete complex firewall - no wait'
-      check_mode: True
+    - name: (CHECK) Delete complex firewall - no wait
+      check_mode: true
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
-        delete_protection: False
+        name: "{{ complex_firewall_name }}"
+        delete_protection: false
         state: absent
-        wait: False
+        wait: false
       register: complex_firewall
 
-    - name: 'Delete complex firewall - no wait'
+    - name: Delete complex firewall - no wait
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
-        delete_protection: False
+        name: "{{ complex_firewall_name }}"
+        delete_protection: false
         state: absent
-        wait: False
+        wait: false
       register: complex_firewall
 
     - assert:
@@ -567,9 +566,9 @@
     - pause:
         seconds: 4
 
-    - name: 'Check firewall is not gone (expected to be in a pending state)'
+    - name: Check firewall is not gone (expected to be in a pending state)
       networkfirewall_info:
-        arn: '{{ complex_firewall_arn }}'
+        arn: "{{ complex_firewall_arn }}"
       register: complex_firewall_info
 
     - assert:
@@ -577,25 +576,25 @@
           - complex_firewall_info is successful
           - complex_firewall_info.firewalls | length == 1
 
-    - name: '(CHECK) Delete complex firewall (idempotency)'
-      check_mode: True
+    - name: (CHECK) Delete complex firewall (idempotency)
+      check_mode: true
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
-        delete_protection: False
+        name: "{{ complex_firewall_name }}"
+        delete_protection: false
         state: absent
-        wait: False
+        wait: false
       register: complex_firewall
 
     - assert:
         that:
           - complex_firewall is not changed
 
-    - name: 'Delete complex firewall (idempotency)'
+    - name: Delete complex firewall (idempotency)
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
-        delete_protection: False
+        name: "{{ complex_firewall_name }}"
+        delete_protection: false
         state: absent
-        wait: False
+        wait: false
       register: complex_firewall
 
     - assert:
@@ -603,10 +602,10 @@
           - complex_firewall is not changed
 
   always:
-    - name: 'Cleanup complex firewall'
+    - name: Cleanup complex firewall
       networkfirewall:
-        name: '{{ complex_firewall_name }}'
+        name: "{{ complex_firewall_name }}"
         state: absent
-        delete_protection: False
-        wait: False
-      ignore_errors: True
+        delete_protection: false
+        wait: false
+      ignore_errors: true

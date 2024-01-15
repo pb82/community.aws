@@ -1,3 +1,4 @@
+---
 - name: set connection information for aws modules and run tasks
   module_defaults:
     group/aws:
@@ -14,8 +15,8 @@
         stack_name: "{{ stack_name }}"
         template_body: "{{ lookup('file','test_stack.yml') }}"
         template_parameters:
-          TestParamName: "cf-exports-param"
-          TestParamValue: "Set By CF Exports"
+          TestParamName: cf-exports-param
+          TestParamValue: Set By CF Exports
           BucketSuffix: "{{ resource_prefix }}"
       register: cf_stack
     - name: Read from Exports
@@ -30,12 +31,10 @@
           - export_items['cf-exports-param'] is defined
           # - export_items | length == 1
 
-
-# Cleanup
+  # Cleanup
   always:
-
     - name: delete stack
       cloudformation:
         stack_name: "{{ stack_name }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true

@@ -1,15 +1,14 @@
 ---
-- name: 'aws_codebuild integration tests'
+- name: aws_codebuild integration tests
   collections:
     - amazon.aws
   module_defaults:
     group/aws:
-      access_key: '{{ aws_access_key }}'
-      secret_key: '{{ aws_secret_key }}'
-      session_token: '{{ security_token | default(omit) }}'
-      region: '{{ aws_region }}'
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+      session_token: "{{ security_token | default(omit) }}"
+      region: "{{ aws_region }}"
   block:
-
     # ==================== preparations ========================================
 
     - name: create IAM role needed for CodeBuild
@@ -34,7 +33,7 @@
         timeout_in_minutes: 30
         source:
           type: CODEPIPELINE
-          buildspec: ''
+          buildspec: ""
         artifacts:
           namespace_type: NONE
           packaging: NONE
@@ -43,12 +42,12 @@
         environment:
           compute_type: BUILD_GENERAL1_SMALL
           privileged_mode: true
-          image: 'aws/codebuild/docker:17.09.0'
+          image: aws/codebuild/docker:17.09.0
           type: LINUX_CONTAINER
           environment_variables:
-            - { name: 'FOO_ENV', value: 'other' }
+            - { name: FOO_ENV, value: other }
         tags:
-          purpose: 'ansible-test'
+          purpose: ansible-test
         state: present
       register: output
       retries: 10
@@ -57,7 +56,7 @@
 
     - assert:
         that:
-          - "output.project.description == 'Build project for testing the Ansible aws_codebuild module'"
+          - output.project.description == 'Build project for testing the Ansible aws_codebuild module'
           - output.project.resource_tags.purpose == "ansible-test"
 
     - name: idempotence check rerunning same Codebuild task
@@ -68,39 +67,39 @@
         timeout_in_minutes: 30
         source:
           type: CODEPIPELINE
-          buildspec: ''
+          buildspec: ""
         artifacts:
           namespace_type: NONE
           packaging: NONE
           type: CODEPIPELINE
           name: test
-        encryption_key: 'arn:aws:kms:{{ aws_region }}:{{ aws_account_id }}:alias/aws/s3'
+        encryption_key: arn:aws:kms:{{ aws_region }}:{{ aws_account_id }}:alias/aws/s3
         environment:
           compute_type: BUILD_GENERAL1_SMALL
           privileged_mode: true
-          image: 'aws/codebuild/docker:17.09.0'
+          image: aws/codebuild/docker:17.09.0
           type: LINUX_CONTAINER
           environment_variables:
-            - { name: 'FOO_ENV', value: 'other' }
+            - { name: FOO_ENV, value: other }
         tags:
-          purpose: 'ansible-test'
+          purpose: ansible-test
         state: present
       register: rerun_test_output
 
     - assert:
         that:
-          - "rerun_test_output.project.created == output.project.created"
+          - rerun_test_output.project.created == output.project.created
           - rerun_test_output.project.resource_tags.purpose == "ansible-test"
 
-    - include_tasks: 'tagging.yml'
-    - include_tasks: 'description.yml'
+    - include_tasks: tagging.yml
+    - include_tasks: description.yml
 
     - name: delete CodeBuild project
       codebuild_project:
         name: "{{ output.project.name }}"
         source:
           type: CODEPIPELINE
-          buildspec: ''
+          buildspec: ""
         artifacts: {}
         state: absent
       async: 300
@@ -108,7 +107,6 @@
   # ============================== cleanup ======================================
 
   always:
-
     - name: cleanup IAM role created for CodeBuild test
       iam_role:
         name: "{{ iam_role_name }}"

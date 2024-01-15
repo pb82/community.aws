@@ -8,13 +8,12 @@
   collections:
     - amazon.aws
   block:
-
     # ============================================================
 
     - name: test without any parameters
       ec2_vpc_nacl:
       register: result
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: assert required parameters
       assert:
@@ -34,9 +33,9 @@
     - name: get network ACL info with invalid ID
       ec2_vpc_nacl_info:
         nacl_ids:
-        - 'acl-000000000000'
+          - acl-000000000000
       register: nacl_facts
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: assert message mentions missing ACLs
       assert:
@@ -56,8 +55,8 @@
 
     - name: pick AZs
       set_fact:
-        az_one: '{{ az_info.availability_zones[0].zone_name }}'
-        az_two: '{{ az_info.availability_zones[1].zone_name }}'
+        az_one: "{{ az_info.availability_zones[0].zone_name }}"
+        az_two: "{{ az_info.availability_zones[1].zone_name }}"
 
     # ============================================================
 
@@ -105,7 +104,7 @@
         cidr_block: "{{ vpc_ipv6_cidr }}"
         name: "{{ vpc_ipv6_name }}"
         state: present
-        ipv6_cidr: yes
+        ipv6_cidr: true
       register: vpc_result
     - set_fact:
         vpc_ipv6_id: "{{ vpc_result.vpc.id }}"
@@ -135,17 +134,16 @@
 
     - include_tasks: tasks/ipv6.yml
 
-    # ============================================================
+  # ============================================================
 
   always:
-
     - name: remove network ACL
       ec2_vpc_nacl:
         vpc_id: "{{ vpc_id }}"
         name: "{{ nacl_name }}"
         state: absent
       register: removed_acl
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove subnets
       ec2_vpc_subnet:
@@ -159,17 +157,17 @@
         - cidr: "{{ subnet_4 }}"
         - cidr: "{{ vpc_ipv6_cidr }}"
           vpc_id: "{{ vpc_ipv6_id }}"
-      ignore_errors: yes
+      ignore_errors: true
       register: removed_subnets
 
     - name: remove the VPCs
       ec2_vpc_net:
         vpc_id: "{{ item }}"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
       register: removed_vpc
       with_items:
-        - '{{ vpc_id }}'
-        - '{{ vpc_ipv6_id }}'
+        - "{{ vpc_id }}"
+        - "{{ vpc_ipv6_id }}"
 
     # ============================================================

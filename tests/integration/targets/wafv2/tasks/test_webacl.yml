@@ -1,3 +1,4 @@
+---
 ###############################
 # test web acl
 ###############################
@@ -19,8 +20,8 @@
     description: hallo eins drei
     scope: REGIONAL
     default_action: Allow
-    sampled_requests: no
-    cloudwatch_metrics: yes
+    sampled_requests: false
+    cloudwatch_metrics: true
     metric_name: blub
     rules:
       - name: zwei
@@ -28,8 +29,8 @@
         action:
           block: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: ddos
         statement:
           xss_match_statement:
@@ -43,8 +44,8 @@
         override_action:
           none: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           managed_rule_group_statement:
@@ -60,7 +61,6 @@
     that:
       - out is changed
 
-
 - name: add 1 rules
   wafv2_web_acl:
     name: "{{ web_acl_name }}"
@@ -68,18 +68,18 @@
     description: hallo eins drei
     scope: REGIONAL
     default_action: Allow
-    sampled_requests: no
-    cloudwatch_metrics: yes
+    sampled_requests: false
+    cloudwatch_metrics: true
     metric_name: blub
-    purge_rules: no
+    purge_rules: false
     rules:
       - name: bla
         priority: 8
         override_action:
           none: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: fsd
         statement:
           managed_rule_group_statement:
@@ -113,18 +113,18 @@
     description: hallo eins drei
     scope: REGIONAL
     default_action: Allow
-    sampled_requests: no
-    cloudwatch_metrics: yes
+    sampled_requests: false
+    cloudwatch_metrics: true
     metric_name: blub
-    purge_rules: yes
+    purge_rules: true
     rules:
       - name: admin_protect
         priority: 1
         override_action:
           none: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: admin_protect
         statement:
           managed_rule_group_statement:
@@ -158,8 +158,8 @@
     description: hallo eins drei
     scope: REGIONAL
     default_action: Allow
-    sampled_requests: no
-    cloudwatch_metrics: yes
+    sampled_requests: false
+    cloudwatch_metrics: true
     metric_name: blub
     rules:
       - name: admin_protect
@@ -167,8 +167,8 @@
         override_action:
           none: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: admin_protect
         statement:
           managed_rule_group_statement:
@@ -191,23 +191,23 @@
     description: hallo eins drei
     scope: REGIONAL
     default_action: Allow
-    sampled_requests: no
-    cloudwatch_metrics: yes
+    sampled_requests: false
+    cloudwatch_metrics: true
     metric_name: blub
-    purge_rules: yes
+    purge_rules: true
     rules:
       - name: block-germany
         priority: 1
         action:
           block: {}
         visibility_config:
-          sampled_requests_enabled: yes
-          cloud_watch_metrics_enabled: yes
+          sampled_requests_enabled: true
+          cloud_watch_metrics_enabled: true
           metric_name: block-germany
         statement:
           geo_match_statement:
             country_codes:
-                - DE
+              - DE
     tags:
       A: B
       C: D
